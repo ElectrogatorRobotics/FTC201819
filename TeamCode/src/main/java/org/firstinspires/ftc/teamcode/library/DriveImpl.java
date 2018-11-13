@@ -71,7 +71,7 @@ public class DriveImpl implements Drive {
         backRightDrive.setPower(0.0);
         backLeftDrive.setPower(0.0);
 
-        setMotorDriveDirection(MoveMethod.FORWARD);
+        setMotorDriveDirection(MoveDirection.FORWARD);
 
         // set mode
         // TODO: 11/9/2017 set drive mode to RUN_USING_ENCODER once the encoders are hocked up
@@ -83,47 +83,25 @@ public class DriveImpl implements Drive {
         LOG.update();
     }
 
-    public void setMotorDriveDirection(MoveMethod system){
+    public void setMotorDriveDirection(MoveDirection dir){
         // set direction
-        LOG.addData("SettingDrive", system);
-        if(system == MoveMethod.TURN) {
-            frontLeftDrive.setDirection(DcMotorSimple.Direction.FORWARD);
-            backLeftDrive.setDirection(DcMotorSimple.Direction.FORWARD);
-            frontRightDrive.setDirection(DcMotorSimple.Direction.FORWARD);
-            backRightDrive.setDirection(DcMotorSimple.Direction.FORWARD);
+        LOG.addData("SettingDrive", dir.name());
+        switch(dir){
+            case LEFT:
+            case RIGHT:
+                frontLeftDrive.setDirection(DcMotorSimple.Direction.FORWARD);
+                backLeftDrive.setDirection(DcMotorSimple.Direction.FORWARD);
+                break;
+            case BACK:
+            case FORWARD:
+                frontLeftDrive.setDirection(DcMotorSimple.Direction.REVERSE);
+                backLeftDrive.setDirection(DcMotorSimple.Direction.REVERSE);
+                break;
         }
-        else{
-            frontLeftDrive.setDirection(DcMotorSimple.Direction.REVERSE);
-            backLeftDrive.setDirection(DcMotorSimple.Direction.REVERSE);
-            frontRightDrive.setDirection(DcMotorSimple.Direction.FORWARD);
-            backRightDrive.setDirection(DcMotorSimple.Direction.FORWARD);
-        }
+        frontRightDrive.setDirection(DcMotorSimple.Direction.FORWARD);
+        backRightDrive.setDirection(DcMotorSimple.Direction.FORWARD);
     }
 
-	/**
-	 * Return the average position of the robot in the X axes
-	 * @return
-	 */
-	public double getDriveX () {
-		return (frontLeftDrive.getCurrentPosition() + frontRightDrive.getCurrentPosition() +
-				backLeftDrive.getCurrentPosition() + backRightDrive.getCurrentPosition()) / 4;
-	}
-
-	/**
-	 * Autonomous Methods:
-	 */
-
-	/**
-	 * Move the drive to a precise location and orientation in one move.
-	 * @param xInches
-	 * @param yInches
-	 * @param rotationDegrees
-	 */
-	public void driveToCord (double xInches, double yInches, double rotationDegrees) {
-//		while () {
-
-//		}
-	}
 
 	public void driveByTime(int milliseconds, Proportional.ProportionalMode driveMotor){
         LOG.addData("DriveByTime",milliseconds);
@@ -206,39 +184,28 @@ public class DriveImpl implements Drive {
 	}
 
 	public double throttleControl (double throttle, double minValue) {
-		if (throttle > minValue)
-			minValue = throttle;
-
+		if (throttle > minValue) return throttle;
 		return minValue;
 	}
 
-	public enum MotorControlMode {EXPONENTIAL_CONTROL, LINEAR_CONTROL}
+	public void move(int inches, MoveDirection md){
 
-	public enum ThrottleControl {LEFT_TRIGGER, RIGHT_TRIGGER}
-
-    public enum MoveMethod{FORWARD, TURN}
-
-	public void forward(int inches){
-        setMotorDriveDirection(MoveMethod.FORWARD);
-//        driveToTarget(inches, Proportional.ProportionalMode.NONE );
 	}
 
-	public void turn(double angle){
-        //need to come up with a way to handle turning. Kinda an issue.
-        //setMotorDriveDirection(MoveMethod.TURN);
-        //driveByTime((int)angle, Proportional.ProportionalMode.NONE);
+	public void turn(double angle, MoveDirection md){
+
     }
 
-    public void forward_time(int milliseconds){
+    public void move_time(int milliseconds, MoveDirection md){
         //driveToTarget(inches, Proportional.ProportionalMode.NONE );
         LOG.addLine("Forward!");
-        setMotorDriveDirection(MoveMethod.FORWARD);
+        setMotorDriveDirection(MoveDirection.FORWARD);
         driveByTime(milliseconds, Proportional.ProportionalMode.NONE );
     }
 
-    public void turn_time(int milliseconds){
+    public void turn_time(int milliseconds, MoveDirection md){
         //need to come up with a way to handle turning. Kinda an issue.
-        setMotorDriveDirection(MoveMethod.TURN);
+        setMotorDriveDirection(md);
         driveByTime(milliseconds, Proportional.ProportionalMode.NONE);
     }
 

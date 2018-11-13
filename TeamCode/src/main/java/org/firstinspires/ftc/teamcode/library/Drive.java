@@ -11,63 +11,21 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
  */
 
 public interface Drive {
-	double MIN_SPEED = 0.2;
-
+	double MIN_SPEED = 0.4;
 
     void initMotors(HardwareMap hardware);
 
 	void setTelemetry(Telemetry telem);
 
-	/**
-	 * @param targetDist
-	 */
-	void driveToTarget(double targetDist);
+	double setMotorSpeed (double speed, MotorControlMode controlMode);
 
-	/**
-	 * Set the speed of a motor with or with out expo.
-	 * Use this method if the expo base needs to be less than or grater than 5
-	 *
-	 * @param speed
-	 * @param controlMode
-	 * @param expoBase
-	 * @return
-	 */
-	double setMotorSpeed(double speed, DriveImpl.MotorControlMode controlMode, double expoBase);
+	void move(int inches, MoveDirection md);
 
-	void turnToDegree(double angle);
+    void turn(double angle, MoveDirection md);
 
-	/**
-	 * Set the speed of a motor with or with out expo.
-	 * Use this method if the expo base needs to be 5
-	 *
-	 * @param speed
-	 * @param controlMode
-	 * @return
-	 */
-	double setMotorSpeed(double speed, DriveImpl.MotorControlMode controlMode);
+	void move_time(int milliseconds, MoveDirection md);
 
-	/**
-	 *
-	 * @param throttle
-	 * @param minValue
-	 * @return
-	 */
-	double throttleControl(double throttle, double minValue);
-
-	/**
-	 *
-	 * @param speed
-	 * @param controlMode
-	 * @param throttle
-	 * @return
-	 */
-	double setMotorSpeedWithThrottle(double speed, DriveImpl.MotorControlMode controlMode, double throttle);
-
-	void forward(int inches);
-
-    void turn(double angle);
-
-	void forward_time(int milliseconds);
+	void turn_time(int milliseconds, MoveDirection md);
 
 	void shutdown();
 
@@ -75,8 +33,10 @@ public interface Drive {
 	 * Thees are the motor control modes that we can use
 	 */
 	enum MotorControlMode {
-		EXPO_CONTROL, LINEAR_CONTROL
+		EXPONENTIAL_CONTROL, LINEAR_CONTROL
 	}
 
 	enum ThrottleControl {LEFT_TRIGGER, RIGHT_TRIGGER}
+
+	enum MoveDirection {FORWARD, RIGHT, BACK, LEFT}
 }
