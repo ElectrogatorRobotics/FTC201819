@@ -143,31 +143,30 @@ public class DriveImpl implements Drive {
 
         do {
             // calculate the speed of the motor proportionally using the distance form the target
-	        motorPower = (proportional.p(targetDist, curPos, driveMotor));
+	        motorPower = proportional.p((float)targetDist, (float)curPos, driveMotor);
         } while (curPos < target);
 	    return motorPower;
     }
 
 
-    public void forwardDistance(int inches) {
+    public void forwardDistance(int distance) {
         frontLeftDrive.setPower(calculateDriveSpeed(distance, backLeftDrive.getCurrentPosition(), Proportional.ProportionalMode.LEFT));
         frontRightDrive.setPower(calculateDriveSpeed(distance, backRightDrive.getCurrentPosition(), Proportional.ProportionalMode.RIGHT));
         backLeftDrive.setPower(calculateDriveSpeed(distance, backLeftDrive.getCurrentPosition(), Proportional.ProportionalMode.LEFT));
         backRightDrive.setPower(calculateDriveSpeed(distance, backRightDrive.getCurrentPosition(), Proportional.ProportionalMode.RIGHT));
 
     }
-
-    public void turn (double angle) {
-        // get the rotational z value to use for orientation
+/*
+    public void turnToDegree (double angle) {
+        // get rhe rotational z value to use for orientation
         double rotationalZ = robot.imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.XYZ, AngleUnit.DEGREES).thirdAngle;
 
-        frontLeftDrive.setPower(calculateDriveSpeed(angle, rotationalZ, Proportional.ProportionalMode.LEFT));
-        frontRightDrive.setPower(calculateDriveSpeed(angle, rotationalZ, Proportional.ProportionalMode.RIGHT));
-        backLeftDrive.setPower(calculateDriveSpeed(angle, rotationalZ, Proportional.ProportionalMode.LEFT));
-        backRightDrive.setPower(calculateDriveSpeed(angle, rotationalZ, Proportional.ProportionalMode.RIGHT));
-        // what is the rotational z? and is this turn ok?
+        frontLeftDrive.setPower(claculateDriveSpeed(angle, rotationalZ, Proportional.ProportionalMode.LEFT));
+        frontRightDrive.setPower(claculateDriveSpeed(angle, rotationalZ, Proportional.ProportionalMode.RIGHT));
+        backLeftDrive.setPower(claculateDriveSpeed(angle, rotationalZ, Proportional.ProportionalMode.LEFT));
+        backRightDrive.setPower(claculateDriveSpeed(angle, rotationalZ, Proportional.ProportionalMode.RIGHT));
     }
-
+*/
     public double setMotorSpeed (double speed, MotorControlMode controlMode, double expoBase){
 	    switch (controlMode){
 		    case EXPONENTIAL_CONTROL:
@@ -210,23 +209,23 @@ public class DriveImpl implements Drive {
 
 	public void forward(int inches){
         setMotorDriveDirection(MoveMethod.FORWARD);
-          driveToTarget (inches, proportional. ProportionalMode. NONE );
+//        driveToTarget(inches, Proportional.ProportionalMode.NONE );
 	}
 
 	public void turn(double angle){
         //need to come up with a way to handle turning. Kinda an issue.
-        setMotorDriveDirection(MoveMethod.TURN);
-        driveByTime((int) angle, Proportional. proportionalMode.NONE);
+        //setMotorDriveDirection(MoveMethod.TURN);
+        //driveByTime((int)angle, Proportional.ProportionalMode.NONE);
     }
-// i am confused this is forward time and it is also using inches...
-    public void forwardTime(int milliseconds){
-        driveToTarget (inches, Proportional.ProportionalMode.NONE );
+
+    public void forward_time(int milliseconds){
+        //driveToTarget(inches, Proportional.ProportionalMode.NONE );
         LOG.addLine("Forward!");
         setMotorDriveDirection(MoveMethod.FORWARD);
         driveByTime(milliseconds, Proportional.ProportionalMode.NONE );
     }
 
-    public void turnTime(int milliseconds){
+    public void turn_time(int milliseconds){
         //need to come up with a way to handle turning. Kinda an issue.
         setMotorDriveDirection(MoveMethod.TURN);
         driveByTime(milliseconds, Proportional.ProportionalMode.NONE);

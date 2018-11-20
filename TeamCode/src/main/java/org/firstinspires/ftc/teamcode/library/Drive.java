@@ -37,7 +37,14 @@ public interface Drive {
 	 * @param controlMode
 	 * @return
 	 */
+	double setMotorSpeed(double speed, DriveImpl.MotorControlMode controlMode);
 
+	/**
+	 *
+	 * @param throttle
+	 * @param minValue
+	 * @return
+	 */
 	double throttleControl(double throttle, double minValue);
 
 	/**
@@ -49,14 +56,12 @@ public interface Drive {
 	 */
 	double setMotorSpeedWithThrottle(double speed, DriveImpl.MotorControlMode controlMode, double throttle);
 
-	// this works in the DriveImpl.java so idk why it is not lit up here
-	void forwardDistance(int inches);
+	void forward(int inches);
 
 	//this is used in Drive Impl.java so i dont know why it is not lit up
     void turn(double angle);
 
-
-	void forwardTime(int milliseconds);
+	void forward_time(int milliseconds);
 
 	//can we get rid of this,because,I dont know what in the world it is for
 	// shutdown is used to shut the motors and it is used in the DriveImpl.java so i am confused
