@@ -9,6 +9,8 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import org.firstinspires.ftc.teamcode.library.Drive;
 import org.firstinspires.ftc.teamcode.library.DriveImpl;
 import org.firstinspires.ftc.teamcode.library.ElectorgatorHardware;
+import org.firstinspires.ftc.teamcode.library.LandingGear;
+import org.firstinspires.ftc.teamcode.library.LandingGearImpl;
 
 /**
  * Created by Luke on 10/1/2017.
@@ -18,6 +20,7 @@ import org.firstinspires.ftc.teamcode.library.ElectorgatorHardware;
 public class TeleOp_Mecanum extends LinearOpMode {
     ElectorgatorHardware hardware = new ElectorgatorHardware();
 	Drive drive;
+	LandingGear lg= new LandingGearImpl();
 
     double frontLeftDrive, frontRightDrive, backRightDrive, backLeftDrive;
     boolean startRelic = false;
@@ -35,7 +38,7 @@ public class TeleOp_Mecanum extends LinearOpMode {
         drive = new DriveImpl();
 
         hardware.initMotors(hardwareMap);
-        hardware.initLifter(hardwareMap);
+       lg.init(hardwareMap);
 
         telemetry.addLine("Ready to start... thank you for waiting!");
         telemetry.update();
@@ -91,7 +94,9 @@ public class TeleOp_Mecanum extends LinearOpMode {
 //            hardware.backLeftDrive.setPower(drive.setMotorSpeed(backLeftDrive, DriveImpl.MotorControlMode.LINEAR_CONTROL));
 //            hardware.backRightDrive.setPower(drive.setMotorSpeed(backRightDrive, DriveImpl.MotorControlMode.LINEAR_CONTROL));
 
-
+            if(gamepad1.a)lg.stand_up();
+            else if (gamepad1.b)lg.deploy();
+            else if(gamepad1.x)lg.retract();
             // display the motor speeds
 
             telemetry.addData("Front right drive speed = ", "%1.2f", frontRightDrive);

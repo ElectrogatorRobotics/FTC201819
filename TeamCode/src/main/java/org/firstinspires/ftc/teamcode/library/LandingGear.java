@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.library;
 
+import com.qualcomm.robotcore.hardware.HardwareMap;
+
 public interface LandingGear {
 
     double LEGS_OUT = 0.2;
@@ -25,9 +27,9 @@ public interface LandingGear {
     /**
      * Setup the servos so they can be actuated in the system
      *
-     * @param eh The hardware map file for getting the sensors
+     * @param hm The hardware map file for getting the sensors
      */
-    void init(ElectorgatorHardware eh);
+    void init(HardwareMap hm);
 
     /**
      * Returns the value of what the server was set for and should match one of the values above
