@@ -200,6 +200,12 @@ public class DriveImpl implements Drive {
 
 		return minValue;
 	}
+    public double slide (double speed){
+        frontLeftDrive (forward(1));
+        frontRightDrive(forward(-1));
+        backLeftDrive (forward(-1));
+        backRightDrive(forward(1));
+    }
 
 	public enum MotorControlMode {EXPONENTIAL_CONTROL, LINEAR_CONTROL}
 
