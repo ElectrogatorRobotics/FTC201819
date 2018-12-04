@@ -6,8 +6,7 @@ public interface LandingGear {
 
     double LEGS_OUT = 0.2;
     double LEGS_STRAIGHT = 0.3;
-    double LEGS_RETRACT = 0.5;
-    double LEGS_RETRACT_TUCK = 0.7;
+    double LEGS_RETRACT = 0.9;
 
     /**
      * Used to stand the robot vertical on the deployed legs to unhook from the rover

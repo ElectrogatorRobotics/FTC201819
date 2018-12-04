@@ -161,10 +161,10 @@ public class DriveImpl implements Drive {
         // get rhe rotational z value to use for orientation
         double rotationalZ = robot.imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.XYZ, AngleUnit.DEGREES).thirdAngle;
 
-        frontLeftDrive.setPower(claculateDriveSpeed(angle, rotationalZ, Proportional.ProportionalMode.LEFT));
-        frontRightDrive.setPower(claculateDriveSpeed(angle, rotationalZ, Proportional.ProportionalMode.RIGHT));
-        backLeftDrive.setPower(claculateDriveSpeed(angle, rotationalZ, Proportional.ProportionalMode.LEFT));
-        backRightDrive.setPower(claculateDriveSpeed(angle, rotationalZ, Proportional.ProportionalMode.RIGHT));
+        frontLeftDrive.setPower(calculateDriveSpeed(angle, rotationalZ, Proportional.ProportionalMode.LEFT));
+        frontRightDrive.setPower(calculateDriveSpeed(angle, rotationalZ, Proportional.ProportionalMode.RIGHT));
+        backLeftDrive.setPower(calculateDriveSpeed(angle, rotationalZ, Proportional.ProportionalMode.LEFT));
+        backRightDrive.setPower(calculateDriveSpeed(angle, rotationalZ, Proportional.ProportionalMode.RIGHT));
     }
 */
     public double setMotorSpeed (double speed, MotorControlMode controlMode, double expoBase){
