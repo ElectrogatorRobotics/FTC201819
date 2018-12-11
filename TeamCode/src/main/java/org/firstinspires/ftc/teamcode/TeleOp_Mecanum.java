@@ -46,12 +46,6 @@ public class TeleOp_Mecanum extends LinearOpMode {
         waitForStart();
 
         while (opModeIsActive()) {
-            // calculate the motor speeds
-//            frontRightDrive = gamepad1.left_stick_y + gamepad1.right_stick_x + gamepad1.left_stick_x;
-//            frontLeftDrive  = gamepad1.left_stick_y - gamepad1.right_stick_x - gamepad1.left_stick_x;
-//            backRightDrive  = gamepad1.left_stick_y + gamepad1.right_stick_x - gamepad1.left_stick_x;
-//            backLeftDrive   = gamepad1.left_stick_y - gamepad1.right_stick_x + gamepad1.left_stick_x;
-
             // calculate the throttle position that will be used when calculating the motor powers
             throtle = drive.throttleControl(gamepad1.left_trigger, .4);
 
@@ -89,10 +83,6 @@ public class TeleOp_Mecanum extends LinearOpMode {
 	        hardware.backLeftDrive.setPower(drive.setMotorSpeed(backLeftDrive * adjFactor, DriveImpl.MotorControlMode.LINEAR_CONTROL));
 	        hardware.backRightDrive.setPower(drive.setMotorSpeed(backRightDrive * adjFactor, DriveImpl.MotorControlMode.LINEAR_CONTROL));
 
-//            hardware.frontRightDrive.setPower(drive.setMotorSpeed(frontRightDrive, DriveImpl.MotorControlMode.LINEAR_CONTROL));
-//            hardware.frontLeftDrive.setPower(drive.setMotorSpeed(frontLeftDrive, DriveImpl.MotorControlMode.LINEAR_CONTROL));
-//            hardware.backLeftDrive.setPower(drive.setMotorSpeed(backLeftDrive, DriveImpl.MotorControlMode.LINEAR_CONTROL));
-//            hardware.backRightDrive.setPower(drive.setMotorSpeed(backRightDrive, DriveImpl.MotorControlMode.LINEAR_CONTROL));
 
             if(gamepad1.a)lg.stand_up();
             else if (gamepad1.b)lg.deploy();
@@ -103,10 +93,6 @@ public class TeleOp_Mecanum extends LinearOpMode {
             telemetry.addData("Front left drive speed  = ", "%1.2f", frontLeftDrive);
             telemetry.addData("Back right drive speed  = ", "%1.2f", backRightDrive);
             telemetry.addData("Back left drive speed   = ", "%1.2f", backLeftDrive);
-//            telemetry.addData("Front right drive speed = ", "%1.2f", hardware.frontRightDrive.getPower());
-//            telemetry.addData("Front left drive speed  = ", "%1.2f", hardware.frontLeftDrive.getPower());
-//            telemetry.addData("Back right drive speed  = ", "%1.2f", hardware.backRightDrive.getPower());
-//            telemetry.addData("Back left drive speed   = ", "%1.2f", hardware.backLeftDrive.getPower());
 // 	        telemetry.addData("Throttle                = ", "%1.2f", drive.throttleControl(gamepad1.left_trigger, drive.MIN_SPEED));
 	        telemetry.addData("Throttle                = ", "%1.2f", throtle);
             telemetry.update();
