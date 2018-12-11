@@ -8,9 +8,6 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
-import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
-import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
-import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 
 /**
  * Created by cameron.czekai on 11/1/2017.
@@ -41,7 +38,7 @@ public class DriveImpl implements Drive {
      * wheel diameter = 4 inches
      * ticks per revolution of wheel = 7 cunts per motor revulsion * 20 gearbox reduction (20:1)
      */
-    public static final double ENCODER_TICKS_PER_INCH = (4 * Math.PI) * (7 * 20);
+    public static final double ENCODER_TICKS_PER_INCH = ((20.625 * 7)/(4 * Math.PI));
 
     public DriveImpl(){}
     public DriveImpl(HardwareMap hwm, Telemetry telem){
@@ -69,7 +66,7 @@ public class DriveImpl implements Drive {
         backRightDrive.setPower(0.0);
         backLeftDrive.setPower(0.0);
 
-        setMotorDriveDirection(MoveMethod.FORWARD);
+        setMotorDriveDirection(MoveMethod.STRAIGHT);
 
         // set mode
         // TODO: 11/9/2017 set drive mode to RUN_USING_ENCODER once the encoders are hocked up
@@ -84,15 +81,21 @@ public class DriveImpl implements Drive {
     public void setMotorDriveDirection(MoveMethod system){
         // set direction
         LOG.addData("SettingDrive", system);
-        if(system == MoveMethod.TURN) {
+        if(system == MoveMethod.SLIDE) {
             frontLeftDrive.setDirection(DcMotorSimple.Direction.FORWARD);
-            backLeftDrive.setDirection(DcMotorSimple.Direction.FORWARD);
+            backLeftDrive.setDirection(DcMotorSimple.Direction.REVERSE);
+            frontRightDrive.setDirection(DcMotorSimple.Direction.REVERSE);
+            backRightDrive.setDirection(DcMotorSimple.Direction.FORWARD);
+        }
+        else if(system == MoveMethod.TURN){
+            frontLeftDrive.setDirection(DcMotorSimple.Direction.REVERSE);
+            backLeftDrive.setDirection(DcMotorSimple.Direction.REVERSE);
             frontRightDrive.setDirection(DcMotorSimple.Direction.FORWARD);
             backRightDrive.setDirection(DcMotorSimple.Direction.FORWARD);
         }
-        else{
-            frontLeftDrive.setDirection(DcMotorSimple.Direction.REVERSE);
-            backLeftDrive.setDirection(DcMotorSimple.Direction.REVERSE);
+        else {
+            frontLeftDrive.setDirection(DcMotorSimple.Direction.FORWARD);
+            backLeftDrive.setDirection(DcMotorSimple.Direction.FORWARD);
             frontRightDrive.setDirection(DcMotorSimple.Direction.FORWARD);
             backRightDrive.setDirection(DcMotorSimple.Direction.FORWARD);
         }
@@ -150,6 +153,7 @@ public class DriveImpl implements Drive {
 
 
     public void forwardDistance(int distance) {
+<<<<<<< Updated upstream
         frontLeftDrive.setPower(calculateDriveSpeed(distance, backLeftDrive.getCurrentPosition(), Proportional.ProportionalMode.LEFT));
         frontRightDrive.setPower(calculateDriveSpeed(distance, backRightDrive.getCurrentPosition(), Proportional.ProportionalMode.RIGHT));
         backLeftDrive.setPower(calculateDriveSpeed(distance, backLeftDrive.getCurrentPosition(), Proportional.ProportionalMode.LEFT));
@@ -165,8 +169,19 @@ public class DriveImpl implements Drive {
         frontRightDrive.setPower(calculateDriveSpeed(angle, rotationalZ, Proportional.ProportionalMode.RIGHT));
         backLeftDrive.setPower(calculateDriveSpeed(angle, rotationalZ, Proportional.ProportionalMode.LEFT));
         backRightDrive.setPower(calculateDriveSpeed(angle, rotationalZ, Proportional.ProportionalMode.RIGHT));
+=======
+        int ticks = (int)Math.round(distance * ENCODER_TICKS_PER_INCH);
+        frontLeftDrive.setTargetPosition(ticks);
+        frontRightDrive.setTargetPosition(ticks);
+        backRightDrive.setTargetPosition(ticks);
+        backLeftDrive.setTargetPosition(ticks);
+        frontLeftDrive.setPower(.5);
+        frontRightDrive.setPower(.5);
+        backLeftDrive.setPower(.5);
+        backRightDrive.setPower (.5);
+>>>>>>> Stashed changes
     }
-*/
+
     public double setMotorSpeed (double speed, MotorControlMode controlMode, double expoBase){
 	    switch (controlMode){
 		    case EXPONENTIAL_CONTROL:
@@ -200,22 +215,16 @@ public class DriveImpl implements Drive {
 
 		return minValue;
 	}
-    public double slide (double speed){
-        frontLeftDrive (forward(1));
-        frontRightDrive(forward(-1));
-        backLeftDrive (forward(-1));
-        backRightDrive(forward(1));
-    }
 
 	public enum MotorControlMode {EXPONENTIAL_CONTROL, LINEAR_CONTROL}
 
 	public enum ThrottleControl {LEFT_TRIGGER, RIGHT_TRIGGER}
 
-    public enum MoveMethod{FORWARD, TURN}
+    public enum MoveMethod{STRAIGHT, TURN, SLIDE}
 
 	public void forward(int inches){
-        setMotorDriveDirection(MoveMethod.FORWARD);
-//        driveToTarget(inches, Proportional.ProportionalMode.NONE );
+        setMotorDriveDirection(MoveMethod.STRAIGHT);
+        forwardDistance(inches);
 	}
 
 	public void turn(double angle){
@@ -224,10 +233,18 @@ public class DriveImpl implements Drive {
         //driveByTime((int)angle, Proportional.ProportionalMode.NONE);
     }
 
+    public void slide (double speed){
+       // frontLeftDrive (forward(1));
+       // frontRightDrive(forward(-1));
+       // backLeftDrive (forward(-1));
+       // backRightDrive(forward(1));
+
+    }
+
     public void forward_time(int milliseconds){
         //driveToTarget(inches, Proportional.ProportionalMode.NONE );
         LOG.addLine("Forward!");
-        setMotorDriveDirection(MoveMethod.FORWARD);
+        setMotorDriveDirection(MoveMethod.STRAIGHT);
         driveByTime(milliseconds, Proportional.ProportionalMode.NONE );
     }
 
