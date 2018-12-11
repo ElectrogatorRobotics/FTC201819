@@ -1,7 +1,6 @@
 
 package org.firstinspires.ftc.teamcode;
 
-import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
@@ -12,17 +11,15 @@ import org.firstinspires.ftc.teamcode.library.LandingGear;
 import org.firstinspires.ftc.teamcode.library.LandingGearImpl;
 
 /**
- * Created by mira on 11/26/2018.
+ * Created by Luke on 10/1/2017.
  */
 
-@Autonomous(name = "Auto: Pick Me Luke")
-public class autoBasic extends LinearOpMode {
+@TeleOp(name = "Debugger")
+public class Debugger extends LinearOpMode {
     ElectorgatorHardware hardware = new ElectorgatorHardware();
-	Drive drive;
-	LandingGear lg= new LandingGearImpl();
+	LandingGearImpl lg= new LandingGearImpl();
 
-
-    double maxDrive = 0;
+	double position = 0.3;
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -30,29 +27,29 @@ public class autoBasic extends LinearOpMode {
         telemetry.addLine("Initialising... please wait.");
         telemetry.update();
 
-        double adjFactor;
-        double throtle;
-
-        drive = new DriveImpl();
-
         hardware.initMotors(hardwareMap);
        lg.init(hardwareMap);
-        drive.initMotors(hardwareMap);
-        drive.setTelemetry(telemetry);
+       lg.setTelemetry(telemetry);
+
         telemetry.addLine("Ready to start... thank you for waiting!");
         telemetry.update();
 
         waitForStart();
-        lg.stand_up();
-// slide goes here
-        drive.forward(2);
-        drive.turn(90);
-        drive.forward(4);
-    }
 
-    void setMaxDrive(double motor) {
-        if (Math.abs(motor) > maxDrive) {
-            maxDrive = Math.abs(motor);
+        while (opModeIsActive()) {
+
+            if(gamepad1.a)lg.stand_up();
+            else if (gamepad1.b)lg.deploy();
+            else if(gamepad1.x)lg.retract();
+
+            if(gamepad1.left_bumper || gamepad1.right_bumper) {
+                if (gamepad1.left_bumper) position -= 0.02;
+                else if (gamepad1.right_bumper) position += 0.02;
+                while(gamepad1.left_bumper || gamepad1.right_bumper);
+                lg.setPosition(position);
+            }
+
+            telemetry.update();
         }
     }
 }

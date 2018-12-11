@@ -4,9 +4,15 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 
 public interface LandingGear {
 
+<<<<<<< Updated upstream
     double LEGS_OUT = 0.2;
     double LEGS_STRAIGHT = 0.3;
     double LEGS_RETRACT = 0.9;
+=======
+    double LEGS_OUT = 0.15;
+    double LEGS_STRAIGHT = 0.25;
+    double LEGS_RETRACT = 0.825;
+>>>>>>> Stashed changes
 
     /**
      * Used to stand the robot vertical on the deployed legs to unhook from the rover
