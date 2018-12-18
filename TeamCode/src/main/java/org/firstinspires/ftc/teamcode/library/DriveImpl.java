@@ -38,7 +38,9 @@ public class DriveImpl implements Drive {
      * wheel diameter = 4 inches
      * ticks per revolution of wheel = 7 cunts per motor revulsion * 20 gearbox reduction (20:1)
      */
+    public static final double ENCODER_TICKS_PER_SLIDE = ((20.625 * 7)/(4 * Math.PI));
     public static final double ENCODER_TICKS_PER_INCH = ((20.625 * 7)/(4 * Math.PI));
+    public static final double ENCODER_TICKS_PER_ANGLE = ((20.625 * 7)/(4 * Math.PI));
 
     public DriveImpl(){}
     public DriveImpl(HardwareMap hwm, Telemetry telem){
@@ -69,7 +71,13 @@ public class DriveImpl implements Drive {
         setMotorDriveDirection(MoveMethod.STRAIGHT);
 
         // set mode
-        // TODO: 11/9/2017 set drive mode to RUN_USING_ENCODER once the encoders are hocked up
+        setMotorToPositionAndReset();
+
+    }
+
+    //region SET MOTOR BEHAVIOR
+
+    public void setMotorNoEncoders(){
         LOG.addLine("NoEncoders. Disabling");
         frontRightDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         frontLeftDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
@@ -78,167 +86,85 @@ public class DriveImpl implements Drive {
         LOG.update();
     }
 
+    public void setMotorToPositionAndReset(){
+        LOG.addLine("Reset and Enable Encoders.");
+        frontRightDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        frontLeftDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        backRightDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        backLeftDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        frontRightDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        frontLeftDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        backRightDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        backLeftDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        LOG.update();
+    }
+
+    public void setMotorWithEncoderAndReset(){
+        LOG.addLine("Reset and Enable Encoders.");
+        frontRightDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        frontLeftDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        backRightDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        backLeftDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        frontRightDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        frontLeftDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        backRightDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        backLeftDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        LOG.update();
+    }
+
     public void setMotorDriveDirection(MoveMethod system){
         // set direction
         LOG.addData("SettingDrive", system);
         if(system == MoveMethod.SLIDE) {
-            frontLeftDrive.setDirection(DcMotorSimple.Direction.FORWARD);
-            backLeftDrive.setDirection(DcMotorSimple.Direction.REVERSE);
+            frontLeftDrive.setDirection(DcMotorSimple.Direction.REVERSE);
+            backLeftDrive.setDirection(DcMotorSimple.Direction.FORWARD);
             frontRightDrive.setDirection(DcMotorSimple.Direction.REVERSE);
             backRightDrive.setDirection(DcMotorSimple.Direction.FORWARD);
         }
         else if(system == MoveMethod.TURN){
-            frontLeftDrive.setDirection(DcMotorSimple.Direction.REVERSE);
-            backLeftDrive.setDirection(DcMotorSimple.Direction.REVERSE);
-            frontRightDrive.setDirection(DcMotorSimple.Direction.FORWARD);
-            backRightDrive.setDirection(DcMotorSimple.Direction.FORWARD);
-        }
-        else {
             frontLeftDrive.setDirection(DcMotorSimple.Direction.FORWARD);
             backLeftDrive.setDirection(DcMotorSimple.Direction.FORWARD);
             frontRightDrive.setDirection(DcMotorSimple.Direction.FORWARD);
             backRightDrive.setDirection(DcMotorSimple.Direction.FORWARD);
         }
+        else {
+            frontLeftDrive.setDirection(DcMotorSimple.Direction.REVERSE);
+            backLeftDrive.setDirection(DcMotorSimple.Direction.REVERSE);
+            frontRightDrive.setDirection(DcMotorSimple.Direction.FORWARD);
+            backRightDrive.setDirection(DcMotorSimple.Direction.FORWARD);
+        }
     }
 
-	/**
-	 * Return the average position of the robot in the X axes
-	 * @return
-	 */
-	@Deprecated
-	public double getDriveX () {
-		return (frontLeftDrive.getCurrentPosition() + frontRightDrive.getCurrentPosition() +
-				backLeftDrive.getCurrentPosition() + backRightDrive.getCurrentPosition()) / 4;
-	}
+    //endregion
 
-	/**
-	 * Autonomous Methods:
-	 */
-
-
-	public void driveByTime(int milliseconds, Proportional.ProportionalMode driveMotor){
-        LOG.addData("DriveByTime",milliseconds);
-		ElapsedTime runtime = new ElapsedTime();
-		double time;
-        do {
-            time = runtime.milliseconds();
-			frontLeftDrive.setPower(proportional.p((float)time, milliseconds, driveMotor));
-			frontRightDrive.setPower(proportional.p((float)time, milliseconds, driveMotor));
-			backLeftDrive.setPower(proportional.p((float)time, milliseconds, driveMotor));
-			backRightDrive.setPower(proportional.p((float)time, milliseconds, driveMotor));
-		} while (time < milliseconds);
-        LOG.addLine("ShutdownMotors");
-        frontLeftDrive.setPower(0);
-        frontRightDrive.setPower(0);
-        backLeftDrive.setPower(0);
-        backRightDrive.setPower(0);
-        LOG.update();
-	}
-
-
-    /**
-     * @param targetDist  distance to drive in inches
-     * @param driveMotor  Proportional.ProportionalMode for how to drive the motors
-     */
-    private double calculateDriveSpeed(double targetDist, double curPos, Proportional.ProportionalMode driveMotor){
-	    double target = curPos + (targetDist * ENCODER_TICKS_PER_INCH);
-	    double motorPower;
-
-        do {
-            // calculate the speed of the motor proportionally using the distance form the target
-	        motorPower = proportional.p((float)targetDist, (float)curPos, driveMotor);
-        } while (curPos < target);
-	    return motorPower;
-    }
-
-
-    public void forwardDistance(int distance) {
-<<<<<<< Updated upstream
-        frontLeftDrive.setPower(calculateDriveSpeed(distance, backLeftDrive.getCurrentPosition(), Proportional.ProportionalMode.LEFT));
-        frontRightDrive.setPower(calculateDriveSpeed(distance, backRightDrive.getCurrentPosition(), Proportional.ProportionalMode.RIGHT));
-        backLeftDrive.setPower(calculateDriveSpeed(distance, backLeftDrive.getCurrentPosition(), Proportional.ProportionalMode.LEFT));
-        backRightDrive.setPower(calculateDriveSpeed(distance, backRightDrive.getCurrentPosition(), Proportional.ProportionalMode.RIGHT));
-
-    }
-/*
-    public void turnToDegree (double angle) {
-        // get rhe rotational z value to use for orientation
-        double rotationalZ = robot.imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.XYZ, AngleUnit.DEGREES).thirdAngle;
-
-        frontLeftDrive.setPower(calculateDriveSpeed(angle, rotationalZ, Proportional.ProportionalMode.LEFT));
-        frontRightDrive.setPower(calculateDriveSpeed(angle, rotationalZ, Proportional.ProportionalMode.RIGHT));
-        backLeftDrive.setPower(calculateDriveSpeed(angle, rotationalZ, Proportional.ProportionalMode.LEFT));
-        backRightDrive.setPower(calculateDriveSpeed(angle, rotationalZ, Proportional.ProportionalMode.RIGHT));
-=======
-        int ticks = (int)Math.round(distance * ENCODER_TICKS_PER_INCH);
+    private void setPowerAndTicks(int ticks, double power){
+        setMotorToPositionAndReset();
         frontLeftDrive.setTargetPosition(ticks);
         frontRightDrive.setTargetPosition(ticks);
         backRightDrive.setTargetPosition(ticks);
         backLeftDrive.setTargetPosition(ticks);
-        frontLeftDrive.setPower(.5);
-        frontRightDrive.setPower(.5);
-        backLeftDrive.setPower(.5);
-        backRightDrive.setPower (.5);
->>>>>>> Stashed changes
+        frontLeftDrive.setPower(power);
+        frontRightDrive.setPower(power);
+        backLeftDrive.setPower(power);
+        backRightDrive.setPower (power);
     }
-
-    public double setMotorSpeed (double speed, MotorControlMode controlMode, double expoBase){
-	    switch (controlMode){
-		    case EXPONENTIAL_CONTROL:
-			    return Math.pow(Range.clip(speed, -1.0, 1.0), expoBase);
-		    case LINEAR_CONTROL:
-			    return Range.clip(speed, -1.0, 1.0);
-			default:
-				return 0;
-	    }
-    }
-
-	public double setMotorSpeed (double speed, MotorControlMode controlMode){
-		return setMotorSpeed(speed, controlMode, 5);
-	}
-
-	public double setMotorSpeedWithThrottle (double speed, MotorControlMode controlMode, double throttle){
-		switch (controlMode){
-			case EXPONENTIAL_CONTROL:
-				return Math.pow(Range.clip(speed * throttleControl(throttle, MIN_SPEED), -1.0, 1.0), 5);
-
-			case LINEAR_CONTROL:
-				return Range.clip(speed *= throttleControl(throttle, MIN_SPEED), -1.0, 1.0);
-			default:
-				return 0;
-		}
-	}
-
-	public double throttleControl (double throttle, double minValue) {
-		if (throttle > minValue)
-			minValue = throttle;
-
-		return minValue;
-	}
-
-	public enum MotorControlMode {EXPONENTIAL_CONTROL, LINEAR_CONTROL}
-
-	public enum ThrottleControl {LEFT_TRIGGER, RIGHT_TRIGGER}
-
-    public enum MoveMethod{STRAIGHT, TURN, SLIDE}
 
 	public void forward(int inches){
-        setMotorDriveDirection(MoveMethod.STRAIGHT);
-        forwardDistance(inches);
+       setMotorDriveDirection(MoveMethod.STRAIGHT);
+        int ticks = (int)Math.round(inches * ENCODER_TICKS_PER_INCH);
+        setPowerAndTicks(ticks, .5);
 	}
 
 	public void turn(double angle){
-        //need to come up with a way to handle turning. Kinda an issue.
-        //setMotorDriveDirection(MoveMethod.TURN);
-        //driveByTime((int)angle, Proportional.ProportionalMode.NONE);
+        setMotorDriveDirection(MoveMethod.TURN);
+        int ticks = (int)Math.round(angle * ENCODER_TICKS_PER_ANGLE);
+        setPowerAndTicks(ticks, .5);
     }
 
-    public void slide (double speed){
-       // frontLeftDrive (forward(1));
-       // frontRightDrive(forward(-1));
-       // backLeftDrive (forward(-1));
-       // backRightDrive(forward(1));
-
+    public void slide (double distnce){
+        setMotorDriveDirection(MoveMethod.SLIDE);
+        int ticks = (int)Math.round( distnce * ENCODER_TICKS_PER_SLIDE);
+        setPowerAndTicks(ticks, .5);
     }
 
     public void forward_time(int milliseconds){
@@ -253,11 +179,104 @@ public class DriveImpl implements Drive {
         setMotorDriveDirection(MoveMethod.TURN);
         driveByTime(milliseconds, Proportional.ProportionalMode.NONE);
     }
-// this is not lit up in the Drive.java so i am so confused
+
+//region HELPER FUNCTIONS
+
+    public enum MotorControlMode {EXPONENTIAL_CONTROL, LINEAR_CONTROL}
+
+    public enum ThrottleControl {LEFT_TRIGGER, RIGHT_TRIGGER}
+
+    public enum MoveMethod{STRAIGHT, TURN, SLIDE}
+
+    /**
+     * Return the average position of the robot in the X axes
+     * @return
+     */
+    @Deprecated
+    public double getDriveX () {
+        return (frontLeftDrive.getCurrentPosition() + frontRightDrive.getCurrentPosition() +
+                backLeftDrive.getCurrentPosition() + backRightDrive.getCurrentPosition()) / 4;
+    }
+
+    /**
+     * Autonomous Methods:
+     */
+
+
+    public void driveByTime(int milliseconds, Proportional.ProportionalMode driveMotor){
+        LOG.addData("DriveByTime",milliseconds);
+        ElapsedTime runtime = new ElapsedTime();
+        double time;
+        do {
+            time = runtime.milliseconds();
+            frontLeftDrive.setPower(proportional.p((float)time, milliseconds, driveMotor));
+            frontRightDrive.setPower(proportional.p((float)time, milliseconds, driveMotor));
+            backLeftDrive.setPower(proportional.p((float)time, milliseconds, driveMotor));
+            backRightDrive.setPower(proportional.p((float)time, milliseconds, driveMotor));
+        } while (time < milliseconds);
+        LOG.addLine("ShutdownMotors");
+        frontLeftDrive.setPower(0);
+        frontRightDrive.setPower(0);
+        backLeftDrive.setPower(0);
+        backRightDrive.setPower(0);
+        LOG.update();
+    }
+
+
+    /**
+     * @param targetDist  distance to drive in inches
+     * @param driveMotor  Proportional.ProportionalMode for how to drive the motors
+     */
+    private double calculateDriveSpeed(double targetDist, double curPos, Proportional.ProportionalMode driveMotor){
+        double target = curPos + (targetDist * ENCODER_TICKS_PER_INCH);
+        double motorPower;
+
+        do {
+            // calculate the speed of the motor proportionally using the distance form the target
+            motorPower = proportional.p((float)targetDist, (float)curPos, driveMotor);
+        } while (curPos < target);
+        return motorPower;
+    }
+
+    public double setMotorSpeed (double speed, MotorControlMode controlMode, double expoBase){
+        switch (controlMode){
+            case EXPONENTIAL_CONTROL:
+                return Math.pow(Range.clip(speed, -1.0, 1.0), expoBase);
+            case LINEAR_CONTROL:
+                return Range.clip(speed, -1.0, 1.0);
+            default:
+                return 0;
+        }
+    }
+
+    public double setMotorSpeed (double speed, MotorControlMode controlMode){
+        return setMotorSpeed(speed, controlMode, 5);
+    }
+
+    public double setMotorSpeedWithThrottle (double speed, MotorControlMode controlMode, double throttle){
+        switch (controlMode){
+            case EXPONENTIAL_CONTROL:
+                return Math.pow(Range.clip(speed * throttleControl(throttle, MIN_SPEED), -1.0, 1.0), 5);
+
+            case LINEAR_CONTROL:
+                return Range.clip(speed *= throttleControl(throttle, MIN_SPEED), -1.0, 1.0);
+            default:
+                return 0;
+        }
+    }
+
+    public double throttleControl (double throttle, double minValue) {
+        if (throttle > minValue)
+            minValue = throttle;
+
+        return minValue;
+    }
+
     public void shutdown () {
         backRightDrive.close();
         backLeftDrive.close();
         frontLeftDrive.close();
         frontRightDrive.close();
     }
+//endregion
 }

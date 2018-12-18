@@ -30,6 +30,9 @@ public class Debugger extends LinearOpMode {
         hardware.initMotors(hardwareMap);
        lg.init(hardwareMap);
        lg.setTelemetry(telemetry);
+       Drive go = new DriveImpl();
+        go.setTelemetry(telemetry);
+       go.initMotors(hardwareMap);
 
         telemetry.addLine("Ready to start... thank you for waiting!");
         telemetry.update();
@@ -48,6 +51,10 @@ public class Debugger extends LinearOpMode {
                 while(gamepad1.left_bumper || gamepad1.right_bumper);
                 lg.setPosition(position);
             }
+
+            if(gamepad1.dpad_up) go.forward(5);
+            else if(gamepad1.dpad_left) go.turn(30);
+            else if(gamepad1.dpad_right) go.slide(5);
 
             telemetry.update();
         }
