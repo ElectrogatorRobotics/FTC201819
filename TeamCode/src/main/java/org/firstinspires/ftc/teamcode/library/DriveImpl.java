@@ -64,10 +64,7 @@ public class DriveImpl implements Drive {
 
         // set speed
         LOG.addLine("SetPower");
-        frontRightDrive.setPower(0.0);
-        frontLeftDrive.setPower(0.0);
-        backRightDrive.setPower(0.0);
-        backLeftDrive.setPower(0.0);
+        stop();
 
         setMotorDriveDirection(MoveMethod.FORWARD);
 
@@ -84,17 +81,32 @@ public class DriveImpl implements Drive {
     public void setMotorDriveDirection(MoveMethod system){
         // set direction
         LOG.addData("SettingDrive", system);
-        if(system == MoveMethod.TURN) {
-            frontLeftDrive.setDirection(DcMotorSimple.Direction.FORWARD);
-            backLeftDrive.setDirection(DcMotorSimple.Direction.FORWARD);
-            frontRightDrive.setDirection(DcMotorSimple.Direction.FORWARD);
-            backRightDrive.setDirection(DcMotorSimple.Direction.FORWARD);
-        }
-        else{
-            frontLeftDrive.setDirection(DcMotorSimple.Direction.REVERSE);
-            backLeftDrive.setDirection(DcMotorSimple.Direction.REVERSE);
-            frontRightDrive.setDirection(DcMotorSimple.Direction.FORWARD);
-            backRightDrive.setDirection(DcMotorSimple.Direction.FORWARD);
+        switch(system) {
+            case TURN:
+                frontLeftDrive.setDirection(DcMotorSimple.Direction.FORWARD);
+                backLeftDrive.setDirection(DcMotorSimple.Direction.FORWARD);
+                frontRightDrive.setDirection(DcMotorSimple.Direction.FORWARD);
+                backRightDrive.setDirection(DcMotorSimple.Direction.FORWARD);
+                break;
+            case SLIDE:
+                frontLeftDrive.setDirection(DcMotorSimple.Direction.REVERSE);
+                backLeftDrive.setDirection(DcMotorSimple.Direction.FORWARD);
+                frontRightDrive.setDirection(DcMotorSimple.Direction.REVERSE);
+                backRightDrive.setDirection(DcMotorSimple.Direction.FORWARD);
+                break;
+            case DEPLOY:
+                frontLeftDrive.setDirection(DcMotorSimple.Direction.FORWARD);
+                backLeftDrive.setDirection(DcMotorSimple.Direction.REVERSE);
+                frontRightDrive.setDirection(DcMotorSimple.Direction.REVERSE);
+                backRightDrive.setDirection(DcMotorSimple.Direction.FORWARD);
+                break;
+            case FORWARD:
+            default:
+                frontLeftDrive.setDirection(DcMotorSimple.Direction.REVERSE);
+                backLeftDrive.setDirection(DcMotorSimple.Direction.REVERSE);
+                frontRightDrive.setDirection(DcMotorSimple.Direction.FORWARD);
+                backRightDrive.setDirection(DcMotorSimple.Direction.FORWARD);
+                break;
         }
     }
 
@@ -205,7 +217,7 @@ public class DriveImpl implements Drive {
 
 	public enum ThrottleControl {LEFT_TRIGGER, RIGHT_TRIGGER}
 
-    public enum MoveMethod{FORWARD, TURN}
+    public enum MoveMethod{FORWARD, TURN, SLIDE, DEPLOY}
 
 	public void forward(int inches){
         setMotorDriveDirection(MoveMethod.FORWARD);
@@ -230,6 +242,20 @@ public class DriveImpl implements Drive {
         setMotorDriveDirection(MoveMethod.TURN);
         driveByTime(milliseconds, Proportional.ProportionalMode.NONE);
     }
+
+    public void deploy_assist(){
+        setMotorDriveDirection(MoveMethod.DEPLOY);
+        setMotorSpeed(.3, MotorControlMode.LINEAR_CONTROL);
+        driveByTime(2000, Proportional.ProportionalMode.NONE);
+    }
+
+    public void stop(){
+        frontRightDrive.setPower(0.0);
+        frontLeftDrive.setPower(0.0);
+        backRightDrive.setPower(0.0);
+        backLeftDrive.setPower(0.0);
+    }
+
 // this is not lit up in the Drive.java so i am so confused
     public void shutdown () {
         backRightDrive.close();

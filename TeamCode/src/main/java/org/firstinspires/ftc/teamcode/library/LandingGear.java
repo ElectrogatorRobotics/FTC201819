@@ -6,6 +6,7 @@ public interface LandingGear {
 
     double LEGS_OUT = 0.2;
     double LEGS_STRAIGHT = 0.3;
+    double LEGS_STAGE = 0.5;
     double LEGS_RETRACT = 0.9;
 
     /**
@@ -28,7 +29,7 @@ public interface LandingGear {
      *
      * @param hm The hardware map file for getting the sensors
      */
-    void init(HardwareMap hm);
+    void init(HardwareMap hm, Drive drivetrain);
 
     /**
      * Returns the value of what the server was set for and should match one of the values above

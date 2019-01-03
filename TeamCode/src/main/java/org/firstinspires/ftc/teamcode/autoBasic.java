@@ -36,8 +36,8 @@ public class autoBasic extends LinearOpMode {
         drive = new DriveImpl();
 
         hardware.initMotors(hardwareMap);
-       lg.init(hardwareMap);
-        drive.initMotors(hardware);
+        drive.initMotors(hardwareMap);
+        lg.init(hardwareMap, drive);
         telemetry.addLine("Ready to start... thank you for waiting!");
         telemetry.update();
 
@@ -47,16 +47,16 @@ public class autoBasic extends LinearOpMode {
 
            
 
-            telemetry.addData("Front right drive speed = ", "%1.2f", frontRightDrive);
-            telemetry.addData("Front left drive speed  = ", "%1.2f", frontLeftDrive);
-            telemetry.addData("Back right drive speed  = ", "%1.2f", backRightDrive);
-            telemetry.addData("Back left drive speed   = ", "%1.2f", backLeftDrive);
+           // telemetry.addData("Front right drive speed = ", "%1.2f", frontRightDrive);
+           // telemetry.addData("Front left drive speed  = ", "%1.2f", frontLeftDrive);
+           // telemetry.addData("Back right drive speed  = ", "%1.2f", backRightDrive);
+           // telemetry.addData("Back left drive speed   = ", "%1.2f", backLeftDrive);
 //            telemetry.addData("Front right drive speed = ", "%1.2f", hardware.frontRightDrive.getPower());
 //            telemetry.addData("Front left drive speed  = ", "%1.2f", hardware.frontLeftDrive.getPower());
 //            telemetry.addData("Back right drive speed  = ", "%1.2f", hardware.backRightDrive.getPower());
 //            telemetry.addData("Back left drive speed   = ", "%1.2f", hardware.backLeftDrive.getPower());
 // 	        telemetry.addData("Throttle                = ", "%1.2f", drive.throttleControl(gamepad1.left_trigger, drive.MIN_SPEED));
-	        telemetry.addData("Throttle                = ", "%1.2f", throtle);
+	       // telemetry.addData("Throttle                = ", "%1.2f", throtle);
             telemetry.update();
         }
     }
