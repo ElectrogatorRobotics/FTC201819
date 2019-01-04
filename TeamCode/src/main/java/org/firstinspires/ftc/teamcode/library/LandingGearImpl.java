@@ -2,6 +2,8 @@ package org.firstinspires.ftc.teamcode.library;
 
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.util.ElapsedTime;
+
 
 public class LandingGearImpl implements LandingGear {
 
@@ -10,6 +12,8 @@ public class LandingGearImpl implements LandingGear {
     public Servo backRight;
     public Servo backLeft;
     private Drive drivesystem;
+    private ElapsedTime runtime = new ElapsedTime();
+
 
     public void init(HardwareMap hm, Drive drivetrain){
         frontLeft = hm.servo.get("front left servo");
@@ -24,19 +28,17 @@ public class LandingGearImpl implements LandingGear {
             frontRight.setPosition(LandingGear.LEGS_STAGE);
             frontLeft.setPosition(LandingGear.LEGS_STAGE);
             int breakout = 0;
-            while (frontLeft.getPosition() > LandingGear.LEGS_STAGE && breakout < 200) {
-                sleep(10);
-                breakout++;
-            }
+            sleep(2000);
             backLeft.setPosition(LandingGear.LEGS_STAGE);
             backRight.setPosition(LandingGear.LEGS_STAGE);
+            sleep(1000);
             drivesystem.deploy_assist();
         }
         frontRight.setPosition(LandingGear.LEGS_STRAIGHT);
         frontLeft.setPosition(LandingGear.LEGS_STRAIGHT);
         backLeft.setPosition (LandingGear.LEGS_STRAIGHT);
         backRight.setPosition(LandingGear.LEGS_STRAIGHT);
-        sleep(10);
+        sleep(500);
         drivesystem.stop();
     }
 
@@ -44,20 +46,17 @@ public class LandingGearImpl implements LandingGear {
         backRight.setPosition(LandingGear.LEGS_RETRACT);
         backLeft.setPosition(LandingGear.LEGS_RETRACT);
         int breakout =0;
-        while(frontLeft.getPosition()<LandingGear.LEGS_RETRACT && breakout<200){
-            sleep(10);
-            breakout ++;
-        }
+        sleep(2000);
         frontLeft.setPosition (LandingGear.LEGS_RETRACT);
         frontRight.setPosition(LandingGear.LEGS_RETRACT);
 
     }
 
     private void sleep(long milisecs) {
-       try {
-           Thread.sleep(milisecs);
-       }
-       catch(Exception e){}
+        runtime.reset();
+        while(runtime.milliseconds() < milisecs ){
+            //twiddle thumbs
+        }
     }
 
 
