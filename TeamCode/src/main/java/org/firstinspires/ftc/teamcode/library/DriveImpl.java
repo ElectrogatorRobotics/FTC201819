@@ -42,6 +42,9 @@ public class DriveImpl implements Drive {
     public static final double ENCODER_TICKS_PER_INCH = ((20.625 * 7)/(4 * Math.PI));
     public static final double ENCODER_TICKS_PER_ANGLE = ((20.625 * 7)/(4 * Math.PI));
 
+    public enum MotorControlMode {EXPONENTIAL_CONTROL, LINEAR_CONTROL}
+    public enum MoveMethod{FORWARD, TURN, SLIDE, DEPLOY}
+
     public DriveImpl(){}
     public DriveImpl(HardwareMap hwm, Telemetry telem){
         setTelemetry(telem);
@@ -63,10 +66,7 @@ public class DriveImpl implements Drive {
 
         // set speed
         LOG.addLine("SetPower");
-        frontRightDrive.setPower(0.0);
-        frontLeftDrive.setPower(0.0);
-        backRightDrive.setPower(0.0);
-        backLeftDrive.setPower(0.0);
+        stop();
 
         setMotorDriveDirection(MoveMethod.STRAIGHT);
 
@@ -126,6 +126,32 @@ public class DriveImpl implements Drive {
             backLeftDrive.setDirection(DcMotorSimple.Direction.FORWARD);
             frontRightDrive.setDirection(DcMotorSimple.Direction.FORWARD);
             backRightDrive.setDirection(DcMotorSimple.Direction.FORWARD);
+        switch(system) {
+            case TURN:
+                frontLeftDrive.setDirection(DcMotorSimple.Direction.FORWARD);
+                backLeftDrive.setDirection(DcMotorSimple.Direction.FORWARD);
+                frontRightDrive.setDirection(DcMotorSimple.Direction.FORWARD);
+                backRightDrive.setDirection(DcMotorSimple.Direction.FORWARD);
+                break;
+            case SLIDE:
+                frontLeftDrive.setDirection(DcMotorSimple.Direction.REVERSE);
+                backLeftDrive.setDirection(DcMotorSimple.Direction.FORWARD);
+                frontRightDrive.setDirection(DcMotorSimple.Direction.REVERSE);
+                backRightDrive.setDirection(DcMotorSimple.Direction.FORWARD);
+                break;
+            case DEPLOY:
+                frontLeftDrive.setDirection(DcMotorSimple.Direction.FORWARD);
+                backLeftDrive.setDirection(DcMotorSimple.Direction.REVERSE);
+                frontRightDrive.setDirection(DcMotorSimple.Direction.REVERSE);
+                backRightDrive.setDirection(DcMotorSimple.Direction.FORWARD);
+                break;
+            case FORWARD:
+            default:
+                frontLeftDrive.setDirection(DcMotorSimple.Direction.REVERSE);
+                backLeftDrive.setDirection(DcMotorSimple.Direction.REVERSE);
+                frontRightDrive.setDirection(DcMotorSimple.Direction.FORWARD);
+                backRightDrive.setDirection(DcMotorSimple.Direction.FORWARD);
+                break;
         }
         else {
             frontLeftDrive.setDirection(DcMotorSimple.Direction.REVERSE);
@@ -212,6 +238,10 @@ public class DriveImpl implements Drive {
 
 
     public void driveByTime(int milliseconds, Proportional.ProportionalMode driveMotor){
+	/**
+	 * Autonomous Methods:
+	 */
+	public void driveByTime(int milliseconds, double power){
         LOG.addData("DriveByTime",milliseconds);
         ElapsedTime runtime = new ElapsedTime();
         double time;
@@ -222,6 +252,11 @@ public class DriveImpl implements Drive {
             backLeftDrive.setPower(proportional.p((float)time, milliseconds, driveMotor));
             backRightDrive.setPower(proportional.p((float)time, milliseconds, driveMotor));
         } while (time < milliseconds);
+			frontLeftDrive.setPower(power);
+			frontRightDrive.setPower(power);
+			backLeftDrive.setPower(power);
+			backRightDrive.setPower(power);
+		} while (time < milliseconds);
         LOG.addLine("ShutdownMotors");
         frontLeftDrive.setPower(0);
         frontRightDrive.setPower(0);
@@ -242,6 +277,7 @@ public class DriveImpl implements Drive {
         do {
             // calculate the speed of the motor proportionally using the distance form the target
             motorPower = proportional.p((float)targetDist, (float)curPos, driveMotor);
+	        motorPower = 1;//proportional.p((float)targetDist, (float)curPos, driveMotor);
         } while (curPos < target);
         return motorPower;
     }
@@ -255,6 +291,13 @@ public class DriveImpl implements Drive {
             default:
                 return 0;
         }
+
+    public void forwardDistance(int distance) {
+        frontLeftDrive.setPower(calculateDriveSpeed(distance, backLeftDrive.getCurrentPosition(), Proportional.ProportionalMode.LINEAR));
+        frontRightDrive.setPower(calculateDriveSpeed(distance, backRightDrive.getCurrentPosition(), Proportional.ProportionalMode.LINEAR));
+        backLeftDrive.setPower(calculateDriveSpeed(distance, backLeftDrive.getCurrentPosition(), Proportional.ProportionalMode.LINEAR));
+        backRightDrive.setPower(calculateDriveSpeed(distance, backRightDrive.getCurrentPosition(), Proportional.ProportionalMode.LINEAR));
+
     }
 
     public double setMotorSpeed (double speed, MotorControlMode controlMode){
@@ -280,6 +323,51 @@ public class DriveImpl implements Drive {
         return minValue;
     }
 
+	public double throttleControl (double throttle, double minValue) {
+		if (throttle > minValue)
+			minValue = throttle;
+
+		return minValue;
+	}
+
+	public void forward(int inches){
+        setMotorDriveDirection(MoveMethod.FORWARD);
+//        driveToTarget(inches, Proportional.ProportionalMode.NONE );
+	}
+    public void forward_time(int milliseconds){
+        //driveToTarget(inches, Proportional.ProportionalMode.NONE );
+        LOG.addLine("Forward!");
+        setMotorDriveDirection(MoveMethod.FORWARD);
+        driveByTime(milliseconds, .7);
+    }
+
+    public void turn(double angle){
+        //need to come up with a way to handle turning. Kinda an issue.
+        //setMotorDriveDirection(MoveMethod.TURN);
+        //driveByTime((int)angle, Proportional.ProportionalMode.NONE);
+    }
+    public void turn_time(int milliseconds){
+        //need to come up with a way to handle turning. Kinda an issue.
+        setMotorDriveDirection(MoveMethod.TURN);
+        driveByTime(milliseconds, .7);
+    }
+
+    public void deploy_assist(){
+        setMotorDriveDirection(MoveMethod.DEPLOY);
+        setMotorPower(.3);
+    }
+
+    public void stop() {
+        setMotorPower(0);
+    }
+    public void setMotorPower(double power){
+        frontRightDrive.setPower(power);
+        frontLeftDrive.setPower(power);
+        backRightDrive.setPower(power);
+        backLeftDrive.setPower(power);
+    }
+
+// this is not lit up in the Drive.java so i am so confused
     public void shutdown () {
         backRightDrive.close();
         backLeftDrive.close();

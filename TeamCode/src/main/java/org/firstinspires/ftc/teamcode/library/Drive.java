@@ -65,6 +65,10 @@ public interface Drive {
 
 	void slide (double distnce);
 
+	void deploy_assist();
+
+	void stop();
+
 	//can we get rid of this,because,I dont know what in the world it is for
 	// shutdown is used to shut the motors and it is used in the DriveImpl.java so i am confused
 	void shutdown();

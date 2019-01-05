@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.library;
 
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
@@ -12,45 +13,52 @@ public class LandingGearImpl implements LandingGear {
     public Servo backRight;
     public Servo backLeft;
     private Telemetry log;
+    private Drive drivesystem;
+    private ElapsedTime runtime = new ElapsedTime();
 
-    public void init(HardwareMap hm){
+
+    public void init(HardwareMap hm, Drive drivetrain){
         frontLeft = hm.servo.get("front left servo");
         frontRight = hm.servo.get("front right servo");
         backLeft = hm.servo.get("back left servo");
         backRight = hm.servo.get("back right servo");
+        drivesystem = drivetrain;
     }
 
     public void stand_up(){
+        if(frontLeft.getPosition()>LandingGear.LEGS_STAGE) {
+            frontRight.setPosition(LandingGear.LEGS_STAGE);
+            frontLeft.setPosition(LandingGear.LEGS_STAGE);
+            int breakout = 0;
+            sleep(2000);
+            backLeft.setPosition(LandingGear.LEGS_STAGE);
+            backRight.setPosition(LandingGear.LEGS_STAGE);
+            sleep(1000);
+            drivesystem.deploy_assist();
+        }
         frontRight.setPosition(LandingGear.LEGS_STRAIGHT);
         frontLeft.setPosition(LandingGear.LEGS_STRAIGHT);
-        int breakout =0;
-        while(backRight.getPosition()>LandingGear.LEGS_STRAIGHT && breakout<200){
-            sleep(10);
-            breakout ++;
-        }
         backLeft.setPosition (LandingGear.LEGS_STRAIGHT);
         backRight.setPosition(LandingGear.LEGS_STRAIGHT);
-
+        sleep(500);
+        drivesystem.stop();
     }
 
     public void retract(){
         backRight.setPosition(LandingGear.LEGS_RETRACT);
         backLeft.setPosition(LandingGear.LEGS_RETRACT);
         int breakout =0;
-        while(frontRight.getPosition()<LandingGear.LEGS_RETRACT && breakout<200){
-            sleep(10);
-            breakout ++;
-        }
+        sleep(2000);
         frontLeft.setPosition (LandingGear.LEGS_RETRACT);
         frontRight.setPosition(LandingGear.LEGS_RETRACT);
 
     }
 
     private void sleep(long milisecs) {
-       try {
-           Thread.sleep(milisecs);
-       }
-       catch(Exception e){}
+        runtime.reset();
+        while(runtime.milliseconds() < milisecs ){
+            //twiddle thumbs
+        }
     }
 
 

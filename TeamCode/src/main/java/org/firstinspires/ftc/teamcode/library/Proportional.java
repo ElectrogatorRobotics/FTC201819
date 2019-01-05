@@ -4,23 +4,24 @@ package org.firstinspires.ftc.teamcode.library;
  * Created by Luke on 10/13/2017.
  */
 
+@Deprecated
 public class Proportional {
-	double p (float target, float currentPos, ProportionalMode mode) {
-		final double pGain = 1.0, midGain = 0.0;
-		float targetError = target - currentPos;
+	double p (double current, double target, double start_power, ProportionalMode mode) {
+		final double pGain = 1.0;
+		final double linear_step_per_ms = .01;
+
+		double targetError = target - current;
 		double proportional = targetError * pGain;
 		double output = 0;
 
-		if (mode == mode.LEFT) { // clip the output for motor control
+		if (mode == mode.LINEAR) { // clip the output for motor control
 			output = pGain + proportional;
 			clipOutput(output);
 		}
-		if (mode == mode.RIGHT) { // clip the output for motor control
+		if (mode == mode.EXPONENTIAL) { // clip the output for motor control
 			output = pGain - proportional;
 			clipOutput(output);
 		}
-		if (mode == mode.NONE) // don't clip the output when not using to set motor power
-			output = pGain + proportional;
 		return output;
 	}
 
@@ -34,5 +35,5 @@ public class Proportional {
 		return number;
 	}
 
-	public enum ProportionalMode{LEFT, RIGHT, NONE}
+	public enum ProportionalMode{LINEAR, EXPONENTIAL}
 }

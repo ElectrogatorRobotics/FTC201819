@@ -38,7 +38,9 @@ public class TeleOp_Mecanum extends LinearOpMode {
         drive = new DriveImpl();
 
         hardware.initMotors(hardwareMap);
-       lg.init(hardwareMap);
+        drive.setTelemetry(telemetry);
+        drive.initMotors(hardwareMap);
+        lg.init(hardwareMap, drive);
 
         telemetry.addLine("Ready to start... thank you for waiting!");
         telemetry.update();
