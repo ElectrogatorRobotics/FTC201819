@@ -31,7 +31,6 @@ public class Debugger extends LinearOpMode {
        lg.init(hardwareMap);
        lg.setTelemetry(telemetry);
        Drive go = new DriveImpl();
-        go.setTelemetry(telemetry);
        go.initMotors(hardwareMap);
 
         telemetry.addLine("Ready to start... thank you for waiting!");

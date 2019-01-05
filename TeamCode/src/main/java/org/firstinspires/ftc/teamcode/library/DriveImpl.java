@@ -137,12 +137,8 @@ public class DriveImpl implements Drive {
 
     //endregion
 
-    private void setPowerAndTicks(int ticks, double power){
+    private void setPower(double power){
         setMotorToPositionAndReset();
-        frontLeftDrive.setTargetPosition(ticks);
-        frontRightDrive.setTargetPosition(ticks);
-        backRightDrive.setTargetPosition(ticks);
-        backLeftDrive.setTargetPosition(ticks);
         frontLeftDrive.setPower(power);
         frontRightDrive.setPower(power);
         backLeftDrive.setPower(power);
@@ -152,19 +148,31 @@ public class DriveImpl implements Drive {
 	public void forward(int inches){
        setMotorDriveDirection(MoveMethod.STRAIGHT);
         int ticks = (int)Math.round(inches * ENCODER_TICKS_PER_INCH);
-        setPowerAndTicks(ticks, .5);
+        frontLeftDrive.setTargetPosition(-1*ticks);
+        frontRightDrive.setTargetPosition(ticks);
+        backRightDrive.setTargetPosition(ticks);
+        backLeftDrive.setTargetPosition(-1*ticks);
+        setPower( .5);
 	}
 
 	public void turn(double angle){
         setMotorDriveDirection(MoveMethod.TURN);
         int ticks = (int)Math.round(angle * ENCODER_TICKS_PER_ANGLE);
-        setPowerAndTicks(ticks, .5);
+        frontLeftDrive.setTargetPosition(ticks);
+        frontRightDrive.setTargetPosition(ticks);
+        backRightDrive.setTargetPosition(ticks);
+        backLeftDrive.setTargetPosition(ticks);
+        setPower(.5);
     }
 
     public void slide (double distnce){
         setMotorDriveDirection(MoveMethod.SLIDE);
         int ticks = (int)Math.round( distnce * ENCODER_TICKS_PER_SLIDE);
-        setPowerAndTicks(ticks, .5);
+        frontLeftDrive.setTargetPosition(-1*ticks);
+        frontRightDrive.setTargetPosition(-1*ticks);
+        backRightDrive.setTargetPosition(ticks);
+        backLeftDrive.setTargetPosition(ticks);
+        setPower(.5);
     }
 
     public void forward_time(int milliseconds){
