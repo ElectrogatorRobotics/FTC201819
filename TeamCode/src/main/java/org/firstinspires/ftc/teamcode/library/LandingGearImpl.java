@@ -4,6 +4,7 @@ import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.firstinspires.ftc.robotcore.external.Telemetry;
 
 public class LandingGearImpl implements LandingGear {
 
@@ -11,6 +12,7 @@ public class LandingGearImpl implements LandingGear {
     public Servo frontLeft;
     public Servo backRight;
     public Servo backLeft;
+    private Telemetry log;
     private Drive drivesystem;
     private ElapsedTime runtime = new ElapsedTime();
 
@@ -73,8 +75,24 @@ public class LandingGearImpl implements LandingGear {
 
     }
 
-
     public double getState(){
         return backLeft.getPosition();
+    }
+
+    //debug functions
+
+
+    public void setPosition(double position){
+        frontRight.setPosition(position);
+        frontLeft.setPosition(position);
+        backLeft.setPosition (position);
+        backRight.setPosition(position);
+        log.addData("FrontLeft",frontLeft.getPosition());
+        log.addData("FrontRight",frontRight.getPosition());
+        log.addData("BackLeft",backLeft.getPosition());
+        log.addData("BackRight",backRight.getPosition());
+    }
+    public void setTelemetry(Telemetry telem){
+        log = telem;
     }
 }

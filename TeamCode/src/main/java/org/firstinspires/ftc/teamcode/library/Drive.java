@@ -63,6 +63,8 @@ public interface Drive {
 
 	void forward_time(int milliseconds);
 
+	void slide (double distnce);
+
 	void deploy_assist();
 
 	void stop();
