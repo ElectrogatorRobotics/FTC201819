@@ -25,30 +25,38 @@ public class LandingGearImpl implements LandingGear {
         drivesystem = drivetrain;
     }
 
+    private void stage(){
+        frontRight.setPosition(LandingGear.LEGS_STAGE);
+        frontLeft.setPosition(LandingGear.LEGS_STAGE);
+        sleep(2000);
+        backLeft.setPosition(LandingGear.LEGS_STAGE);
+        backRight.setPosition(LandingGear.LEGS_STAGE);
+        sleep(1000);
+    }
+
     public void stand_up(){
+        boolean da = false;
         if(frontLeft.getPosition()>LandingGear.LEGS_STAGE) {
-            frontRight.setPosition(LandingGear.LEGS_STAGE);
-            frontLeft.setPosition(LandingGear.LEGS_STAGE);
-            int breakout = 0;
-            sleep(2000);
-            backLeft.setPosition(LandingGear.LEGS_STAGE);
-            backRight.setPosition(LandingGear.LEGS_STAGE);
-            sleep(1000);
+            stage();
+            da = true;
             drivesystem.deploy_assist();
         }
         frontRight.setPosition(LandingGear.LEGS_STRAIGHT);
         frontLeft.setPosition(LandingGear.LEGS_STRAIGHT);
         backLeft.setPosition (LandingGear.LEGS_STRAIGHT);
         backRight.setPosition(LandingGear.LEGS_STRAIGHT);
-        sleep(500);
-        drivesystem.stop();
+        if(da){
+            sleep(2000);
+            drivesystem.stop();
+        }
     }
 
     public void retract(){
         backRight.setPosition(LandingGear.LEGS_RETRACT);
         backLeft.setPosition(LandingGear.LEGS_RETRACT);
-        int breakout =0;
-        sleep(2000);
+        if(frontLeft.getPosition() < LandingGear.LEGS_RETRACT) {
+            sleep(2000);
+        }
         frontLeft.setPosition (LandingGear.LEGS_RETRACT);
         frontRight.setPosition(LandingGear.LEGS_RETRACT);
 
@@ -68,10 +76,20 @@ public class LandingGearImpl implements LandingGear {
 //        backLeft.setPosition (LandingGear.LEGS_OUT);
 //        backRight.setPosition(LandingGear.LEGS_OUT);
 
-        frontRight.setPosition(0.2);
-        frontLeft.setPosition(0.18);
-        backLeft.setPosition (0.17);
-        backRight.setPosition(0.2);
+        boolean da = false;
+        if(frontLeft.getPosition()>LandingGear.LEGS_STAGE) {
+            stage();
+            da = true;
+            drivesystem.deploy_assist();
+        }
+        frontRight.setPosition(LEGS_FR_DEPLOY);
+        frontLeft.setPosition(LEGS_FL_DEPLOY);
+        backLeft.setPosition (LEGS_BL_DEPLOY);
+        backRight.setPosition(LEGS_BR_DEPLOY);
+        if(da){
+            sleep(2000);
+            drivesystem.stop();
+        }
 
     }
 
@@ -80,8 +98,6 @@ public class LandingGearImpl implements LandingGear {
     }
 
     //debug functions
-
-
     public void setPosition(double position){
         frontRight.setPosition(position);
         frontLeft.setPosition(position);
@@ -95,4 +111,5 @@ public class LandingGearImpl implements LandingGear {
     public void setTelemetry(Telemetry telem){
         log = telem;
     }
+
 }

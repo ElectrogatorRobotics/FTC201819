@@ -50,7 +50,7 @@ public class autoBasic extends LinearOpMode {
 
         waitForStart();
         lg.stand_up();
-        drive.slide(4);
+        drive.slide_time(-1000);
         lg.deploy();
         drive.forward(2);
         drive.turn(90);

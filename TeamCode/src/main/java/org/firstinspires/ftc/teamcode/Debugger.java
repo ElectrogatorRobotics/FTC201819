@@ -14,7 +14,7 @@ import org.firstinspires.ftc.teamcode.library.LandingGearImpl;
  * Created by Luke on 10/1/2017.
  */
 
-@TeleOp(name = "Debugger")
+//@TeleOp(name = "Debugger")
 public class Debugger extends LinearOpMode {
     ElectorgatorHardware hardware = new ElectorgatorHardware();
 	LandingGearImpl lg= new LandingGearImpl();

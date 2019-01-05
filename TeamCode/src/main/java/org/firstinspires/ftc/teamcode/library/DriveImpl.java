@@ -67,12 +67,9 @@ public class DriveImpl implements Drive {
         // set speed
         LOG.addLine("SetPower");
         stop();
-
-        setMotorDriveDirection(MoveMethod.STRAIGHT);
-
         // set mode
-        setMotorToPositionAndReset();
-
+        setMotorNoEncoders();
+        setMotorDriveDirection(MoveMethod.STRAIGHT);
     }
 
     //region SET MOTOR BEHAVIOR
@@ -185,16 +182,34 @@ public class DriveImpl implements Drive {
     }
 
     public void forward_time(int milliseconds){
+        double power = 0.7;
+        if(milliseconds<0) {
+            power *= -1;
+        }
         //driveToTarget(inches, Proportional.ProportionalMode.NONE );
         LOG.addLine("Forward!");
         setMotorDriveDirection(MoveMethod.STRAIGHT);
-        driveByTime(milliseconds, .7 );
+        driveByTime(milliseconds, power );
     }
 
     public void turn_time(int milliseconds){
+        double power = 0.7;
+        if(milliseconds<0) {
+            power *= -1;
+        }
         //need to come up with a way to handle turning. Kinda an issue.
         setMotorDriveDirection(MoveMethod.TURN);
-        driveByTime(milliseconds, .7);
+        driveByTime(milliseconds, power);
+    }
+
+    public void slide_time(int milliseconds){
+        double power = 0.7;
+        if(milliseconds<0) {
+            power *= -1;
+        }
+        //need to come up with a way to handle turning. Kinda an issue.
+        setMotorDriveDirection(MoveMethod.SLIDE);
+        driveByTime(milliseconds, power);
     }
 
 //region HELPER FUNCTIONS
@@ -215,6 +230,7 @@ public class DriveImpl implements Drive {
 	public void driveByTime(int milliseconds, double power){
         LOG.addData("DriveByTime",milliseconds);
         ElapsedTime runtime = new ElapsedTime();
+        milliseconds = Math.abs(milliseconds);
         double time;
         do {
             time = runtime.milliseconds();
@@ -282,6 +298,7 @@ public class DriveImpl implements Drive {
 
     public void stop() {
         setMotorPower(0);
+        setMotorDriveDirection(MoveMethod.STRAIGHT);
     }
     public void setMotorPower(double power){
         frontRightDrive.setPower(power);

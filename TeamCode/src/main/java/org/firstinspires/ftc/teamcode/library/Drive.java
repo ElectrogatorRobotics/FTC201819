@@ -56,17 +56,17 @@ public interface Drive {
 	 */
 	double setMotorSpeedWithThrottle(double speed, DriveImpl.MotorControlMode controlMode, double throttle);
 
+	void setMotorDriveDirection(DriveImpl.MoveMethod system);
+
 	void forward(int inches);
-
-	//this is used in Drive Impl.java so i dont know why it is not lit up
     void turn(double angle);
-
-	void forward_time(int milliseconds);
-
 	void slide (double distnce);
 
-	void deploy_assist();
+	void forward_time(int milliseconds);
+	void turn_time(int milliseconds);
+	void slide_time(int milliseconds);
 
+	void deploy_assist();
 	void stop();
 
 	//can we get rid of this,because,I dont know what in the world it is for

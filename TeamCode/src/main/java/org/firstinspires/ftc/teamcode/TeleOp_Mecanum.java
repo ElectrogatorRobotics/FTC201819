@@ -11,16 +11,20 @@ import org.firstinspires.ftc.teamcode.library.DriveImpl;
 import org.firstinspires.ftc.teamcode.library.ElectorgatorHardware;
 import org.firstinspires.ftc.teamcode.library.LandingGear;
 import org.firstinspires.ftc.teamcode.library.LandingGearImpl;
+import org.firstinspires.ftc.teamcode.library.Scoops;
+import org.firstinspires.ftc.teamcode.library.ScoopsImpl;
 
 /**
  * Created by Luke on 10/1/2017.
  */
 
-@TeleOp(name = "TeleOp test")
+@TeleOp(name = "DRIVE!")
 public class TeleOp_Mecanum extends LinearOpMode {
     ElectorgatorHardware hardware = new ElectorgatorHardware();
 	Drive drive;
 	LandingGear lg = new LandingGearImpl();
+	Scoops scoop = new ScoopsImpl();
+
 
     double frontLeftDrive, frontRightDrive, backRightDrive, backLeftDrive;
     boolean startRelic = false;
@@ -41,6 +45,7 @@ public class TeleOp_Mecanum extends LinearOpMode {
         drive.setTelemetry(telemetry);
         drive.initMotors(hardwareMap);
         lg.init(hardwareMap, drive);
+        scoop.init(hardwareMap, telemetry);
 
         telemetry.addLine("Ready to start... thank you for waiting!");
         telemetry.update();
@@ -90,6 +95,12 @@ public class TeleOp_Mecanum extends LinearOpMode {
             else if (gamepad1.b)lg.deploy();
             else if(gamepad1.x)lg.retract();
             // display the motor speeds
+
+            if(gamepad1.dpad_down)scoop.backScoopDown();
+            if(gamepad1.dpad_up)scoop.backScoopDump();
+
+            if(gamepad1.left_bumper)scoop.frontScoopDown();
+            if(gamepad1.right_bumper)scoop.frontScoopTransfer();
 
             telemetry.addData("Front right drive target = ", "%1.2f", frontRightDrive);
             telemetry.addData("Front right drive speed = ", "%1.2f", hardware.frontRightDrive.getPower());
