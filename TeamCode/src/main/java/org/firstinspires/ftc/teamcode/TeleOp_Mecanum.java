@@ -91,10 +91,14 @@ public class TeleOp_Mecanum extends LinearOpMode {
             else if(gamepad1.x)lg.retract();
             // display the motor speeds
 
-            telemetry.addData("Front right drive speed = ", "%1.2f", frontRightDrive);
-            telemetry.addData("Front left drive speed  = ", "%1.2f", frontLeftDrive);
-            telemetry.addData("Back right drive speed  = ", "%1.2f", backRightDrive);
-            telemetry.addData("Back left drive speed   = ", "%1.2f", backLeftDrive);
+            telemetry.addData("Front right drive target = ", "%1.2f", frontRightDrive);
+            telemetry.addData("Front right drive speed = ", "%1.2f", hardware.frontRightDrive.getPower());
+            telemetry.addData("Front left drive target  = ", "%1.2f", frontLeftDrive);
+            telemetry.addData("Front left drive speed  = ", "%1.2f", hardware.frontLeftDrive.getPower());
+            telemetry.addData("Back right drive target  = ", "%1.2f", backRightDrive);
+            telemetry.addData("Back right drive speed  = ", "%1.2f", hardware.backRightDrive.getPower());
+            telemetry.addData("Back left drive target   = ", "%1.2f", backLeftDrive);
+            telemetry.addData("Back left drive speed   = ", "%1.2f", hardware.backLeftDrive.getPower());
 // 	        telemetry.addData("Throttle                = ", "%1.2f", drive.throttleControl(gamepad1.left_trigger, drive.MIN_SPEED));
 	        telemetry.addData("Throttle                = ", "%1.2f", throtle);
             telemetry.update();
