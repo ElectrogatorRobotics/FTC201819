@@ -36,15 +36,22 @@ public class autoBasic extends LinearOpMode {
         drive = new DriveImpl();
 
         hardware.initMotors(hardwareMap);
-       lg.init(hardwareMap);
-        drive.initMotors(hardwareMap);
+
         drive.setTelemetry(telemetry);
+        drive.initMotors(hardwareMap);
+        lg.init(hardwareMap,drive);
+
+        telemetry.addLine("Retracting!!!");
+        telemetry.update();
+        lg.retract();///!!!Illegal?
+
         telemetry.addLine("Ready to start... thank you for waiting!");
         telemetry.update();
 
         waitForStart();
         lg.stand_up();
-// slide goes here
+        drive.slide(4);
+        lg.deploy();
         drive.forward(2);
         drive.turn(90);
         drive.forward(4);
