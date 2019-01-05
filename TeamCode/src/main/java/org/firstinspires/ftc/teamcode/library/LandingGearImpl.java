@@ -61,10 +61,15 @@ public class LandingGearImpl implements LandingGear {
 
 
     public void deploy(){
-        frontRight.setPosition(LandingGear.LEGS_OUT);
-        frontLeft.setPosition(LandingGear.LEGS_OUT);
-        backLeft.setPosition (LandingGear.LEGS_OUT);
-        backRight.setPosition(LandingGear.LEGS_OUT);
+//        frontRight.setPosition(LandingGear.LEGS_OUT);
+//        frontLeft.setPosition(LandingGear.LEGS_OUT);
+//        backLeft.setPosition (LandingGear.LEGS_OUT);
+//        backRight.setPosition(LandingGear.LEGS_OUT);
+
+        frontRight.setPosition(0.2);
+        frontLeft.setPosition(0.18);
+        backLeft.setPosition (0.17);
+        backRight.setPosition(0.2);
 
     }
 

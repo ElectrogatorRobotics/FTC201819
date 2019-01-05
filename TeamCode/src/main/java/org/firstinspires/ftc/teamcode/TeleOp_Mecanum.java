@@ -20,7 +20,7 @@ import org.firstinspires.ftc.teamcode.library.LandingGearImpl;
 public class TeleOp_Mecanum extends LinearOpMode {
     ElectorgatorHardware hardware = new ElectorgatorHardware();
 	Drive drive;
-	LandingGear lg= new LandingGearImpl();
+	LandingGear lg = new LandingGearImpl();
 
     double frontLeftDrive, frontRightDrive, backRightDrive, backLeftDrive;
     boolean startRelic = false;
