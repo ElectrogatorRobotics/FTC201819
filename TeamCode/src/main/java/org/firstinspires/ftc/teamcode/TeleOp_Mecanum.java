@@ -52,6 +52,9 @@ public class TeleOp_Mecanum extends LinearOpMode {
 
         waitForStart();
 
+        double gp2LT = 0, gp2RT = 0;
+        boolean enable_scoop = true;
+
         while (opModeIsActive()) {
             // calculate the throttle position that will be used when calculating the motor powers
             throtle = drive.throttleControl(gamepad1.left_trigger, .4);
@@ -91,27 +94,51 @@ public class TeleOp_Mecanum extends LinearOpMode {
 	        hardware.backRightDrive.setPower(drive.setMotorSpeed(backRightDrive * adjFactor, DriveImpl.MotorControlMode.LINEAR_CONTROL));
 
 
-            if(gamepad1.a)lg.stand_up();
-            else if (gamepad1.b)lg.deploy();
-            else if(gamepad1.x)lg.retract();
+            if(gamepad2.a && gamepad2.left_bumper){
+                lg.stand_up();
+                enable_scoop = true;
+            }
+            else if (gamepad2.b && gamepad2.left_bumper){
+                lg.deploy();
+                enable_scoop = true;
+            }
+            else if(gamepad2.x && (gamepad2.left_bumper || gamepad2.right_bumper)){
+                enable_scoop = false;
+                scoop.backScoopDown();
+                scoop.frontScoopTransfer();
+                lg.retract();
+            }
             // display the motor speeds
 
-            if(gamepad1.dpad_down)scoop.backScoopDown();
-            if(gamepad1.dpad_up)scoop.backScoopDump();
+            if(enable_scoop) {
+//                gp2LT = Math.max(gamepad2.left_trigger,.2);
+//                gp2RT = (gamepad2.right_trigger*-1)+1;
+                gp2LT = gamepad2.left_stick_y;
+                gp2RT = gamepad2.right_stick_y;
+//            scoop.setFrontScoopPos(gp2LT);
+//            scoop.setBackScoopPos(gp2RT);
 
-            if(gamepad1.left_bumper)scoop.frontScoopDown();
-            if(gamepad1.right_bumper)scoop.frontScoopTransfer();
+                scoop.setFrontScoopPos((gp2LT * .5) + .5);
+                scoop.setBackScoopPos((gp2RT * .5) + .5);
+//            if(gamepad1.dpad_down)scoop.backScoopDown();
+//            if(gamepad1.dpad_up)scoop.backScoopDump();
+//
+//            if(gamepad1.left_bumper)scoop.frontScoopDown();
+//            if(gamepad1.right_bumper)scoop.frontScoopTransfer();
+            }
 
             telemetry.addData("Front right drive target = ", "%1.2f", frontRightDrive);
-            telemetry.addData("Front right drive speed = ", "%1.2f", hardware.frontRightDrive.getPower());
+//            telemetry.addData("Front right drive speed = ", "%1.2f", hardware.frontRightDrive.getPower());
             telemetry.addData("Front left drive target  = ", "%1.2f", frontLeftDrive);
-            telemetry.addData("Front left drive speed  = ", "%1.2f", hardware.frontLeftDrive.getPower());
+//            telemetry.addData("Front left drive speed  = ", "%1.2f", hardware.frontLeftDrive.getPower());
             telemetry.addData("Back right drive target  = ", "%1.2f", backRightDrive);
-            telemetry.addData("Back right drive speed  = ", "%1.2f", hardware.backRightDrive.getPower());
+//            telemetry.addData("Back right drive speed  = ", "%1.2f", hardware.backRightDrive.getPower());
             telemetry.addData("Back left drive target   = ", "%1.2f", backLeftDrive);
-            telemetry.addData("Back left drive speed   = ", "%1.2f", hardware.backLeftDrive.getPower());
+//            telemetry.addData("Back left drive speed   = ", "%1.2f", hardware.backLeftDrive.getPower());
 // 	        telemetry.addData("Throttle                = ", "%1.2f", drive.throttleControl(gamepad1.left_trigger, drive.MIN_SPEED));
-	        telemetry.addData("Throttle                = ", "%1.2f", throtle);
+	        telemetry.addData("Throttle                 = ", "%1.2f", throtle);
+            telemetry.addData("Front Scoop              = ", "%1.2f",gp2LT);
+            telemetry.addData("Back Scoop               = ", "%1.2f",gp2RT);
             telemetry.update();
         }
     }
