@@ -74,6 +74,17 @@ public class DriveImpl implements Drive {
 
     //region SET MOTOR BEHAVIOR
 
+    public void setMotorBehavior(MotorMode mode){
+        setMotorNoEncoders();
+        switch (mode){
+            case POSITION:
+                setMotorToPositionAndReset();
+                break;
+            case NONE:
+                break;
+        }
+    }
+
     public void setMotorNoEncoders(){
         LOG.addLine("NoEncoders. Disabling");
         frontRightDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
@@ -86,26 +97,7 @@ public class DriveImpl implements Drive {
     public void setMotorToPositionAndReset(){
         LOG.addLine("Reset and Enable Encoders.");
         frontRightDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        frontLeftDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        backRightDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        backLeftDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         frontRightDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        frontLeftDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        backRightDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        backLeftDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        LOG.update();
-    }
-
-    public void setMotorWithEncoderAndReset(){
-        LOG.addLine("Reset and Enable Encoders.");
-        frontRightDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        frontLeftDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        backRightDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        backLeftDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        frontRightDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        frontLeftDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        backRightDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        backLeftDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         LOG.update();
     }
 
@@ -143,42 +135,25 @@ public class DriveImpl implements Drive {
 
     //endregion
 
-    private void setPower(double power){
-        setMotorToPositionAndReset();
-        frontLeftDrive.setPower(power);
-        frontRightDrive.setPower(power);
-        backLeftDrive.setPower(power);
-        backRightDrive.setPower (power);
-    }
-
 	public void forward(int inches){
        setMotorDriveDirection(MoveMethod.STRAIGHT);
         int ticks = (int)Math.round(inches * ENCODER_TICKS_PER_INCH);
-        frontLeftDrive.setTargetPosition(-1*ticks);
         frontRightDrive.setTargetPosition(ticks);
-        backRightDrive.setTargetPosition(ticks);
-        backLeftDrive.setTargetPosition(-1*ticks);
-        setPower( .5);
+        driveByPosition(.5);
 	}
 
 	public void turn(double angle){
         setMotorDriveDirection(MoveMethod.TURN);
         int ticks = (int)Math.round(angle * ENCODER_TICKS_PER_ANGLE);
-        frontLeftDrive.setTargetPosition(ticks);
         frontRightDrive.setTargetPosition(ticks);
-        backRightDrive.setTargetPosition(ticks);
-        backLeftDrive.setTargetPosition(ticks);
-        setPower(.5);
+        driveByPosition(.5);
     }
 
     public void slide (double distnce){
         setMotorDriveDirection(MoveMethod.SLIDE);
         int ticks = (int)Math.round( distnce * ENCODER_TICKS_PER_SLIDE);
-        frontLeftDrive.setTargetPosition(-1*ticks);
         frontRightDrive.setTargetPosition(-1*ticks);
-        backRightDrive.setTargetPosition(ticks);
-        backLeftDrive.setTargetPosition(ticks);
-        setPower(.5);
+        driveByPosition(.5);
     }
 
     public void forward_time(int milliseconds){
@@ -234,13 +209,32 @@ public class DriveImpl implements Drive {
         double time;
         do {
             time = runtime.milliseconds();
-        	setMotorPower(power);
+        	Thread.yield(); //effectively what the LinearOpMode idle call does
 		} while (time < milliseconds);
         LOG.addLine("ShutdownMotors");
         stop();
         LOG.update();
     }
 
+    /**
+     * Autonomous Methods:
+     */
+    public void driveByPosition(double power){
+        LOG.addData("DriveByPosition pow=",power);
+        LOG.addData("DriveByPosition targ=",frontRightDrive.getTargetPosition());
+        setMotorToPositionAndReset();
+        frontLeftDrive.setPower(power);
+        frontRightDrive.setPower(power);
+        backLeftDrive.setPower(power);
+        backRightDrive.setPower (power);
+        do {
+            LOG.addData("At position ",frontRightDrive.getCurrentPosition());
+            LOG.update();
+            Thread.yield(); //effectively what the LinearOpMode idle call does
+        } while (frontRightDrive.isBusy());
+        stop();
+        LOG.update();
+    }
 
     /**
      * @param targetDist  distance to drive in inches
@@ -270,18 +264,6 @@ public class DriveImpl implements Drive {
 
     public double setMotorSpeed (double speed, MotorControlMode controlMode){
         return setMotorSpeed(speed, controlMode, 5);
-    }
-
-    public double setMotorSpeedWithThrottle (double speed, MotorControlMode controlMode, double throttle){
-        switch (controlMode){
-            case EXPONENTIAL_CONTROL:
-                return Math.pow(Range.clip(speed * throttleControl(throttle, MIN_SPEED), -1.0, 1.0), 5);
-
-            case LINEAR_CONTROL:
-                return Range.clip(speed *= throttleControl(throttle, MIN_SPEED), -1.0, 1.0);
-            default:
-                return 0;
-        }
     }
 
     public double throttleControl (double throttle, double minValue) {
