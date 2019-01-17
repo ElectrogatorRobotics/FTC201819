@@ -30,11 +30,7 @@ public class autoBasic extends LinearOpMode {
         telemetry.addLine("Initialising... please wait.");
         telemetry.update();
 
-        double adjFactor;
-        double throtle;
-
         drive = new DriveImpl();
-
         hardware.initMotors(hardwareMap);
 
         drive.setTelemetry(telemetry);
@@ -50,9 +46,10 @@ public class autoBasic extends LinearOpMode {
 
         waitForStart();
         lg.stand_up();
-        drive.slide_time(-1000);
+        //drive.slide_time(-250);
+        drive.slide(3);
         lg.deploy();
-        drive.forward(2);
+        drive.forward(6);
         drive.turn(90);
         drive.forward(4);
     }

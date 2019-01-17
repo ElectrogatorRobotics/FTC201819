@@ -33,7 +33,7 @@ public class ScoopsImpl implements Scoops {
             setBackScoopPos(BACK_DOWN);
             sleep(500);
         }
-        setFrontScoopPos(FRONT_TRANFER);
+        setFrontScoopPos(FRONT_TRANSFER);
     }
 
     public void frontScoopCycle(){

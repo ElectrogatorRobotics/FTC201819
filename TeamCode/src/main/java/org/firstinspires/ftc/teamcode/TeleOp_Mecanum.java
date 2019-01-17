@@ -129,12 +129,16 @@ public class TeleOp_Mecanum extends LinearOpMode {
 
             telemetry.addData("Front right drive target = ", "%1.2f", frontRightDrive);
 //            telemetry.addData("Front right drive speed = ", "%1.2f", hardware.frontRightDrive.getPower());
+            telemetry.addData("Front right drive pstn = ", hardware.frontRightDrive.getCurrentPosition());
             telemetry.addData("Front left drive target  = ", "%1.2f", frontLeftDrive);
 //            telemetry.addData("Front left drive speed  = ", "%1.2f", hardware.frontLeftDrive.getPower());
+            telemetry.addData("Front left drive pstn  = ", hardware.frontLeftDrive.getCurrentPosition());
             telemetry.addData("Back right drive target  = ", "%1.2f", backRightDrive);
 //            telemetry.addData("Back right drive speed  = ", "%1.2f", hardware.backRightDrive.getPower());
+            telemetry.addData("Back right drive pstn  = ", hardware.backRightDrive.getCurrentPosition());
             telemetry.addData("Back left drive target   = ", "%1.2f", backLeftDrive);
 //            telemetry.addData("Back left drive speed   = ", "%1.2f", hardware.backLeftDrive.getPower());
+            telemetry.addData("Back left drive pstn   = ", hardware.backLeftDrive.getCurrentPosition());
 // 	        telemetry.addData("Throttle                = ", "%1.2f", drive.throttleControl(gamepad1.left_trigger, drive.MIN_SPEED));
 	        telemetry.addData("Throttle                 = ", "%1.2f", throtle);
             telemetry.addData("Front Scoop              = ", "%1.2f",gp2LT);

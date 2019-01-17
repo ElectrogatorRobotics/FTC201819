@@ -47,16 +47,9 @@ public interface Drive {
 	 */
 	double throttleControl(double throttle, double minValue);
 
-	/**
-	 *
-	 * @param speed
-	 * @param controlMode
-	 * @param throttle
-	 * @return
-	 */
-	double setMotorSpeedWithThrottle(double speed, DriveImpl.MotorControlMode controlMode, double throttle);
-
 	void setMotorDriveDirection(DriveImpl.MoveMethod system);
+
+	void setMotorBehavior(MotorMode mode);
 
 	void forward(int inches);
     void turn(double angle);
@@ -84,5 +77,10 @@ public interface Drive {
 	enum ThrottleControl {
 		LEFT_TRIGGER,
 		RIGHT_TRIGGER
+	}
+
+	enum MotorMode{
+		NONE,
+		POSITION
 	}
 }
