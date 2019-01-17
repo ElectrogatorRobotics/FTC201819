@@ -36,6 +36,12 @@ public class ScoopsImpl implements Scoops {
         setFrontScoopPos(FRONT_TRANFER);
     }
 
+    public void frontScoopCycle(){
+        frontScoopTransfer();
+        sleep(1100);
+        frontScoopDown();
+    }
+
     public void setBackScoopPos(double pos){
         backScoop.setPosition(pos);
     }

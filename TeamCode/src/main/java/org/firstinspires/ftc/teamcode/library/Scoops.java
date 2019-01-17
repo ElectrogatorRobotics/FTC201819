@@ -5,8 +5,8 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 
 public interface Scoops {
 
-    double FRONT_DOWN = 0;
-    double FRONT_TRANFER = 1;
+    double FRONT_DOWN = .2;
+    double FRONT_TRANFER = .8;
     double FRONT_AVOID = 0.7;
     double BACK_DOWN = 0;
     double BACK_DUMP = 1;
@@ -18,6 +18,8 @@ public interface Scoops {
     void frontScoopDown();
 
     void frontScoopTransfer();
+
+    void frontScoopCycle ();
 
     void setBackScoopPos(double pos);
 
