@@ -46,6 +46,7 @@ public class TeleOp_Mecanum extends LinearOpMode {
         drive.initMotors(hardwareMap);
         lg.init(hardwareMap, drive);
         scoop.init(hardwareMap, telemetry);
+        scoop.backScoopDown();
 
         telemetry.addLine("Ready to start... thank you for waiting!");
         telemetry.update();
@@ -94,15 +95,15 @@ public class TeleOp_Mecanum extends LinearOpMode {
 	        hardware.backRightDrive.setPower(drive.setMotorSpeed(backRightDrive * adjFactor, DriveImpl.MotorControlMode.LINEAR_CONTROL));
 
 
-            if(gamepad2.a && gamepad2.left_bumper){
+            if(gamepad2.a && gamepad2.right_bumper){
                 lg.stand_up();
                 enable_scoop = true;
             }
-            else if (gamepad2.b && gamepad2.left_bumper){
+            else if (gamepad2.b && gamepad2.right_bumper){
                 lg.deploy();
                 enable_scoop = true;
             }
-            else if(gamepad2.x && (gamepad2.left_bumper || gamepad2.right_bumper)){
+            else if(gamepad2.x && gamepad2.right_bumper){
                 enable_scoop = false;
                 scoop.backScoopDown();
                 scoop.frontScoopTransfer();
@@ -113,16 +114,20 @@ public class TeleOp_Mecanum extends LinearOpMode {
             if(enable_scoop) {
 //                gp2LT = Math.max(gamepad2.left_trigger,.2);
 //                gp2RT = (gamepad2.right_trigger*-1)+1;
-                gp2LT = gamepad2.left_stick_y;
-                gp2RT = gamepad2.right_stick_y;
-//            scoop.setFrontScoopPos(gp2LT);
-//            scoop.setBackScoopPos(gp2RT);
+//                gp2LT = gamepad2.left_stick_y;
+//                gp2RT = gamepad2.right_stick_y;
 
-                scoop.setFrontScoopPos((gp2LT * .5) + .5);
-                scoop.setBackScoopPos((gp2RT * .5) + .5);
-//            if(gamepad1.dpad_down)scoop.backScoopDown();
-//            if(gamepad1.dpad_up)scoop.backScoopDump();
-//
+//                scoop.setFrontScoopPos(gp2LT);
+//                scoop.setBackScoopPos(gp2RT);
+//                scoop.setFrontScoopPos((gp2LT * .5) + .5);
+//              scoop.setBackScoopPos((gp2RT * .5) + .5);
+
+                if(gamepad2.left_bumper){
+                    scoop.backScoopCycle();
+                }
+                if(gamepad2.left_trigger > .5){
+                    scoop.frontScoopCycle();
+                }
 //            if(gamepad1.left_bumper)scoop.frontScoopDown();
 //            if(gamepad1.right_bumper)scoop.frontScoopTransfer();
             }
@@ -142,7 +147,7 @@ public class TeleOp_Mecanum extends LinearOpMode {
 // 	        telemetry.addData("Throttle                = ", "%1.2f", drive.throttleControl(gamepad1.left_trigger, drive.MIN_SPEED));
 	        telemetry.addData("Throttle                 = ", "%1.2f", throtle);
             telemetry.addData("Front Scoop              = ", "%1.2f",gp2LT);
-            telemetry.addData("Back Scoop               = ", "%1.2f",gp2RT);
+//            telemetry.addData("Back Scoop               = ", "%1.2f",gp2RT);
             telemetry.update();
         }
     }

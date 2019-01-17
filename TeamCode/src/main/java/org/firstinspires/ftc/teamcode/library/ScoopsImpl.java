@@ -42,6 +42,8 @@ public class ScoopsImpl implements Scoops {
         frontScoopDown();
     }
 
+
+    //Back Scoops
     public void setBackScoopPos(double pos){
         backScoop.setPosition(pos);
     }
@@ -62,10 +64,16 @@ public class ScoopsImpl implements Scoops {
         setBackScoopPos(BACK_DUMP);
     }
 
+    public void backScoopCycle(){
+        backScoopDump();
+        sleep(1100);
+        backScoopDown();
+    }
+
     private void sleep(long milisecs) {
         runtime.reset();
         while(runtime.milliseconds() < milisecs ){
-            //twiddle thumbs
+            Thread.yield();
         }
     }
 }
