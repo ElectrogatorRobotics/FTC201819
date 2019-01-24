@@ -10,6 +10,7 @@ public interface Scoops {
     double FRONT_AVOID = 0.7;
     double BACK_DOWN = 1;
     double BACK_DUMP = 0;
+    double BACK_CYCLE_TIME = 1100;
 
     void init(HardwareMap hm, Telemetry telm);
 
@@ -28,4 +29,7 @@ public interface Scoops {
     void backScoopDump();
 
     void backScoopCycle();
+
+    void checkCycling();
+
 }

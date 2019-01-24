@@ -125,6 +125,7 @@ public class TeleOp_Mecanum extends LinearOpMode {
                 if(gamepad2.left_bumper){
                     scoop.backScoopCycle();
                 }
+                scoop.checkCycling();
                 if(gamepad2.left_trigger > .5){
                     scoop.frontScoopCycle();
                 }
