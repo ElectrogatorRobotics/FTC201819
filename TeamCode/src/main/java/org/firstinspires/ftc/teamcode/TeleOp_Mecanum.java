@@ -11,6 +11,7 @@ import org.firstinspires.ftc.teamcode.library.DriveImpl;
 import org.firstinspires.ftc.teamcode.library.ElectorgatorHardware;
 import org.firstinspires.ftc.teamcode.library.LandingGear;
 import org.firstinspires.ftc.teamcode.library.LandingGearImpl;
+import org.firstinspires.ftc.teamcode.library.Marker;
 import org.firstinspires.ftc.teamcode.library.Scoops;
 import org.firstinspires.ftc.teamcode.library.ScoopsImpl;
 
@@ -24,6 +25,7 @@ public class TeleOp_Mecanum extends LinearOpMode {
 	Drive drive;
 	LandingGear lg = new LandingGearImpl();
 	Scoops scoop = new ScoopsImpl();
+	Marker marker = new Marker();
 
 
     double frontLeftDrive, frontRightDrive, backRightDrive, backLeftDrive;
@@ -38,6 +40,7 @@ public class TeleOp_Mecanum extends LinearOpMode {
 
         double adjFactor;
         double throtle;
+        double servoVal = 0;
 
         drive = new DriveImpl();
 
@@ -47,6 +50,7 @@ public class TeleOp_Mecanum extends LinearOpMode {
         lg.init(hardwareMap, drive);
         scoop.init(hardwareMap, telemetry);
         scoop.backScoopDown();
+        marker.init(hardwareMap, telemetry);
 
         telemetry.addLine("Ready to start... thank you for waiting!");
         telemetry.update();
@@ -90,9 +94,9 @@ public class TeleOp_Mecanum extends LinearOpMode {
             }
 
             hardware.frontLeftDrive.setPower(drive.setMotorSpeed(frontLeftDrive * adjFactor, DriveImpl.MotorControlMode.LINEAR_CONTROL));
-	        hardware.frontRightDrive.setPower(drive.setMotorSpeed(frontRightDrive * adjFactor, DriveImpl.MotorControlMode.LINEAR_CONTROL));
-	        hardware.backLeftDrive.setPower(drive.setMotorSpeed(backLeftDrive * adjFactor, DriveImpl.MotorControlMode.LINEAR_CONTROL));
-	        hardware.backRightDrive.setPower(drive.setMotorSpeed(backRightDrive * adjFactor, DriveImpl.MotorControlMode.LINEAR_CONTROL));
+            hardware.frontRightDrive.setPower(drive.setMotorSpeed(frontRightDrive * adjFactor, DriveImpl.MotorControlMode.LINEAR_CONTROL));
+            hardware.backLeftDrive.setPower(drive.setMotorSpeed(backLeftDrive * adjFactor, DriveImpl.MotorControlMode.LINEAR_CONTROL));
+            hardware.backRightDrive.setPower(drive.setMotorSpeed(backRightDrive * adjFactor, DriveImpl.MotorControlMode.LINEAR_CONTROL));
 
 
             if(gamepad2.a && gamepad2.right_bumper){
@@ -108,6 +112,15 @@ public class TeleOp_Mecanum extends LinearOpMode {
                 scoop.backScoopDown();
                 scoop.frontScoopTransfer();
                 lg.retract();
+            }
+
+            if (gamepad2.a) {
+                scoop.runRubberBandWheel(-1.0);
+            }
+            else scoop.runRubberBandWheel(0.5);
+
+            if (gamepad2.dpad_down) {
+                marker.KickOutTheMrker();
             }
             // display the motor speeds
 
@@ -125,9 +138,11 @@ public class TeleOp_Mecanum extends LinearOpMode {
                 if(gamepad2.left_bumper){
                     scoop.backScoopCycle();
                 }
-                if(gamepad2.left_trigger > .5){
-                    scoop.frontScoopCycle();
-                }
+//                if(gamepad2.left_trigger > .5){
+//                    scoop.frontScoopCycle();
+//                }
+                servoVal = (gamepad2.left_stick_y+1)/2;
+                scoop.setFrontScoopPos(servoVal);
 //            if(gamepad1.left_bumper)scoop.frontScoopDown();
 //            if(gamepad1.right_bumper)scoop.frontScoopTransfer();
             }
@@ -146,7 +161,9 @@ public class TeleOp_Mecanum extends LinearOpMode {
             telemetry.addData("Back left drive pstn   = ", hardware.backLeftDrive.getCurrentPosition());
 // 	        telemetry.addData("Throttle                = ", "%1.2f", drive.throttleControl(gamepad1.left_trigger, drive.MIN_SPEED));
 	        telemetry.addData("Throttle                 = ", "%1.2f", throtle);
-            telemetry.addData("Front Scoop              = ", "%1.2f",gp2LT);
+//            telemetry.addData("Front Scoop              = ", "%1.2f",gp2LT);
+            telemetry.addData("Front Scoop              = ", servoVal);
+
 //            telemetry.addData("Back Scoop               = ", "%1.2f",gp2RT);
             telemetry.update();
         }
