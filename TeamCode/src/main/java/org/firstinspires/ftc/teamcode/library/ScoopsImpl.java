@@ -11,6 +11,8 @@ public class ScoopsImpl implements Scoops {
 
     public Servo frontScoop;
     public Servo backScoop;
+    public Servo frontScoopWheel;
+
     private Telemetry log;
     private ElapsedTime runtime = new ElapsedTime();
     private Boolean cycling;
@@ -18,6 +20,8 @@ public class ScoopsImpl implements Scoops {
     public void init(HardwareMap hm, Telemetry telm){
         frontScoop = hm.servo.get("front scoop");
         backScoop = hm.servo.get("back scoop");
+        frontScoopWheel = hm.servo.get("wheel servo");
+        frontScoop.scaleRange(0.16, 0.8);
         log = telm;
         cycling = false;
     }
@@ -89,4 +93,10 @@ public class ScoopsImpl implements Scoops {
             Thread.yield();
         }
     }
+
+    public void runRubberBandWheel (double speed) {
+        frontScoopWheel.setPosition(speed);
+    }
+
+    public void setFrontScoopPosition(double position){frontScoop.setPosition(position);}
 }
