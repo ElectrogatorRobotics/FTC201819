@@ -27,7 +27,7 @@ public interface Drive {
 	 * @param expoBase
 	 * @return
 	 */
-	double setMotorSpeed(double speed, DriveImpl.MotorControlMode controlMode, double expoBase);
+	//double setMotorSpeed(double speed, DriveImpl.MotorControlMode controlMode, double expoBase);
 
 	/**
 	 * Set the speed of a motor with or with out expo.
@@ -37,7 +37,7 @@ public interface Drive {
 	 * @param controlMode
 	 * @return
 	 */
-	double setMotorSpeed(double speed, DriveImpl.MotorControlMode controlMode);
+	//double setMotorSpeed(double speed, DriveImpl.MotorControlMode controlMode);
 
 	/**
 	 *

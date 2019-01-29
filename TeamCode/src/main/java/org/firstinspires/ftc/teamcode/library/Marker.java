@@ -11,6 +11,9 @@ public class Marker {
 
     public Servo mServo;
 
+    public static final double DUMP = 0.75;
+    public static final double PARK = 0.3;
+
     private Telemetry log;
     private ElapsedTime runtime = new ElapsedTime();
 
@@ -24,9 +27,10 @@ public class Marker {
     }
 
     public void KickOutTheMrker(){
-        setMarkerPos(1);
+        log.addLine("MARKER = EJECTED!");
+        setMarkerPos(DUMP);
         sleep(1000);
-        setMarkerPos(0);
+        setMarkerPos(PARK);
     }
 
 
