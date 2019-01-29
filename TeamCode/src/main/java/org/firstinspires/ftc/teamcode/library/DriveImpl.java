@@ -36,7 +36,7 @@ public class DriveImpl implements Drive {
      *
      * (Wheel diameter * PI) *  ticks per wheel regulation
      * wheel diameter = 4 inches
-     * ticks per revolution of wheel = 7 cunts per motor revulsion * 20 gearbox reduction (20:1)
+     * ticks per revolution of wheel = 7 counts per motor revolution * 20 gearbox reduction (20:1)
      */
     public static final double ENCODER_TICKS_PER_SLIDE = ((20.625 * 7)/(4 * Math.PI));
     public static final double ENCODER_TICKS_PER_INCH = ((20.625 * 7)/(4 * Math.PI));
