@@ -300,32 +300,16 @@ public class DriveImpl implements Drive {
         return angleToTurn;
     }
 
-    /**
-     * @param targetDist  distance to drive in inches
-     * @param driveMotor  Proportional.ProportionalMode for how to drive the motors
-     */
-    private double calculateDriveSpeed(double targetDist, double curPos, Proportional.ProportionalMode driveMotor){
-        double target = curPos + (targetDist * ENCODER_COUNTS_PER_INCH);
-        double motorPower;
-
-        do {
-            // calculate the speed of the motor proportionally using the distance form the target
-            motorPower = 1;//proportional.p((float)targetDist, (float)curPos, driveMotor);
-        } while (curPos < target);
-        return motorPower;
-    }
-
-    /*
-    public double setMotorSpeed (double speed, MotorControlMode controlMode, double expoBase) {
+    public double setMotorSpeed (double speed, MotorControlMode controlMode) {
         switch (controlMode) {
-            case EXPONENTIAL_CONTROL:
-                return Math.pow(Range.clip(speed, -1.0, 1.0), expoBase);
+//            case EXPONENTIAL_CONTROL:
+//                return Math.pow(Range.clip(speed, -1.0, 1.0), expoBase);
             case LINEAR_CONTROL:
                 return Range.clip(speed, -1.0, 1.0);
             default:
                 return 0;
         }
-    }*/
+    }
 
     public double throttleControl (double throttle, double minValue) {
         if (throttle > minValue)

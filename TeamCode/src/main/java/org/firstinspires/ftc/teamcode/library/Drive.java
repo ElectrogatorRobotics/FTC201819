@@ -15,7 +15,7 @@ public interface Drive {
 
 
     void initMotors(HardwareMap hardware);
-
+	void initialiseIMU(HardwareMap hardwareMap);
 	void setTelemetry(Telemetry telem);
 
 	/**
@@ -50,6 +50,8 @@ public interface Drive {
 	void setMotorDriveDirection(DriveImpl.MoveMethod system);
 
 	void setMotorBehavior(MotorMode mode);
+
+	double setMotorSpeed(double speed, MotorControlMode mcm);
 
 	void forward(int inches);
     void turn(double angle);

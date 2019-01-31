@@ -35,6 +35,7 @@ public class ElectorgatorHardware {
 
     HardwareMap hardwareMap = null;
 
+    @Deprecated
     public ElectorgatorHardware (){}
 
 	public void initLifter (HardwareMap hardware) {
