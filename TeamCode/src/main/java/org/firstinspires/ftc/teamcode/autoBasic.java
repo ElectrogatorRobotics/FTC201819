@@ -15,7 +15,7 @@ import org.firstinspires.ftc.teamcode.library.LandingGearImpl;
  * Created by mira on 11/26/2018.
  */
 
-@Autonomous(name = "Auto: Pick Me Luke")
+//@Autonomous(name = "Auto: Pick Me Luke")
 public class autoBasic extends LinearOpMode {
     ElectorgatorHardware hardware = new ElectorgatorHardware();
 	Drive drive;

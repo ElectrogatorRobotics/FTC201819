@@ -8,7 +8,7 @@ import com.qualcomm.robotcore.hardware.Servo;
  * Created by luke on 11/9/2018.
  */
 
-@TeleOp(name = "servo test")
+//@TeleOp(name = "servo test")
 public class servoTest extends LinearOpMode {
     Servo_PWM servoConverter;
     Servo servo;

@@ -27,6 +27,10 @@ public class DriveImpl implements Drive {
     public DcMotorEx backLeftDrive   = null;
     Telemetry LOG;
 
+    private static final double DRIVE_POWER = .3;
+    private static final double TURN_POWER = .2;
+    private static final double TURN_THRESHOLD = .5;
+
 
     public BNO055IMU imu = null;
     public Orientation angle = null;
@@ -187,7 +191,7 @@ public class DriveImpl implements Drive {
         int ticks = (int)Math.round(inches * ENCODER_COUNTS_PER_INCH);
         setTargetTolerance(50);
         setTargetPosition(ticks);
-        driveByPosition(.5);
+        driveByPosition(DRIVE_POWER);
 	}
 
 	public void turn(double angle){
@@ -200,7 +204,7 @@ public class DriveImpl implements Drive {
         int ticks = (int)Math.round( distance * ENCODER_COUNTS_PER_INCH);
         setTargetTolerance(50);
         setTargetPosition(ticks);
-        driveByPosition(.5);
+        driveByPosition(DRIVE_POWER);
     }
 
     public void forward_time(int milliseconds){
@@ -290,10 +294,10 @@ public class DriveImpl implements Drive {
          */
 
         double targetAngle = (angle.thirdAngle + angleToTurn + 360)%360 ;
-        double power = .5;
-        if(Math.sin(angle.thirdAngle - targetAngle) < 0) power = -0.5;
+        double power = TURN_POWER;
+        if(Math.sin(angle.thirdAngle - targetAngle) < 0) power *= -1;
         setMotorBehavior(MotorMode.NONE);
-        while(Math.abs(angle.thirdAngle - targetAngle) > 0.5 ){
+        while(Math.abs(angle.thirdAngle - targetAngle) > TURN_THRESHOLD ){
             setMotorPower(power);
         }
         stop();

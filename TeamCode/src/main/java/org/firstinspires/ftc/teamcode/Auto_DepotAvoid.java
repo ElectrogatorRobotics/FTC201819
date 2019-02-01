@@ -6,7 +6,6 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.teamcode.library.Drive;
 import org.firstinspires.ftc.teamcode.library.DriveImpl;
-import org.firstinspires.ftc.teamcode.library.ElectorgatorHardware;
 import org.firstinspires.ftc.teamcode.library.LandingGear;
 import org.firstinspires.ftc.teamcode.library.LandingGearImpl;
 import org.firstinspires.ftc.teamcode.library.Marker;
@@ -15,8 +14,8 @@ import org.firstinspires.ftc.teamcode.library.Marker;
  * Created by mira on 11/26/2018.
  */
 
-@Autonomous(name = "Depot - Direct")
-public class Auto_DepotDirect extends LinearOpMode {
+@Autonomous(name = "Depot - Avoid")
+public class Auto_DepotAvoid extends LinearOpMode {
     private static final boolean live = false;
 
 	Drive drive = new DriveImpl();
@@ -51,10 +50,19 @@ public class Auto_DepotDirect extends LinearOpMode {
             drive.slide(4);
             lg.deploy();
         }
-
-        drive.forward(60);
-        drive.turn(-135);
+        drive.forward(64);
+        drive.turn(135);
         mark.KickOutTheMrker();
-        drive.forward(83);
+        drive.forward(55);
+        drive.turn(90);
+        drive.forward(20);
+        drive.turn(45);
+        drive.forward(56);
+        drive.turn(-90);
+        drive.forward(56);
+        drive.turn(45);
+        drive.forward(20);
+        drive.turn(90);
+        drive.forward(43);
     }
 }
