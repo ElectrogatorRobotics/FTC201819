@@ -28,9 +28,10 @@ public class DriveImpl implements Drive {
     Telemetry LOG;
 
     private static final double DRIVE_POWER = .3;
-    private static final double TURN_POWER = .2;
+    private static final double TURN_POWER = .25;
     private static final double TURN_THRESHOLD = .5;
 
+    private ElapsedTime runtime = new ElapsedTime();
 
     public BNO055IMU imu = null;
     public Orientation angle = null;
@@ -90,6 +91,7 @@ public class DriveImpl implements Drive {
 
         imu = hardwareMap.get(BNO055IMU.class, "imu");
         imu.initialize(parameters);
+
     }
 
     //region SET MOTOR BEHAVIOR
@@ -139,10 +141,10 @@ public class DriveImpl implements Drive {
         LOG.addData("SettingDrive", system);
         switch(system) {
             case TURN:
-                frontLeftDrive.setDirection(DcMotorSimple.Direction.FORWARD);
-                backLeftDrive.setDirection(DcMotorSimple.Direction.FORWARD);
-                frontRightDrive.setDirection(DcMotorSimple.Direction.FORWARD);
-                backRightDrive.setDirection(DcMotorSimple.Direction.FORWARD);
+                frontLeftDrive.setDirection(DcMotorSimple.Direction.REVERSE);
+                backLeftDrive.setDirection(DcMotorSimple.Direction.REVERSE);
+                frontRightDrive.setDirection(DcMotorSimple.Direction.REVERSE);
+                backRightDrive.setDirection(DcMotorSimple.Direction.REVERSE);
                 break;
             case SLIDE:
                 frontLeftDrive.setDirection(DcMotorSimple.Direction.REVERSE);
@@ -158,10 +160,10 @@ public class DriveImpl implements Drive {
                 break;
             case STRAIGHT:
             default:
-                frontLeftDrive.setDirection(DcMotorSimple.Direction.REVERSE);
-                backLeftDrive.setDirection(DcMotorSimple.Direction.REVERSE);
-                frontRightDrive.setDirection(DcMotorSimple.Direction.FORWARD);
-                backRightDrive.setDirection(DcMotorSimple.Direction.FORWARD);
+                frontLeftDrive.setDirection(DcMotorSimple.Direction.FORWARD);
+                backLeftDrive.setDirection(DcMotorSimple.Direction.FORWARD);
+                frontRightDrive.setDirection(DcMotorSimple.Direction.REVERSE);
+                backRightDrive.setDirection(DcMotorSimple.Direction.REVERSE);
                 break;
         }
     }
@@ -297,8 +299,13 @@ public class DriveImpl implements Drive {
         double power = TURN_POWER;
         if(Math.sin(angle.thirdAngle - targetAngle) < 0) power *= -1;
         setMotorBehavior(MotorMode.NONE);
-        while(Math.abs(angle.thirdAngle - targetAngle) > TURN_THRESHOLD ){
-            setMotorPower(power);
+        LOG.addLine("Turning");
+        runtime.reset();
+        while(Math.abs(angle.thirdAngle - targetAngle) > TURN_THRESHOLD && runtime.seconds() < 10 ){
+            angle = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.XYZ, AngleUnit.DEGREES);
+            LOG.addData("Turn target ",targetAngle);
+            LOG.addData("Turn current ",angle.thirdAngle);
+            LOG.update();
         }
         stop();
         return angleToTurn;
