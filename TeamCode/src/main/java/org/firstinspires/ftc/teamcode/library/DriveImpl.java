@@ -36,7 +36,7 @@ public class DriveImpl implements Drive {
      *
      * (Wheel diameter * PI) *  ticks per wheel regulation
      * wheel diameter = 4 inches
-     * ticks per revolution of wheel = 7 cunts per motor revulsion * 20 gearbox reduction (20:1)
+     * ticks per revolution of wheel = 7 counts per motor revolution * 20 gearbox reduction (20:1)
      */
     public static final double ENCODER_TICKS_PER_SLIDE = ((20.625 * 7)/(4 * Math.PI));
     public static final double ENCODER_TICKS_PER_INCH = ((20.625 * 7)/(4 * Math.PI));
@@ -97,7 +97,13 @@ public class DriveImpl implements Drive {
     public void setMotorToPositionAndReset(){
         LOG.addLine("Reset and Enable Encoders.");
         frontRightDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        frontLeftDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        backRightDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        backLeftDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         frontRightDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        frontLeftDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        backRightDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        backLeftDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         LOG.update();
     }
 
@@ -138,21 +144,30 @@ public class DriveImpl implements Drive {
 	public void forward(int inches){
        setMotorDriveDirection(MoveMethod.STRAIGHT);
         int ticks = (int)Math.round(inches * ENCODER_TICKS_PER_INCH);
+        frontLeftDrive.setTargetPosition(ticks);
         frontRightDrive.setTargetPosition(ticks);
+        backRightDrive.setTargetPosition(ticks);
+        backLeftDrive.setTargetPosition(ticks);
         driveByPosition(.5);
 	}
 
 	public void turn(double angle){
         setMotorDriveDirection(MoveMethod.TURN);
         int ticks = (int)Math.round(angle * ENCODER_TICKS_PER_ANGLE);
+        frontLeftDrive.setTargetPosition(ticks);
         frontRightDrive.setTargetPosition(ticks);
+        backRightDrive.setTargetPosition(ticks);
+        backLeftDrive.setTargetPosition(ticks);
         driveByPosition(.5);
     }
 
     public void slide (double distnce){
         setMotorDriveDirection(MoveMethod.SLIDE);
         int ticks = (int)Math.round( distnce * ENCODER_TICKS_PER_SLIDE);
-        frontRightDrive.setTargetPosition(-1*ticks);
+        frontLeftDrive.setTargetPosition(ticks);
+        frontRightDrive.setTargetPosition(ticks);
+        backRightDrive.setTargetPosition(ticks);
+        backLeftDrive.setTargetPosition(ticks);
         driveByPosition(.5);
     }
 

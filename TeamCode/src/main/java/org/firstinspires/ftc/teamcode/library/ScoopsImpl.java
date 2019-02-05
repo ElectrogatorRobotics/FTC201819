@@ -15,6 +15,7 @@ public class ScoopsImpl implements Scoops {
 
     private Telemetry log;
     private ElapsedTime runtime = new ElapsedTime();
+    private Boolean cycling;
 
     public void init(HardwareMap hm, Telemetry telm){
         frontScoop = hm.servo.get("front scoop");
@@ -22,6 +23,7 @@ public class ScoopsImpl implements Scoops {
         frontScoopWheel = hm.servo.get("wheel servo");
         frontScoop.scaleRange(0.16, 0.8);
         log = telm;
+        cycling = false;
     }
 
     public void setFrontScoopPos(double pos){
@@ -69,9 +71,20 @@ public class ScoopsImpl implements Scoops {
     }
 
     public void backScoopCycle(){
-        backScoopDump();
-        sleep(1100);
-        backScoopDown();
+        if (! cycling){
+            cycling=true;
+            runtime.reset();
+            backScoopDump();
+        }
+    }
+
+    public void checkCycling() {
+        if (cycling){
+            if(runtime.milliseconds() > BACK_CYCLE_TIME ){
+                backScoopDown();
+                cycling=false;
+            }
+        }
     }
 
     private void sleep(long milisecs) {

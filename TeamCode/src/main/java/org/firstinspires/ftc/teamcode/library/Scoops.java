@@ -21,8 +21,6 @@ public interface Scoops {
 
     void frontScoopCycle ();
 
-    void setFrontScoopPosition(double position);
-
     void setBackScoopPos(double pos);
 
     void backScoopDown();
@@ -30,6 +28,4 @@ public interface Scoops {
     void backScoopDump();
 
     void backScoopCycle();
-
-    void runRubberBandWheel (double speed);
 }
