@@ -52,8 +52,8 @@ public class Auto_DepotDirect extends LinearOpMode {
             lg.deploy();
         }
 
-        drive.forward(60);
-        drive.turn(-135);
+        drive.forward(50);
+        drive.turn(132);
         mark.KickOutTheMrker();
         drive.forward(83);
     }

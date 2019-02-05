@@ -28,7 +28,7 @@ public class DriveImpl implements Drive {
     Telemetry LOG;
 
     private static final double DRIVE_POWER = .3;
-    private static final double TURN_POWER = .25;
+    private static final double TURN_POWER = .35;
     private static final double TURN_THRESHOLD = .5;
 
     private ElapsedTime runtime = new ElapsedTime();
@@ -83,7 +83,7 @@ public class DriveImpl implements Drive {
     public void initialiseIMU(HardwareMap hardwareMap) {
         BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
         parameters.angleUnit = BNO055IMU.AngleUnit.DEGREES;
-        parameters.gyroBandwidth = BNO055IMU.GyroBandwidth.HZ64;
+        parameters.gyroBandwidth = BNO055IMU.GyroBandwidth.HZ116;
         parameters.gyroPowerMode = BNO055IMU.GyroPowerMode.NORMAL;
         parameters.calibrationDataFile = "BNO055IMUCalibration.json";
         parameters.loggingEnabled = true;
@@ -295,9 +295,12 @@ public class DriveImpl implements Drive {
          * set {@link angleToTurn} equal to the {@link imu}'s Z axes
          */
 
-        double targetAngle = (angle.thirdAngle + angleToTurn + 360)%360 ;
+        double targetAngle = (angle.thirdAngle + angleToTurn + 360)%360;
         double power = TURN_POWER;
-        if(Math.sin(angle.thirdAngle - targetAngle) < 0) power *= -1;
+        if(Math.sin(angle.thirdAngle - targetAngle) > 0) power *= -1;
+        if(targetAngle >180){
+            targetAngle -= 360;
+        }
         setMotorBehavior(MotorMode.NONE);
         LOG.addLine("Turning");
         runtime.reset();
@@ -305,7 +308,10 @@ public class DriveImpl implements Drive {
             angle = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.XYZ, AngleUnit.DEGREES);
             LOG.addData("Turn target ",targetAngle);
             LOG.addData("Turn current ",angle.thirdAngle);
+            LOG.addData("Runtime ",runtime.milliseconds());
             LOG.update();
+            setMotorPower(power);
+            Thread.yield();
         }
         stop();
         return angleToTurn;
