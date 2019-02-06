@@ -11,8 +11,7 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
  */
 
 public interface Drive {
-
-
+	double MIN_SPEED = 0.4;
 
     void initMotors(HardwareMap hardware);
 
@@ -39,13 +38,7 @@ public interface Drive {
 	 */
 	double setMotorSpeed(double speed, DriveImpl.MotorControlMode controlMode);
 
-	/**
-	 *
-	 * @param throttle
-	 * @param minValue
-	 * @return
-	 */
-	double throttleControl(double throttle, double minValue);
+	void turn_time(int milliseconds, MoveDirection md);
 
 	void setMotorDriveDirection(DriveImpl.MoveMethod system);
 
@@ -70,17 +63,10 @@ public interface Drive {
 	 * Thees are the motor control modes that we can use
 	 */
 	enum MotorControlMode {
-		EXPO_CONTROL,
-		LINEAR_CONTROL
+		EXPONENTIAL_CONTROL, LINEAR_CONTROL
 	}
 
-	enum ThrottleControl {
-		LEFT_TRIGGER,
-		RIGHT_TRIGGER
-	}
+	enum ThrottleControl {LEFT_TRIGGER, RIGHT_TRIGGER}
 
-	enum MotorMode{
-		NONE,
-		POSITION
-	}
+	enum MoveDirection {FORWARD, RIGHT, BACK, LEFT}
 }

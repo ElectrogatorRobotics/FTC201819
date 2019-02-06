@@ -58,7 +58,7 @@ public class TeleOp_Mecanum extends LinearOpMode {
 
         while (opModeIsActive()) {
             // calculate the throttle position that will be used when calculating the motor powers
-            throtle = drive.throttleControl(gamepad1.left_trigger, .4);
+            throtle = Math.max(gamepad1.left_trigger, .4);
 
             /**
              * Calculate the power of each motor by multiplying the left Y-axes and the left X-axes that are
@@ -89,10 +89,10 @@ public class TeleOp_Mecanum extends LinearOpMode {
                 adjFactor = (1 / maxDrive);
             }
 
-            hardware.frontLeftDrive.setPower(drive.setMotorSpeed(frontLeftDrive * adjFactor, DriveImpl.MotorControlMode.LINEAR_CONTROL));
-	        hardware.frontRightDrive.setPower(drive.setMotorSpeed(frontRightDrive * adjFactor, DriveImpl.MotorControlMode.LINEAR_CONTROL));
-	        hardware.backLeftDrive.setPower(drive.setMotorSpeed(backLeftDrive * adjFactor, DriveImpl.MotorControlMode.LINEAR_CONTROL));
-	        hardware.backRightDrive.setPower(drive.setMotorSpeed(backRightDrive * adjFactor, DriveImpl.MotorControlMode.LINEAR_CONTROL));
+            hardware.frontLeftDrive.setPower(drive.setMotorSpeed(frontLeftDrive * adjFactor, Drive.MotorControlMode.LINEAR_CONTROL));
+	        hardware.frontRightDrive.setPower(drive.setMotorSpeed(frontRightDrive * adjFactor, Drive.MotorControlMode.LINEAR_CONTROL));
+	        hardware.backLeftDrive.setPower(drive.setMotorSpeed(backLeftDrive * adjFactor, Drive.MotorControlMode.LINEAR_CONTROL));
+	        hardware.backRightDrive.setPower(drive.setMotorSpeed(backRightDrive * adjFactor, Drive.MotorControlMode.LINEAR_CONTROL));
 
 
             if(gamepad2.a && gamepad2.right_bumper){
