@@ -70,10 +70,10 @@ public class TeleOp_Mecanum extends LinearOpMode {
              * not multiplied by the throttle, because it is used for sliding sideways and can not be controlled
              * efficiently with the throttle due to the high power requirements of sliding.
              */
-            frontRightDrive = ((gamepad1.left_stick_x * throtle) + (gamepad1.left_stick_y * throtle) + gamepad1.right_stick_x * throtle);
-            frontLeftDrive  = ((gamepad1.left_stick_x * throtle) - (gamepad1.left_stick_y * throtle) - gamepad1.right_stick_x  * throtle);
-            backRightDrive  = ((gamepad1.left_stick_x * throtle) + (gamepad1.left_stick_y * throtle) - gamepad1.right_stick_x  * throtle);
-            backLeftDrive   = ((gamepad1.left_stick_x * throtle) - (gamepad1.left_stick_y * throtle) + gamepad1.right_stick_x  * throtle);
+            frontRightDrive = ((gamepad1.left_stick_y * throtle) + (gamepad1.left_stick_x * throtle) + gamepad1.right_stick_x * throtle);
+            frontLeftDrive  = ((gamepad1.left_stick_y * throtle) - (gamepad1.left_stick_x * throtle) - gamepad1.right_stick_x  * throtle);
+            backRightDrive  = ((gamepad1.left_stick_y * throtle) + (gamepad1.left_stick_x * throtle) - gamepad1.right_stick_x  * throtle);
+            backLeftDrive   = ((gamepad1.left_stick_y * throtle) - (gamepad1.left_stick_x * throtle) + gamepad1.right_stick_x  * throtle);
 
             /**
              * The motor powers can be calculated to be higher than 1.0 and less than -1.0, so rater than just

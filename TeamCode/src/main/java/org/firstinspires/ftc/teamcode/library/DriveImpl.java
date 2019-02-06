@@ -80,8 +80,8 @@ public class DriveImpl implements Drive {
         backLeftDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         backRightDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
-        frontRightDrive.setDirection(DcMotorSimple.Direction.REVERSE);
-        backRightDrive.setDirection(DcMotorSimple.Direction.REVERSE);
+        setMotorDriveDirection(MoveMethod.STRAIGHT);
+
     }
 
     public void initialiseIMU(HardwareMap hardwareMap) {
