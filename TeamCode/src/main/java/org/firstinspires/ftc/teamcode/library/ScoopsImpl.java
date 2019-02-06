@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.library;
 
 
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
@@ -9,7 +10,7 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 
 public class ScoopsImpl implements Scoops {
 
-    public Servo frontScoop;
+    public DcMotorSimple frontScoop;
     public Servo backScoop;
     public Servo frontScoopWheel;
 
@@ -18,16 +19,15 @@ public class ScoopsImpl implements Scoops {
     private Boolean cycling;
 
     public void init(HardwareMap hm, Telemetry telm){
-        frontScoop = hm.servo.get("front scoop");
+        frontScoop = hm.get(DcMotorSimple.class,"front scoop");
         backScoop = hm.servo.get("back scoop");
         frontScoopWheel = hm.servo.get("wheel servo");
-        frontScoop.scaleRange(0.16, 0.8);
         log = telm;
         cycling = false;
     }
 
     public void setFrontScoopPos(double pos){
-        frontScoop.setPosition(pos);
+        frontScoop.setPower(pos);
     }
 
     public void frontScoopDown(){
@@ -55,18 +55,18 @@ public class ScoopsImpl implements Scoops {
     }
 
     public void backScoopDown(){
-        if(frontScoop.getPosition() > FRONT_AVOID){
-            setFrontScoopPos(FRONT_AVOID);
-            sleep(500);
-        }
+//        if(frontScoop.getPosition() > FRONT_AVOID){
+//            setFrontScoopPos(FRONT_AVOID);
+//            sleep(500);
+//        }
         setBackScoopPos(BACK_DOWN);
     }
 
     public void backScoopDump(){
-        if(frontScoop.getPosition() > FRONT_AVOID){
-            setFrontScoopPos(FRONT_AVOID);
-            sleep(500);
-        }
+//        if(frontScoop.getPosition() > FRONT_AVOID){
+//            setFrontScoopPos(FRONT_AVOID);
+//            sleep(500);
+//        }
         setBackScoopPos(BACK_DUMP);
     }
 
@@ -98,5 +98,5 @@ public class ScoopsImpl implements Scoops {
         frontScoopWheel.setPosition(speed);
     }
 
-    public void setFrontScoopPosition(double position){frontScoop.setPosition(position);}
+    public void setFrontScoopPosition(double position){frontScoop.setPower(position);}
 }

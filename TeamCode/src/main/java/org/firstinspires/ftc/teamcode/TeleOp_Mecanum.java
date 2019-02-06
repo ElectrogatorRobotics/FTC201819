@@ -109,8 +109,8 @@ public class TeleOp_Mecanum extends LinearOpMode {
             }
             else if(gamepad2.x && gamepad2.right_bumper){
                 enable_scoop = false;
-                scoop.backScoopDown();
-                scoop.frontScoopTransfer();
+//                scoop.backScoopDown();
+//                scoop.frontScoopTransfer();
                 lg.retract();
             }
 
