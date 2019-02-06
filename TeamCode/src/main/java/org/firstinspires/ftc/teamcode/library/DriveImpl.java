@@ -8,6 +8,7 @@ import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
@@ -36,6 +37,8 @@ public class DriveImpl implements Drive {
     public BNO055IMU imu = null;
     public Orientation angle = null;
 
+    private LinearOpMode lom;
+
 	/**
 	 * This is the minimum power that the drive train can move
 	 */
@@ -55,10 +58,11 @@ public class DriveImpl implements Drive {
     public enum MoveMethod{STRAIGHT, TURN, SLIDE, DEPLOY}
 
     public DriveImpl(){}
-    public DriveImpl(HardwareMap hwm, Telemetry telem){
+    public DriveImpl(HardwareMap hwm, Telemetry telem, LinearOpMode lop){
         setTelemetry(telem);
         initMotors(hwm);
         initialiseIMU(hwm);
+        lom = lop;
     }
 
     public void setTelemetry(Telemetry telem){
@@ -297,7 +301,7 @@ public class DriveImpl implements Drive {
 
         double targetAngle = (angle.thirdAngle + angleToTurn + 360)%360;
         double power = TURN_POWER;
-        if(Math.sin(angle.thirdAngle - targetAngle) > 0) power *= -1;
+        if(Math.sin(angle.thirdAngle - targetAngle) < 0) power *= -1;
         if(targetAngle >180){
             targetAngle -= 360;
         }
