@@ -115,7 +115,7 @@ public class TeleOp_Mecanum extends LinearOpMode {
             }
 
             if (gamepad2.a) {
-                scoop.runRubberBandWheel(-1.0);
+                scoop.runRubberBandWheel(1.0);
             }
             else scoop.runRubberBandWheel(0.5);
 
@@ -127,12 +127,12 @@ public class TeleOp_Mecanum extends LinearOpMode {
             if(enable_scoop) {
 //                gp2LT = Math.max(gamepad2.left_trigger,.2);
 //                gp2RT = (gamepad2.right_trigger*-1)+1;
-                gp2LT = gamepad2.left_stick_y;
+//                gp2LT = gamepad2.left_stick_y;
 //                gp2RT = gamepad2.right_stick_y;
 
 //                scoop.setFrontScoopPos(gp2LT);
 //                scoop.setBackScoopPos(gp2RT);
-                scoop.setFrontScoopPos((gp2LT * .5) + .5);
+//                scoop.setFrontScoopPos((gp2LT * .5) + .5);
 //              scoop.setBackScoopPos((gp2RT * .5) + .5);
 
                 if(gamepad2.left_bumper){
@@ -142,7 +142,7 @@ public class TeleOp_Mecanum extends LinearOpMode {
 //                if(gamepad2.left_trigger > .5){
 //                    scoop.frontScoopCycle();
 //                }
-                servoVal = (gamepad2.left_stick_y+1)/2;
+                servoVal = (gamepad2.left_stick_y);
                 scoop.setFrontScoopPos(servoVal);
 //            if(gamepad1.left_bumper)scoop.frontScoopDown();
 //            if(gamepad1.right_bumper)scoop.frontScoopTransfer();
