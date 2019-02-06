@@ -1,7 +1,4 @@
-
 package org.firstinspires.ftc.teamcode;
-
-import android.util.Range;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
@@ -22,10 +19,10 @@ import org.firstinspires.ftc.teamcode.library.ScoopsImpl;
 @TeleOp(name = "DRIVE!")
 public class TeleOp_Mecanum extends LinearOpMode {
     ElectorgatorHardware hardware = new ElectorgatorHardware();
-	Drive drive;
-	LandingGear lg = new LandingGearImpl();
-	Scoops scoop = new ScoopsImpl();
-	Marker marker = new Marker();
+    Drive drive;
+    LandingGear lg = new LandingGearImpl();
+    Scoops scoop = new ScoopsImpl();
+    Marker marker = new Marker();
 
 
     double frontLeftDrive, frontRightDrive, backRightDrive, backLeftDrive;
@@ -47,9 +44,13 @@ public class TeleOp_Mecanum extends LinearOpMode {
         hardware.initMotors(hardwareMap);
         drive.setTelemetry(telemetry);
         drive.initMotors(hardwareMap);
+        drive.setupDriveForTeleop();
+
         lg.init(hardwareMap, drive);
+
         scoop.init(hardwareMap, telemetry);
         scoop.backScoopDown();
+
         marker.init(hardwareMap, telemetry);
 
         telemetry.addLine("Ready to start... thank you for waiting!");
@@ -71,9 +72,9 @@ public class TeleOp_Mecanum extends LinearOpMode {
              * efficiently with the throttle due to the high power requirements of sliding.
              */
             frontRightDrive = ((gamepad1.left_stick_y * throtle) + (gamepad1.left_stick_x * throtle) + gamepad1.right_stick_x * throtle);
-            frontLeftDrive  = ((gamepad1.left_stick_y * throtle) - (gamepad1.left_stick_x * throtle) - gamepad1.right_stick_x  * throtle);
-            backRightDrive  = ((gamepad1.left_stick_y * throtle) + (gamepad1.left_stick_x * throtle) - gamepad1.right_stick_x  * throtle);
-            backLeftDrive   = ((gamepad1.left_stick_y * throtle) - (gamepad1.left_stick_x * throtle) + gamepad1.right_stick_x  * throtle);
+            frontLeftDrive = ((gamepad1.left_stick_y * throtle) - (gamepad1.left_stick_x * throtle) - gamepad1.right_stick_x * throtle);
+            backRightDrive = ((gamepad1.left_stick_y * throtle) + (gamepad1.left_stick_x * throtle) - gamepad1.right_stick_x * throtle);
+            backLeftDrive = ((gamepad1.left_stick_y * throtle) - (gamepad1.left_stick_x * throtle) + gamepad1.right_stick_x * throtle);
 
             /**
              * The motor powers can be calculated to be higher than 1.0 and less than -1.0, so rater than just
@@ -99,15 +100,14 @@ public class TeleOp_Mecanum extends LinearOpMode {
             hardware.backRightDrive.setPower(drive.setMotorSpeed(backRightDrive * adjFactor, DriveImpl.MotorControlMode.LINEAR_CONTROL));
 
 
-            if(gamepad2.a && gamepad2.right_bumper){
+            if (gamepad2.a && gamepad2.right_bumper) {
                 lg.stand_up();
                 enable_scoop = true;
-            }
-            else if (gamepad2.b && gamepad2.right_bumper){
+            } else if (gamepad2.b && gamepad2.right_bumper) {
                 lg.deploy();
                 enable_scoop = true;
-            }
-            else if(gamepad2.x && gamepad2.right_bumper){
+                drive.setupDriveForTeleop();
+            } else if (gamepad2.x && gamepad2.right_bumper) {
                 enable_scoop = false;
 //                scoop.backScoopDown();
 //                scoop.frontScoopTransfer();
@@ -116,15 +116,14 @@ public class TeleOp_Mecanum extends LinearOpMode {
 
             if (gamepad2.a) {
                 scoop.runRubberBandWheel(1.0);
-            }
-            else scoop.runRubberBandWheel(0.5);
+            } else scoop.runRubberBandWheel(0.5);
 
             if (gamepad2.dpad_down) {
                 marker.KickOutTheMrker();
             }
             // display the motor speeds
 
-            if(enable_scoop) {
+            if (enable_scoop) {
 //                gp2LT = Math.max(gamepad2.left_trigger,.2);
 //                gp2RT = (gamepad2.right_trigger*-1)+1;
 //                gp2LT = gamepad2.left_stick_y;
@@ -135,7 +134,7 @@ public class TeleOp_Mecanum extends LinearOpMode {
 //                scoop.setFrontScoopPos((gp2LT * .5) + .5);
 //              scoop.setBackScoopPos((gp2RT * .5) + .5);
 
-                if(gamepad2.left_bumper){
+                if (gamepad2.left_bumper) {
                     scoop.backScoopCycle();
                 }
                 scoop.checkCycling();
@@ -161,7 +160,7 @@ public class TeleOp_Mecanum extends LinearOpMode {
 //            telemetry.addData("Back left drive speed   = ", "%1.2f", hardware.backLeftDrive.getPower());
             telemetry.addData("Back left drive pstn   = ", hardware.backLeftDrive.getCurrentPosition());
 // 	        telemetry.addData("Throttle                = ", "%1.2f", drive.throttleControl(gamepad1.left_trigger, drive.MIN_SPEED));
-	        telemetry.addData("Throttle                 = ", "%1.2f", throtle);
+            telemetry.addData("Throttle                 = ", "%1.2f", throtle);
 //            telemetry.addData("Front Scoop              = ", "%1.2f",gp2LT);
             telemetry.addData("Front Scoop              = ", servoVal);
 

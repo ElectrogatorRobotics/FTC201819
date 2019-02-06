@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.library;
 
 import com.qualcomm.hardware.bosch.BNO055IMU;
+import com.qualcomm.hardware.rev.RevSPARKMini;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
@@ -152,7 +153,7 @@ public class DriveImpl implements Drive {
                 frontRightDrive.setDirection(DcMotorSimple.Direction.REVERSE);
                 backRightDrive.setDirection(DcMotorSimple.Direction.FORWARD);
                 break;
-            case DEPLOY:
+            case DEPLOY: // this should be the same as default?
                 frontLeftDrive.setDirection(DcMotorSimple.Direction.FORWARD);
                 backLeftDrive.setDirection(DcMotorSimple.Direction.REVERSE);
                 frontRightDrive.setDirection(DcMotorSimple.Direction.REVERSE);
@@ -166,6 +167,18 @@ public class DriveImpl implements Drive {
                 backRightDrive.setDirection(DcMotorSimple.Direction.REVERSE);
                 break;
         }
+    }
+
+    public void setupDriveForTeleop () {
+        frontLeftDrive.setDirection(DcMotorSimple.Direction.FORWARD);
+        backLeftDrive.setDirection(DcMotorSimple.Direction.FORWARD);
+        frontRightDrive.setDirection(DcMotorSimple.Direction.REVERSE);
+        backRightDrive.setDirection(DcMotorSimple.Direction.REVERSE);
+
+        frontRightDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        backRightDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        backLeftDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        frontLeftDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
     }
 
     public void setTargetPosition (int targetPosition) {
