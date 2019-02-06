@@ -38,8 +38,6 @@ public interface Drive {
 	 */
 	//double setMotorSpeed(double speed, DriveImpl.MotorControlMode controlMode);
 
-	void turn_time(int milliseconds, MoveDirection md);
-
 	void setMotorDriveDirection(DriveImpl.MoveMethod system);
 
 	void setMotorBehavior(MotorMode mode);
@@ -71,4 +69,6 @@ public interface Drive {
 	enum ThrottleControl {LEFT_TRIGGER, RIGHT_TRIGGER}
 
 	enum MoveDirection {FORWARD, RIGHT, BACK, LEFT}
+
+	enum MotorMode{NONE,POSITION}
 }
