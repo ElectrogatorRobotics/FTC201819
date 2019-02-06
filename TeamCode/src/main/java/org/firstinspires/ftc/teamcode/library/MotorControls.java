@@ -8,16 +8,23 @@ import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
+import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
+
+/**
+ * Created by Luke Reinke.
+ *
+ */
 
 public class MotorControls {
     public DcMotorEx frontRightDrive = null;
     public DcMotorEx frontLeftDrive  = null;
     public DcMotorEx backRightDrive  = null;
     public DcMotorEx backLeftDrive   = null;
+    Telemetry LOG;
 
     public BNO055IMU imu = null;
     public Orientation angle = null;
@@ -118,7 +125,11 @@ public class MotorControls {
         /**
          * set {@link angleToTurn} equal to the {@link imu}'s Z axes
          */
-        angleToTurn = angle.thirdAngle;
+
+        double targetAngle = (angle.thirdAngle + angleToTurn + 360)%360 ;
+        if(angleToTurn < 0){
+
+        }
 
 
         return angleToTurn;

@@ -1,6 +1,8 @@
 package org.firstinspires.ftc.teamcode.library;
 
+import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.HardwareMap;
@@ -8,6 +10,10 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
+import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
+import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 
 /**
  * Created by cameron.czekai on 11/1/2017.
@@ -15,20 +21,26 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
  */
 
 public class DriveImpl implements Drive {
-    public DcMotor frontRightDrive = null;
-    public DcMotor frontLeftDrive  = null;
-    public DcMotor backRightDrive  = null;
-    public DcMotor backLeftDrive   = null;
+    public DcMotorEx frontRightDrive = null;
+    public DcMotorEx frontLeftDrive  = null;
+    public DcMotorEx backRightDrive  = null;
+    public DcMotorEx backLeftDrive   = null;
     Telemetry LOG;
 
-    Proportional proportional = new Proportional();
-	Gamepad gamepad1 = new Gamepad();
-	Gamepad gamepad2 = new Gamepad();
-	ElectorgatorHardware robot = new ElectorgatorHardware();
+    private static final double DRIVE_POWER = .3;
+    private static final double TURN_POWER = .25;
+    private static final double TURN_THRESHOLD = .5;
+
+    private ElapsedTime runtime = new ElapsedTime();
+
+    public BNO055IMU imu = null;
+    public Orientation angle = null;
 
 	/**
 	 * This is the minimum power that the drive train can move
 	 */
+
+    private static final int MAX_SPEED = (6000/360);
 	public static final double MIN_SPEED = 0.4;
 
     /**
@@ -38,49 +50,60 @@ public class DriveImpl implements Drive {
      * wheel diameter = 4 inches
      * ticks per revolution of wheel = 7 counts per motor revolution * 20 gearbox reduction (20:1)
      */
-    public static final double ENCODER_TICKS_PER_SLIDE = ((20.625 * 7)/(4 * Math.PI));
-    public static final double ENCODER_TICKS_PER_INCH = ((20.625 * 7)/(4 * Math.PI));
-    public static final double ENCODER_TICKS_PER_ANGLE = ((20.625 * 7)/(4 * Math.PI));
+    public static final double ENCODER_COUNTS_PER_INCH = (28*20.625)/(Math.PI*4);
 
-    public enum MotorControlMode {EXPONENTIAL_CONTROL, LINEAR_CONTROL}
     public enum MoveMethod{STRAIGHT, TURN, SLIDE, DEPLOY}
 
     public DriveImpl(){}
     public DriveImpl(HardwareMap hwm, Telemetry telem){
         setTelemetry(telem);
         initMotors(hwm);
-        robot.initIMU(hwm);
+        initialiseIMU(hwm);
     }
 
     public void setTelemetry(Telemetry telem){
         LOG = telem;
     }
     public void initMotors (HardwareMap hardwareMap) {
-        // initialize motor
-        LOG.addLine("InitMotors");
-        LOG.update();
-        frontRightDrive = hardwareMap.dcMotor.get("front right drive");
-        frontLeftDrive  = hardwareMap.dcMotor.get("front left drive");
-        backRightDrive  = hardwareMap.dcMotor.get("back right drive");
-        backLeftDrive   = hardwareMap.dcMotor.get("back left drive");
+        frontRightDrive = (DcMotorEx) hardwareMap.dcMotor.get("front right drive");
+        frontLeftDrive  = (DcMotorEx) hardwareMap.dcMotor.get("front left drive");
+        backRightDrive  = (DcMotorEx) hardwareMap.dcMotor.get("back right drive");
+        backLeftDrive   = (DcMotorEx) hardwareMap.dcMotor.get("back left drive");
 
-        // set speed
-        LOG.addLine("SetPower");
-        stop();
-        // set mode
-        setMotorNoEncoders();
-        setMotorDriveDirection(MoveMethod.STRAIGHT);
+        // turn on the break in the motors
+        frontLeftDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        frontRightDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        backLeftDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        backRightDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
+        frontRightDrive.setDirection(DcMotorSimple.Direction.REVERSE);
+        backRightDrive.setDirection(DcMotorSimple.Direction.REVERSE);
+    }
+
+    public void initialiseIMU(HardwareMap hardwareMap) {
+        BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
+        parameters.angleUnit = BNO055IMU.AngleUnit.DEGREES;
+        parameters.gyroBandwidth = BNO055IMU.GyroBandwidth.HZ64;
+        parameters.gyroPowerMode = BNO055IMU.GyroPowerMode.NORMAL;
+        parameters.calibrationDataFile = "BNO055IMUCalibration.json";
+        parameters.loggingEnabled = true;
+        parameters.loggingTag = "IMU";
+
+        imu = hardwareMap.get(BNO055IMU.class, "imu");
+        imu.initialize(parameters);
+
     }
 
     //region SET MOTOR BEHAVIOR
 
     public void setMotorBehavior(MotorMode mode){
-        setMotorNoEncoders();
         switch (mode){
             case POSITION:
-                setMotorToPositionAndReset();
+                setMotorToByPosition();
                 break;
             case NONE:
+            default:
+                setMotorNoEncoders();
                 break;
         }
     }
@@ -95,11 +118,17 @@ public class DriveImpl implements Drive {
     }
 
     public void setMotorToPositionAndReset(){
-        LOG.addLine("Reset and Enable Encoders.");
+        LOG.addLine("Reset Encoders.");
         frontRightDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         frontLeftDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         backRightDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         backLeftDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        setMotorToByPosition();
+        LOG.update();
+    }
+
+    public void setMotorToByPosition(){
+        LOG.addLine("Enable Encoders.");
         frontRightDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         frontLeftDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         backRightDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
@@ -112,10 +141,10 @@ public class DriveImpl implements Drive {
         LOG.addData("SettingDrive", system);
         switch(system) {
             case TURN:
-                frontLeftDrive.setDirection(DcMotorSimple.Direction.FORWARD);
-                backLeftDrive.setDirection(DcMotorSimple.Direction.FORWARD);
-                frontRightDrive.setDirection(DcMotorSimple.Direction.FORWARD);
-                backRightDrive.setDirection(DcMotorSimple.Direction.FORWARD);
+                frontLeftDrive.setDirection(DcMotorSimple.Direction.REVERSE);
+                backLeftDrive.setDirection(DcMotorSimple.Direction.REVERSE);
+                frontRightDrive.setDirection(DcMotorSimple.Direction.REVERSE);
+                backRightDrive.setDirection(DcMotorSimple.Direction.REVERSE);
                 break;
             case SLIDE:
                 frontLeftDrive.setDirection(DcMotorSimple.Direction.REVERSE);
@@ -131,44 +160,53 @@ public class DriveImpl implements Drive {
                 break;
             case STRAIGHT:
             default:
-                frontLeftDrive.setDirection(DcMotorSimple.Direction.REVERSE);
-                backLeftDrive.setDirection(DcMotorSimple.Direction.REVERSE);
-                frontRightDrive.setDirection(DcMotorSimple.Direction.FORWARD);
-                backRightDrive.setDirection(DcMotorSimple.Direction.FORWARD);
+                frontLeftDrive.setDirection(DcMotorSimple.Direction.FORWARD);
+                backLeftDrive.setDirection(DcMotorSimple.Direction.FORWARD);
+                frontRightDrive.setDirection(DcMotorSimple.Direction.REVERSE);
+                backRightDrive.setDirection(DcMotorSimple.Direction.REVERSE);
                 break;
         }
+    }
+
+    public void setTargetPosition (int targetPosition) {
+        frontLeftDrive.setTargetPosition(frontLeftDrive.getCurrentPosition() + targetPosition);
+        frontRightDrive.setTargetPosition(frontRightDrive.getCurrentPosition() + targetPosition);
+        backLeftDrive.setTargetPosition(backLeftDrive.getCurrentPosition() + targetPosition);
+        backRightDrive.setTargetPosition(backRightDrive.getCurrentPosition() + targetPosition);
+    }
+
+    /**
+     * tolerance is measured in encoder ticks
+     * @param tolerance
+     */
+    void setTargetTolerance(int tolerance) {
+        frontRightDrive.setTargetPositionTolerance(tolerance);
+        frontLeftDrive.setTargetPositionTolerance(tolerance);
+        backRightDrive.setTargetPositionTolerance(tolerance);
+        backLeftDrive.setTargetPositionTolerance(tolerance);
     }
 
     //endregion
 
 	public void forward(int inches){
-       setMotorDriveDirection(MoveMethod.STRAIGHT);
-        int ticks = (int)Math.round(inches * ENCODER_TICKS_PER_INCH);
-        frontLeftDrive.setTargetPosition(ticks);
-        frontRightDrive.setTargetPosition(ticks);
-        backRightDrive.setTargetPosition(ticks);
-        backLeftDrive.setTargetPosition(ticks);
-        driveByPosition(.5);
+        setMotorDriveDirection(MoveMethod.STRAIGHT);
+        int ticks = (int)Math.round(inches * ENCODER_COUNTS_PER_INCH);
+        setTargetTolerance(50);
+        setTargetPosition(ticks);
+        driveByPosition(DRIVE_POWER);
 	}
 
 	public void turn(double angle){
         setMotorDriveDirection(MoveMethod.TURN);
-        int ticks = (int)Math.round(angle * ENCODER_TICKS_PER_ANGLE);
-        frontLeftDrive.setTargetPosition(ticks);
-        frontRightDrive.setTargetPosition(ticks);
-        backRightDrive.setTargetPosition(ticks);
-        backLeftDrive.setTargetPosition(ticks);
-        driveByPosition(.5);
+        turnToAngle(angle);
     }
 
-    public void slide (double distnce){
+    public void slide (double distance){
         setMotorDriveDirection(MoveMethod.SLIDE);
-        int ticks = (int)Math.round( distnce * ENCODER_TICKS_PER_SLIDE);
-        frontLeftDrive.setTargetPosition(ticks);
-        frontRightDrive.setTargetPosition(ticks);
-        backRightDrive.setTargetPosition(ticks);
-        backLeftDrive.setTargetPosition(ticks);
-        driveByPosition(.5);
+        int ticks = (int)Math.round( distance * ENCODER_COUNTS_PER_INCH);
+        setTargetTolerance(50);
+        setTargetPosition(ticks);
+        driveByPosition(DRIVE_POWER);
     }
 
     public void forward_time(int milliseconds){
@@ -237,7 +275,7 @@ public class DriveImpl implements Drive {
     public void driveByPosition(double power){
         LOG.addData("DriveByPosition pow=",power);
         LOG.addData("DriveByPosition targ=",frontRightDrive.getTargetPosition());
-        setMotorToPositionAndReset();
+        setMotorToByPosition();
         frontLeftDrive.setPower(power);
         frontRightDrive.setPower(power);
         backLeftDrive.setPower(power);
@@ -251,34 +289,37 @@ public class DriveImpl implements Drive {
         LOG.update();
     }
 
-    /**
-     * @param targetDist  distance to drive in inches
-     * @param driveMotor  Proportional.ProportionalMode for how to drive the motors
-     */
-    private double calculateDriveSpeed(double targetDist, double curPos, Proportional.ProportionalMode driveMotor){
-        double target = curPos + (targetDist * ENCODER_TICKS_PER_INCH);
-        double motorPower;
+    public double turnToAngle (double angleToTurn) {
+        angle = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.XYZ, AngleUnit.DEGREES);
+        /**
+         * set {@link angleToTurn} equal to the {@link imu}'s Z axes
+         */
 
-        do {
-            // calculate the speed of the motor proportionally using the distance form the target
-            motorPower = 1;//proportional.p((float)targetDist, (float)curPos, driveMotor);
-        } while (curPos < target);
-        return motorPower;
+        double targetAngle = (angle.thirdAngle + angleToTurn + 360)%360 ;
+        double power = TURN_POWER;
+        if(Math.sin(angle.thirdAngle - targetAngle) < 0) power *= -1;
+        setMotorBehavior(MotorMode.NONE);
+        LOG.addLine("Turning");
+        runtime.reset();
+        while(Math.abs(angle.thirdAngle - targetAngle) > TURN_THRESHOLD && runtime.seconds() < 10 ){
+            angle = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.XYZ, AngleUnit.DEGREES);
+            LOG.addData("Turn target ",targetAngle);
+            LOG.addData("Turn current ",angle.thirdAngle);
+            LOG.update();
+        }
+        stop();
+        return angleToTurn;
     }
 
-    public double setMotorSpeed (double speed, MotorControlMode controlMode, double expoBase) {
+    public double setMotorSpeed (double speed, MotorControlMode controlMode) {
         switch (controlMode) {
-            case EXPONENTIAL_CONTROL:
-                return Math.pow(Range.clip(speed, -1.0, 1.0), expoBase);
+//            case EXPONENTIAL_CONTROL:
+//                return Math.pow(Range.clip(speed, -1.0, 1.0), expoBase);
             case LINEAR_CONTROL:
                 return Range.clip(speed, -1.0, 1.0);
             default:
                 return 0;
         }
-    }
-
-    public double setMotorSpeed (double speed, MotorControlMode controlMode){
-        return setMotorSpeed(speed, controlMode, 5);
     }
 
     public double throttleControl (double throttle, double minValue) {

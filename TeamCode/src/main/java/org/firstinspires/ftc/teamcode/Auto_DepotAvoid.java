@@ -3,26 +3,24 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.library.Drive;
 import org.firstinspires.ftc.teamcode.library.DriveImpl;
-import org.firstinspires.ftc.teamcode.library.ElectorgatorHardware;
 import org.firstinspires.ftc.teamcode.library.LandingGear;
 import org.firstinspires.ftc.teamcode.library.LandingGearImpl;
+import org.firstinspires.ftc.teamcode.library.Marker;
 
 /**
  * Created by mira on 11/26/2018.
  */
 
-//@Autonomous(name = "Auto: Pick Me Luke")
-public class autoBasic extends LinearOpMode {
-    ElectorgatorHardware hardware = new ElectorgatorHardware();
-	Drive drive;
-	LandingGear lg= new LandingGearImpl();
+@Autonomous(name = "Depot - Avoid")
+public class Auto_DepotAvoid extends LinearOpMode {
+    private static final boolean live = false;
 
-
-    double maxDrive = 0;
+	Drive drive = new DriveImpl();
+	LandingGear lg = new LandingGearImpl();
+    Marker mark = new Marker();
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -31,32 +29,40 @@ public class autoBasic extends LinearOpMode {
         telemetry.update();
 
         drive = new DriveImpl();
-        hardware.initMotors(hardwareMap);
-
         drive.setTelemetry(telemetry);
         drive.initMotors(hardwareMap);
+        drive.initialiseIMU(hardwareMap);
+
+        mark.init(hardwareMap,telemetry);
+
         lg.init(hardwareMap,drive);
 
         telemetry.addLine("Retracting!!!");
         telemetry.update();
-        lg.retract();///!!!Illegal?
+        if(live) lg.retract();///!!!Illegal?
 
         telemetry.addLine("Ready to start... thank you for waiting!");
         telemetry.update();
 
         waitForStart();
-        lg.stand_up();
-        //drive.slide_time(-250);
-        drive.slide(3);
-        lg.deploy();
-        drive.forward(6);
-        drive.turn(90);
-        drive.forward(4);
-    }
-
-    void setMaxDrive(double motor) {
-        if (Math.abs(motor) > maxDrive) {
-            maxDrive = Math.abs(motor);
+        if(live) {
+            lg.stand_up();
+            drive.slide(4);
+            lg.deploy();
         }
+        drive.forward(64);
+        drive.turn(135);
+        mark.KickOutTheMrker();
+        drive.forward(55);
+        drive.turn(90);
+        drive.forward(20);
+        drive.turn(45);
+        drive.forward(56);
+        drive.turn(-90);
+        drive.forward(56);
+        drive.turn(45);
+        drive.forward(20);
+        drive.turn(90);
+        drive.forward(43);
     }
 }

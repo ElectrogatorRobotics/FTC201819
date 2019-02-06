@@ -15,7 +15,7 @@ public interface Drive {
 
 
     void initMotors(HardwareMap hardware);
-
+	void initialiseIMU(HardwareMap hardwareMap);
 	void setTelemetry(Telemetry telem);
 
 	/**
@@ -27,7 +27,7 @@ public interface Drive {
 	 * @param expoBase
 	 * @return
 	 */
-	double setMotorSpeed(double speed, DriveImpl.MotorControlMode controlMode, double expoBase);
+	//double setMotorSpeed(double speed, DriveImpl.MotorControlMode controlMode, double expoBase);
 
 	/**
 	 * Set the speed of a motor with or with out expo.
@@ -37,7 +37,7 @@ public interface Drive {
 	 * @param controlMode
 	 * @return
 	 */
-	double setMotorSpeed(double speed, DriveImpl.MotorControlMode controlMode);
+	//double setMotorSpeed(double speed, DriveImpl.MotorControlMode controlMode);
 
 	/**
 	 *
@@ -50,6 +50,8 @@ public interface Drive {
 	void setMotorDriveDirection(DriveImpl.MoveMethod system);
 
 	void setMotorBehavior(MotorMode mode);
+
+	double setMotorSpeed(double speed, MotorControlMode mcm);
 
 	void forward(int inches);
     void turn(double angle);
