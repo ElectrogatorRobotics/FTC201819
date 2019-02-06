@@ -106,7 +106,6 @@ public class TeleOp_Mecanum extends LinearOpMode {
             } else if (gamepad2.b && gamepad2.right_bumper) {
                 lg.deploy();
                 enable_scoop = true;
-                drive.setupDriveForTeleop();
             } else if (gamepad2.x && gamepad2.right_bumper) {
                 enable_scoop = false;
 //                scoop.backScoopDown();

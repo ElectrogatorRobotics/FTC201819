@@ -109,7 +109,7 @@ public class TensorFlowObjectDetection extends LinearOpMode {
         int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
 //        VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters(cameraMonitorViewId);
 
-         VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters();
+        VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters();
 
         parameters.vuforiaLicenseKey = VUFORIA_KEY;
         parameters.cameraDirection = CAMERA_CHOICE;
@@ -230,9 +230,9 @@ public class TensorFlowObjectDetection extends LinearOpMode {
          */
 
         // TODO: 1/18/2019 find phone location on robot
-        final int CAMERA_FORWARD_DISPLACEMENT = 110;   // eg: Camera is 110 mm in front of robot center
-        final int CAMERA_VERTICAL_DISPLACEMENT = 200;   // eg: Camera is 200 mm above ground
-        final int CAMERA_LEFT_DISPLACEMENT = 0;     // eg: Camera is ON the robot's center line
+        final int CAMERA_FORWARD_DISPLACEMENT = -127; // Camera is 127 mm back form the center
+        final int CAMERA_VERTICAL_DISPLACEMENT = 431; // Camera is ~431 mm off the flore
+        final int CAMERA_LEFT_DISPLACEMENT = 127;     // Camera is ~127 mm left of the center
 
         OpenGLMatrix phoneLocationOnRobot = OpenGLMatrix
                 .translation(CAMERA_FORWARD_DISPLACEMENT, CAMERA_LEFT_DISPLACEMENT, CAMERA_VERTICAL_DISPLACEMENT)
@@ -279,16 +279,16 @@ public class TensorFlowObjectDetection extends LinearOpMode {
                                 }
                             }
                             // TODO: 1/18/2019 disable TensorFlow once finished tracking minerals
-                            if (goldMineralX != -1 && silverMineral1X != -1 && silverMineral2X != -1) {
-                                if (goldMineralX < silverMineral1X && goldMineralX < silverMineral2X) {
+                            if (goldMineralX != -1 && silverMineral1X != -1 || silverMineral1X != -1 && silverMineral2X != -1) {
+                                if (goldMineralX < silverMineral1X) { // gold and silver are in frame
                                     // gold left code here:
                                     // use goldPosition(goldPosition.LEFT) or something similar
                                     telemetry.addData("Gold Mineral Position", "Left");
-                                } else if (goldMineralX > silverMineral1X && goldMineralX > silverMineral2X) {
+                                } else if (goldMineralX > silverMineral1X) { // gold and silver in frame
                                     // gold right code here:
                                     // use goldPosition(goldPosition.RIGHT) or something similar
                                     telemetry.addData("Gold Mineral Position", "Right");
-                                } else {
+                                } else { // two silver are in frame
                                     // gold center code here:
                                     // use goldPosition(goldPosition.CENTER) or something similar
                                     telemetry.addData("Gold Mineral Position", "Center");
@@ -304,6 +304,7 @@ public class TensorFlowObjectDetection extends LinearOpMode {
                  * now it is time to detect the image target to find out which side where the robot is.
                  */
 
+                /*
                 targetsRoverRuckus.activate();
                 targetVisible = false;
                 for (VuforiaTrackable trackable : allTrackables) {
@@ -349,6 +350,7 @@ public class TensorFlowObjectDetection extends LinearOpMode {
                 } else {
                     telemetry.addData("Visible Target", "none");
                 }
+                */
                 telemetry.update();
             }
         }
@@ -362,3 +364,215 @@ public class TensorFlowObjectDetection extends LinearOpMode {
         tfod.loadModelFromAsset(TFOD_MODEL_ASSET, LABEL_GOLD_MINERAL, LABEL_SILVER_MINERAL);
     }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
