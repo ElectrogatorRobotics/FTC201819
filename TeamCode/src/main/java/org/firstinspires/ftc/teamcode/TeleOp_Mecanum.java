@@ -62,7 +62,7 @@ public class TeleOp_Mecanum extends LinearOpMode {
 
         while (opModeIsActive()) {
             // calculate the throttle position that will be used when calculating the motor powers
-            throtle = drive.throttleControl(gamepad1.left_trigger, .4);
+            throtle = Math.max(gamepad1.left_trigger, .4);
 
             /**
              * Calculate the power of each motor by multiplying the left Y-axes and the left X-axes that are
