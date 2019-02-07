@@ -170,15 +170,15 @@ public class DriveImpl implements Drive {
     }
 
     public void setupDriveForTeleop () {
-        frontLeftDrive.setDirection(DcMotorSimple.Direction.FORWARD);
-        backLeftDrive.setDirection(DcMotorSimple.Direction.FORWARD);
-        frontRightDrive.setDirection(DcMotorSimple.Direction.REVERSE);
-        backRightDrive.setDirection(DcMotorSimple.Direction.REVERSE);
+        frontLeftDrive.setDirection(DcMotorSimple.Direction.REVERSE);
+        backLeftDrive.setDirection(DcMotorSimple.Direction.REVERSE);
+        frontRightDrive.setDirection(DcMotorSimple.Direction.FORWARD);
+        backRightDrive.setDirection(DcMotorSimple.Direction.FORWARD);
 
-        frontRightDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        backRightDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        backLeftDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        frontLeftDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+//        frontRightDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+//        backRightDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+//        backLeftDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+//        frontLeftDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
     }
 
     public void setTargetPosition (int targetPosition) {
