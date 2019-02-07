@@ -24,6 +24,7 @@ public class TeleOp_Mecanum extends LinearOpMode {
     Scoops scoop = new ScoopsImpl();
     Marker marker = new Marker();
 
+    static final double WALL_SCALE_FACTOR = 0.5; //set other side to half power;
 
     double frontLeftDrive, frontRightDrive, backRightDrive, backLeftDrive;
     boolean startRelic = false;
@@ -35,7 +36,7 @@ public class TeleOp_Mecanum extends LinearOpMode {
         telemetry.addLine("Initialising... please wait.");
         telemetry.update();
 
-        double adjFactor;
+        double adjFactorFront, adjFactorBack;
         double throtle;
         double servoVal = 0;
 
@@ -88,16 +89,24 @@ public class TeleOp_Mecanum extends LinearOpMode {
             setMaxDrive(backRightDrive);
             setMaxDrive(backLeftDrive);
             // we set the adjustment factor to 1 so it does not change the motor powers if if they are in the 1.0 to -1.0 range
-            adjFactor = 1;
+            adjFactorFront = 1;
+            adjFactorBack = 1;
             // we need to use the abs value to of the max drive power to determine if we need to scale the motor powers down or not
             if (maxDrive > 1) {
-                adjFactor = (1 / maxDrive);
+                adjFactorFront = (1 / maxDrive);
+                adjFactorBack = (1 / maxDrive);
             }
 
-            hardware.frontLeftDrive.setPower(drive.setMotorSpeed(frontLeftDrive * adjFactor, DriveImpl.MotorControlMode.LINEAR_CONTROL));
-            hardware.frontRightDrive.setPower(drive.setMotorSpeed(frontRightDrive * adjFactor, DriveImpl.MotorControlMode.LINEAR_CONTROL));
-            hardware.backLeftDrive.setPower(drive.setMotorSpeed(backLeftDrive * adjFactor, DriveImpl.MotorControlMode.LINEAR_CONTROL));
-            hardware.backRightDrive.setPower(drive.setMotorSpeed(backRightDrive * adjFactor, DriveImpl.MotorControlMode.LINEAR_CONTROL));
+            if(gamepad1.a) {
+                adjFactorBack *= WALL_SCALE_FACTOR;
+            }
+            else if(gamepad1.b){
+                adjFactorFront *= WALL_SCALE_FACTOR;
+            }
+            hardware.frontLeftDrive.setPower(drive.setMotorSpeed(frontLeftDrive * adjFactorFront, DriveImpl.MotorControlMode.LINEAR_CONTROL));
+            hardware.frontRightDrive.setPower(drive.setMotorSpeed(frontRightDrive * adjFactorFront, DriveImpl.MotorControlMode.LINEAR_CONTROL));
+            hardware.backLeftDrive.setPower(drive.setMotorSpeed(backLeftDrive * adjFactorBack, DriveImpl.MotorControlMode.LINEAR_CONTROL));
+            hardware.backRightDrive.setPower(drive.setMotorSpeed(backRightDrive * adjFactorBack, DriveImpl.MotorControlMode.LINEAR_CONTROL));
 
 
             if (gamepad2.a && gamepad2.right_bumper) {
@@ -115,7 +124,12 @@ public class TeleOp_Mecanum extends LinearOpMode {
 
             if (gamepad2.a) {
                 scoop.runRubberBandWheel(1.0);
-            } else scoop.runRubberBandWheel(0.5);
+            } else if(gamepad2.y) {
+                scoop.runRubberBandWheel(0);
+            }
+            else{
+                scoop.runRubberBandWheel(0.5);
+            }
 
             if (gamepad2.dpad_down) {
                 marker.KickOutTheMrker();
