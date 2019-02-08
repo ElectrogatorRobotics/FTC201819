@@ -69,6 +69,9 @@ public class DriveImpl implements Drive {
     public void setTelemetry(Telemetry telem){
         LOG = telem;
     }
+    public void passLinearOp(LinearOpMode lop){
+        lom = lop;
+    }
     public void initMotors (HardwareMap hardwareMap) {
         frontRightDrive = (DcMotorEx) hardwareMap.dcMotor.get("front right drive");
         frontLeftDrive  = (DcMotorEx) hardwareMap.dcMotor.get("front left drive");
@@ -301,7 +304,7 @@ public class DriveImpl implements Drive {
             LOG.addData("At position ",frontRightDrive.getCurrentPosition());
             LOG.update();
             Thread.yield(); //effectively what the LinearOpMode idle call does
-        } while (frontRightDrive.isBusy());
+        } while (frontRightDrive.isBusy() && lom.opModeIsActive());
         stop();
         LOG.update();
     }
@@ -321,7 +324,7 @@ public class DriveImpl implements Drive {
         setMotorBehavior(MotorMode.NONE);
         LOG.addLine("Turning");
         runtime.reset();
-        while(Math.abs(angle.thirdAngle - targetAngle) > TURN_THRESHOLD && runtime.seconds() < 10 ){
+        while(Math.abs(angle.thirdAngle - targetAngle) > TURN_THRESHOLD && runtime.seconds() < 10 && lom.opModeIsActive()){
             angle = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.XYZ, AngleUnit.DEGREES);
             LOG.addData("Turn target ",targetAngle);
             LOG.addData("Turn current ",angle.thirdAngle);

@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.library;
 
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
@@ -15,14 +16,6 @@ public interface Scoops {
     void init(HardwareMap hm, Telemetry telm);
 
     void setFrontScoopPos(double pos);
-
-    void frontScoopDown();
-
-    void frontScoopTransfer();
-
-    void frontScoopCycle ();
-
-    void setFrontScoopPosition(double position);
 
     void setBackScoopPos(double pos);
 

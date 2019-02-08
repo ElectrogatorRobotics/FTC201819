@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.library;
 
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.util.ElapsedTime;
@@ -12,16 +13,18 @@ public class LandingGearImpl implements LandingGear {
     public Servo back;
     private Telemetry log;
     private Drive drivesystem;
+    private LinearOpMode lom;
     private ElapsedTime runtime = new ElapsedTime();
 
 
-    public void init(HardwareMap hm, Drive drivetrain){
+    public void init(HardwareMap hm, Drive drivetrain, LinearOpMode lop){
         front = hm.servo.get("front servo");
         back = hm.servo.get("back servo");
         // scale the range of the 0-1 signal to match the range of the servos
         back.scaleRange(0.2, 0.79);
         front.scaleRange(0.2, 0.79);
         drivesystem = drivetrain;
+        lom = lop;
     }
 
     private void stage(){
@@ -57,7 +60,7 @@ public class LandingGearImpl implements LandingGear {
 
     private void sleep(long milisecs) {
         runtime.reset();
-        while(runtime.milliseconds() < milisecs ){
+        while(runtime.milliseconds() < milisecs && lom.opModeIsActive()){
             Thread.yield();
         }
     }

@@ -14,8 +14,8 @@ import org.firstinspires.ftc.teamcode.library.Marker;
  * Created by mira on 11/26/2018.
  */
 
-@Autonomous(name = "Depot - Avoid")
-public class Auto_DepotAvoid extends LinearOpMode {
+@Autonomous(name = "Crater - Avoid")
+public class Auto_CraterAvoid extends LinearOpMode {
     private static final boolean live = false;
     private static final boolean stand = false;
 

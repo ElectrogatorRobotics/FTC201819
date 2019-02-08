@@ -18,6 +18,7 @@ import org.firstinspires.ftc.teamcode.library.Marker;
 @Autonomous(name = "Depot - Direct")
 public class Auto_DepotDirect extends LinearOpMode {
     private static final boolean live = false;
+    private static final boolean stand = false;
 
 	Drive drive = new DriveImpl();
 	LandingGear lg = new LandingGearImpl();
@@ -33,10 +34,11 @@ public class Auto_DepotDirect extends LinearOpMode {
         drive.setTelemetry(telemetry);
         drive.initMotors(hardwareMap);
         drive.initialiseIMU(hardwareMap);
+        drive.passLinearOp(this);
 
         mark.init(hardwareMap,telemetry);
 
-        lg.init(hardwareMap,drive);
+        lg.init(hardwareMap,drive,this);
 
         telemetry.addLine("Retracting!!!");
         telemetry.update();
@@ -46,18 +48,38 @@ public class Auto_DepotDirect extends LinearOpMode {
         telemetry.update();
 
         waitForStart();
-        if(live) {
+
+        kick_block();
+
+        //turn to direct angle
+        drive.forward(72);
+        //drive.turn(-90);
+
+    }
+
+    public void kick_block(){
+        if(live && stand) {
             lg.stand_up();
             drive.turn(10);
+        }
+        if(live){
             lg.deploy();
-            drive.turn(170);
+        }
+        if(live && stand) {
+            drive.turn(35);
         }
         else{
-            drive.turn(180);
+            drive.turn(45);
         }
-        drive.forward(-50);
+        drive.forward(12);
+        //read Vuforia
+        // update our position
+        drive.forward(-12);
+        //angle at block
+        //drive to kill
+        //turn to degrees
+        //drive to depot
+        //turn to position
         mark.KickOutTheMrker();
-        drive.forward(45);
-        drive.turn(-90);
     }
 }

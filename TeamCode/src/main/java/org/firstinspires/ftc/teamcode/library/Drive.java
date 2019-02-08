@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.library;
 
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
@@ -16,6 +17,7 @@ public interface Drive {
     void initMotors(HardwareMap hardware);
 	void initialiseIMU(HardwareMap hardwareMap);
 	void setTelemetry(Telemetry telem);
+	void passLinearOp(LinearOpMode lop);
 
 	/**
 	 * Set the speed of a motor with or with out expo.

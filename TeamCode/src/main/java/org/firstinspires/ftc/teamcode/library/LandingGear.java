@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.library;
 
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 public interface LandingGear {
 
@@ -37,7 +38,7 @@ public interface LandingGear {
      *
      * @param hm The hardware map file for getting the sensors
      */
-    void init(HardwareMap hm, Drive drivetrain);
+    void init(HardwareMap hm, Drive drivetrain, LinearOpMode lop);
 
     /**
      * Returns the value of what the server was set for and should match one of the values above

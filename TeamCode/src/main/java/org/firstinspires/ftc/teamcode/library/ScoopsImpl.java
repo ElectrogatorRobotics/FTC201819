@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.library;
 
 
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
@@ -29,25 +30,6 @@ public class ScoopsImpl implements Scoops {
     public void setFrontScoopPos(double pos){
         frontScoop.setPower(pos);
     }
-
-    public void frontScoopDown(){
-        setFrontScoopPos(FRONT_DOWN);
-    }
-
-    public void frontScoopTransfer(){
-        if(backScoop.getPosition() > BACK_DOWN){
-            setBackScoopPos(BACK_DOWN);
-            sleep(500);
-        }
-        setFrontScoopPos(FRONT_TRANSFER);
-    }
-
-    public void frontScoopCycle(){
-        frontScoopTransfer();
-        sleep(1100);
-        frontScoopDown();
-    }
-
 
     //Back Scoops
     public void setBackScoopPos(double pos){
@@ -87,16 +69,8 @@ public class ScoopsImpl implements Scoops {
         }
     }
 
-    private void sleep(long milisecs) {
-        runtime.reset();
-        while(runtime.milliseconds() < milisecs ){
-            Thread.yield();
-        }
-    }
-
     public void runRubberBandWheel (double speed) {
         frontScoopWheel.setPosition(speed);
     }
 
-    public void setFrontScoopPosition(double position){frontScoop.setPower(position);}
 }

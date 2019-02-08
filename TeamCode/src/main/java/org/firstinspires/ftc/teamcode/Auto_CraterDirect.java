@@ -14,8 +14,8 @@ import org.firstinspires.ftc.teamcode.library.Marker;
  * Created by mira on 11/26/2018.
  */
 
-@Autonomous(name = "Depot - Avoid")
-public class Auto_DepotAvoid extends LinearOpMode {
+@Autonomous(name = "Crater - Direct")
+public class Auto_CraterDirect extends LinearOpMode {
     private static final boolean live = false;
     private static final boolean stand = false;
 
@@ -48,21 +48,14 @@ public class Auto_DepotAvoid extends LinearOpMode {
 
         waitForStart();
 
-        //kick_block
-        //turn to avoid
-        drive.forward(36);//head to the split
-        drive.turn(-90);//turn right toward lander
-        drive.forward(20); //approach lander
-        drive.turn(-45);   //turn parallel to the lander
-        drive.forward(56); //slide along depot side
-        drive.turn(90); //turn to go along the side of the crater
-        drive.forward(56);  //drive past the other lander side
-        drive.turn(-45);    //turn right to face wall
-        drive.forward(20);  //drive to the wall
-        drive.turn(-90);    //turn right
-        drive.forward(43);  //head to crater
-    }
+        kick_block();
 
+        //turn to direct angle
+        drive.forward(72);
+        //drive.turn(10);
+        //drive.forward(30);
+
+    }
 
     public void kick_block(){
         if(live && stand) {
@@ -86,6 +79,8 @@ public class Auto_DepotAvoid extends LinearOpMode {
         //drive to kill
         //turn to degrees
         //drive to depot
+        //line up again
+        //drive some more
         //turn to position
         mark.KickOutTheMrker();
     }
