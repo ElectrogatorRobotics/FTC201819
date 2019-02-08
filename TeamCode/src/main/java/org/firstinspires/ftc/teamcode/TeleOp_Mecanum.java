@@ -47,7 +47,7 @@ public class TeleOp_Mecanum extends LinearOpMode {
         drive.initMotors(hardwareMap);
         drive.setupDriveForTeleop();
 
-        lg.init(hardwareMap, drive);
+        lg.init(hardwareMap, drive,this);
 
         scoop.init(hardwareMap, telemetry);
         scoop.backScoopDown();

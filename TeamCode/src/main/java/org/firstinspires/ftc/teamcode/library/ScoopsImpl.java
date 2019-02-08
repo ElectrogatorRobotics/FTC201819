@@ -39,7 +39,7 @@ public class ScoopsImpl implements Scoops {
         else distance = 0;
 
         while (distance > 2.5) {
-            setFrontScoopPosition(0.5);
+            setFrontScoopPos(0.5);
         }
         return frontScoopDistance.getDistance(DistanceUnit.INCH);
     }

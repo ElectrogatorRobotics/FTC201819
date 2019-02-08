@@ -35,7 +35,7 @@ public class autoBasic extends LinearOpMode {
 
         drive.setTelemetry(telemetry);
         drive.initMotors(hardwareMap);
-        lg.init(hardwareMap,drive);
+        lg.init(hardwareMap,drive,this);
 
         telemetry.addLine("Retracting!!!");
         telemetry.update();
