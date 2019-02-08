@@ -43,8 +43,14 @@ import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackableDefau
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackables;
 import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
 import org.firstinspires.ftc.robotcore.external.tfod.TFObjectDetector;
+import org.firstinspires.ftc.teamcode.library.Drive;
+import org.firstinspires.ftc.teamcode.library.DriveImpl;
 import org.firstinspires.ftc.teamcode.library.GoldPosition;
 import org.firstinspires.ftc.teamcode.library.ImageTargetVisible;
+import org.firstinspires.ftc.teamcode.library.LandingGear;
+import org.firstinspires.ftc.teamcode.library.LandingGearImpl;
+import org.firstinspires.ftc.teamcode.library.Scoops;
+import org.firstinspires.ftc.teamcode.library.ScoopsImpl;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -98,8 +104,15 @@ public class TensorFlowObjectDetection extends LinearOpMode {
     ImageTargetVisible imageTarget;
     GoldPosition goldPosition;
 
+    Drive drive = new DriveImpl();
+    LandingGear landingGear = new LandingGearImpl();
+    Scoops scoops = new ScoopsImpl();
+
     @Override
     public void runOpMode() throws InterruptedException {
+        telemetry.addLine("Initialising... please wait.");
+        telemetry.update();
+
         // initialise Vuforia
         /*
          * Configure Vuforia by creating a Parameter object, and passing it to the Vuforia engine.
@@ -230,9 +243,9 @@ public class TensorFlowObjectDetection extends LinearOpMode {
          */
 
         // TODO: 1/18/2019 find phone location on robot
-        final int CAMERA_FORWARD_DISPLACEMENT = -127; // Camera is 127 mm back form the center
-        final int CAMERA_VERTICAL_DISPLACEMENT = 431; // Camera is ~431 mm off the flore
-        final int CAMERA_LEFT_DISPLACEMENT = 127;     // Camera is ~127 mm left of the center
+        final int CAMERA_FORWARD_DISPLACEMENT = -171; // Camera is 171 mm back form the center
+        final int CAMERA_VERTICAL_DISPLACEMENT = 431; // Camera is ~431 mm off the flour
+        final int CAMERA_LEFT_DISPLACEMENT = 140;     // Camera is 140 mm left of the center
 
         OpenGLMatrix phoneLocationOnRobot = OpenGLMatrix
                 .translation(CAMERA_FORWARD_DISPLACEMENT, CAMERA_LEFT_DISPLACEMENT, CAMERA_VERTICAL_DISPLACEMENT)
@@ -244,7 +257,7 @@ public class TensorFlowObjectDetection extends LinearOpMode {
             ((VuforiaTrackableDefaultListener) trackable.getListener()).setPhoneInformation(phoneLocationOnRobot, parameters.cameraDirection);
         }
 
-        telemetry.addLine("Vuforia is initialised! ready to start");
+        telemetry.addLine("Vuforia is initialised! \n Ready to start!");
         telemetry.update();
         waitForStart();
 
@@ -257,15 +270,16 @@ public class TensorFlowObjectDetection extends LinearOpMode {
                 tfod.activate();
             }
 
-            while (opModeIsActive()) { // TODO: 1/18/2019 remove once working
-
-                if (tfod != null) {
+            if (opModeIsActive()) {
+                while (tfod != null && opModeIsActive()) {
                     // getUpdatedRecognitions() will return null if no new information is available since
                     // the last time that call was made.
                     List<Recognition> updatedRecognitions = tfod.getUpdatedRecognitions();
                     if (updatedRecognitions != null) {
                         telemetry.addData("# Object Detected", updatedRecognitions.size());
-                        if (updatedRecognitions.size() == 3) {
+
+                        // changed this to 2 instead of 3
+                        if (updatedRecognitions.size() == 2) {
                             int goldMineralX = -1;
                             int silverMineral1X = -1;
                             int silverMineral2X = -1;
@@ -278,80 +292,95 @@ public class TensorFlowObjectDetection extends LinearOpMode {
                                     silverMineral2X = (int) recognition.getLeft();
                                 }
                             }
-                            // TODO: 1/18/2019 disable TensorFlow once finished tracking minerals
-                            if (goldMineralX != -1 && silverMineral1X != -1 || silverMineral1X != -1 && silverMineral2X != -1) {
-                                if (goldMineralX < silverMineral1X) { // gold and silver are in frame
-                                    // gold left code here:
-                                    // use goldPosition(goldPosition.LEFT) or something similar
-                                    telemetry.addData("Gold Mineral Position", "Left");
-                                } else if (goldMineralX > silverMineral1X) { // gold and silver in frame
-                                    // gold right code here:
-                                    // use goldPosition(goldPosition.RIGHT) or something similar
-                                    telemetry.addData("Gold Mineral Position", "Right");
-                                } else { // two silver are in frame
-                                    // gold center code here:
-                                    // use goldPosition(goldPosition.CENTER) or something similar
-                                    telemetry.addData("Gold Mineral Position", "Center");
-                                }
+
+                            // we already know there are 2 minerals if we get to here
+                            // first if we can't see the gold mineral, it has to be on the right
+                            if (goldMineralX == -1) {
+                                telemetry.addData("Gold Mineral Position", "Right");
+                                driveToGold(GoldPosition.RIGHT);
+                                telemetry.update();
+                                sleep(5000);
+                                break;
+                            // if the gold mineral is less then the silver mineral, it is on the left, otherwise it is in the center.
+                            } else if (goldMineralX < silverMineral1X) {
+                                telemetry.addData("Gold Mineral Position", "Center");
+                                driveToGold(GoldPosition.CENTER);
+                                telemetry.update();
+                                sleep(5000);
+                                break;
+                            } else {
+                                telemetry.addData("Gold Mineral Position", "Left");
+                                driveToGold(GoldPosition.LEFT);
+                                telemetry.update();
+                                sleep(5000);
+                                break;
                             }
+
                         }
+                        telemetry.update();
                     }
+
                 }
-                // disable TensorFlow
-//                tfod.deactivate();
+                telemetry.addLine("turning 45 deg ccw");
+                sleep(5000);
+//                drive.turn(45);
+
+            // disable TensorFlow
+                tfod.deactivate();
 
                 /**
                  * now it is time to detect the image target to find out which side where the robot is.
                  */
+                telemetry.addLine("activating Vuforia");
 
-                /*
                 targetsRoverRuckus.activate();
                 targetVisible = false;
-                for (VuforiaTrackable trackable : allTrackables) {
-                    if (((VuforiaTrackableDefaultListener) trackable.getListener()).isVisible()) {
-                        telemetry.addData("Visible Target", trackable.getName());
-                        targetVisible = true;
-                        // TODO: 1/19/2019 add driving code
-                        if (trackable.getTrackables() == targetsRoverRuckus.get(0)) {
-                            // rover target is visible
-                            // use targetVisible(imageTarget.BLUE_ROVER) or something similar
-                        } else if (trackable.getTrackables() == targetsRoverRuckus.get(1)) {
-                            // footprint target is visible
-                            // use targetVisible(imageTarget.RED_FOOTPRINT) or something similar
-                        } else if (trackable.getTrackables() == targetsRoverRuckus.get(2)) {
-                            // craters target is visible
-                            // use targetVisible(imageTarget.FRONT_CRATERS) or something similar
-                        } else {
-                            // space target is visible
-                            // use targetVisible(imageTarget.BACK_SPACE) or something similar
-                        }
+                while (!targetVisible && opModeIsActive()) {
+                    for (VuforiaTrackable trackable : allTrackables) {
+                        if (((VuforiaTrackableDefaultListener) trackable.getListener()).isVisible()) {
+                            telemetry.addData("Visible Target", trackable.getName());
+                            targetVisible = true;
+                            // TODO: 1/19/2019 add driving code
+                            if (trackable.getTrackables() == targetsRoverRuckus.get(0)) {
+                                // rover target is visible
+                                // use targetVisible(imageTarget.BLUE_ROVER) or something similar
+                            } else if (trackable.getTrackables() == targetsRoverRuckus.get(1)) {
+                                // footprint target is visible
+                                // use targetVisible(imageTarget.RED_FOOTPRINT) or something similar
+                            } else if (trackable.getTrackables() == targetsRoverRuckus.get(2)) {
+                                // craters target is visible
+                                // use targetVisible(imageTarget.FRONT_CRATERS) or something similar
+                            } else {
+                                // space target is visible
+                                // use targetVisible(imageTarget.BACK_SPACE) or something similar
+                            }
 
-                        // getUpdatedRobotLocation() will return null if no new information is available since
-                        // the last time that call was made, or if the trackable is not currently visible.
-                        OpenGLMatrix robotLocationTransform = ((VuforiaTrackableDefaultListener) trackable.getListener()).getUpdatedRobotLocation();
-                        if (robotLocationTransform != null) {
-                            lastLocation = robotLocationTransform;
+                            // getUpdatedRobotLocation() will return null if no new information is available since
+                            // the last time that call was made, or if the trackable is not currently visible.
+                            OpenGLMatrix robotLocationTransform = ((VuforiaTrackableDefaultListener) trackable.getListener()).getUpdatedRobotLocation();
+                            if (robotLocationTransform != null) {
+                                lastLocation = robotLocationTransform;
+                            }
+                            break;
                         }
-                        break;
                     }
-                }
 
-                // TODO: 1/18/2019 disable Vuforia once robot position has been determined
-                // display the chordates of the image that is visible
-                if (targetVisible) {
-                    // express position (translation) of robot in inches.
-                    VectorF translation = lastLocation.getTranslation();
-                    telemetry.addData("Pos (in)", "{X, Y, Z} = %.1f, %.1f, %.1f",
-                            translation.get(0) / mmPerInch, translation.get(1) / mmPerInch, translation.get(2) / mmPerInch);
+                    // TODO: 1/18/2019 disable Vuforia once robot position has been determined
+                    // display the chordates of the image that is visible
+                    if (targetVisible) {
+                        // express position (translation) of robot in inches.
+                        VectorF translation = lastLocation.getTranslation();
+                        telemetry.addData("Pos (in)", "{X, Y, Z} = %.1f, %.1f, %.1f",
+                                translation.get(0) / mmPerInch, translation.get(1) / mmPerInch, translation.get(2) / mmPerInch);
 
-                    // express the rotation of the robot in degrees.
-                    Orientation rotation = Orientation.getOrientation(lastLocation, EXTRINSIC, XYZ, DEGREES);
-                    telemetry.addData("Rot (deg)", "{Roll, Pitch, Heading} = %.0f, %.0f, %.0f", rotation.firstAngle, rotation.secondAngle, rotation.thirdAngle);
-                } else {
-                    telemetry.addData("Visible Target", "none");
+                        // express the rotation of the robot in degrees.
+                        Orientation rotation = Orientation.getOrientation(lastLocation, EXTRINSIC, XYZ, DEGREES);
+                        telemetry.addData("Rot (deg)", "{Roll, Pitch, Heading} = %.0f, %.0f, %.0f", rotation.firstAngle, rotation.secondAngle, rotation.thirdAngle);
+                    } else {
+                        telemetry.addData("Visible Target", "none");
+                    }
+                    telemetry.update();
                 }
-                */
-                telemetry.update();
             }
         }
     }
@@ -363,216 +392,25 @@ public class TensorFlowObjectDetection extends LinearOpMode {
         tfod = ClassFactory.getInstance().createTFObjectDetector(tfodParameters, vuforia);
         tfod.loadModelFromAsset(TFOD_MODEL_ASSET, LABEL_GOLD_MINERAL, LABEL_SILVER_MINERAL);
     }
+
+    void driveToGold (GoldPosition goldPosition) {
+        switch (goldPosition) {
+            case LEFT:
+                telemetry.addLine("Left");
+                break;
+
+            case CENTER:
+                telemetry.addLine("Center");
+                break;
+
+            case RIGHT:
+                telemetry.addLine(goldPosition.name());
+                break;
+
+                default:
+                    telemetry.addLine("None visible");
+                    break;
+        }
+    }
+
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
