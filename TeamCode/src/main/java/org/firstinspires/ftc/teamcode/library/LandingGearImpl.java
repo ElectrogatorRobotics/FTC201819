@@ -19,7 +19,7 @@ public class LandingGearImpl implements LandingGear {
         front = hm.servo.get("front servo");
         back = hm.servo.get("back servo");
         // scale the range of the 0-1 signal to match the range of the servos
-        back.scaleRange(0.2, 0.79);
+        back.scaleRange(0.2, 0.82);
         front.scaleRange(0.2, 0.79);
         drivesystem = drivetrain;
     }

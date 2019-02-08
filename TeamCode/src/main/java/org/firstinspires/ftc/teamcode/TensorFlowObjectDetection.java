@@ -112,6 +112,7 @@ public class TensorFlowObjectDetection extends LinearOpMode {
     public void runOpMode() throws InterruptedException {
         telemetry.addLine("Initialising... please wait.");
         telemetry.update();
+        scoops.init(hardwareMap, telemetry);
 
         // initialise Vuforia
         /*
@@ -262,6 +263,11 @@ public class TensorFlowObjectDetection extends LinearOpMode {
         waitForStart();
 
         if (opModeIsActive()) {
+            scoops.setFrontScoopPosition(0.5);
+            sleep(1000);
+            scoops.setFrontScoopPosition(0.0);
+            scoops.backScoopDump();
+
             /**
              * Find out where the gold mineral is.
              */
@@ -295,24 +301,27 @@ public class TensorFlowObjectDetection extends LinearOpMode {
 
                             // we already know there are 2 minerals if we get to here
                             // first if we can't see the gold mineral, it has to be on the right
+                            telemetry.addData("Gold = ",goldMineralX);
+                            telemetry.addData("White1 = ",silverMineral1X);
+                            telemetry.addData("White2 = ",silverMineral2X);
                             if (goldMineralX == -1) {
                                 telemetry.addData("Gold Mineral Position", "Right");
                                 driveToGold(GoldPosition.RIGHT);
                                 telemetry.update();
-                                sleep(5000);
+                                sleep(2000);
                                 break;
                             // if the gold mineral is less then the silver mineral, it is on the left, otherwise it is in the center.
-                            } else if (goldMineralX < silverMineral1X) {
+                            } else if (goldMineralX > silverMineral1X) {
                                 telemetry.addData("Gold Mineral Position", "Center");
                                 driveToGold(GoldPosition.CENTER);
                                 telemetry.update();
-                                sleep(5000);
+                                sleep(2000);
                                 break;
                             } else {
                                 telemetry.addData("Gold Mineral Position", "Left");
                                 driveToGold(GoldPosition.LEFT);
                                 telemetry.update();
-                                sleep(5000);
+                                sleep(2000);
                                 break;
                             }
 
@@ -321,8 +330,13 @@ public class TensorFlowObjectDetection extends LinearOpMode {
                     }
 
                 }
+                scoops.backScoopDown();
+                landingGear.stand_up();
+                sleep(1000);
+
+
                 telemetry.addLine("turning 45 deg ccw");
-                sleep(5000);
+                sleep(1000);
 //                drive.turn(45);
 
             // disable TensorFlow
@@ -380,6 +394,8 @@ public class TensorFlowObjectDetection extends LinearOpMode {
                         telemetry.addData("Visible Target", "none");
                     }
                     telemetry.update();
+                    if (targetVisible)
+                        break;
                 }
             }
         }
