@@ -27,6 +27,7 @@ public interface Scoops {
 
     void checkCycling();
 
+    double frontScoopDownWithSensor();
 
     void runRubberBandWheel (double speed);
 }

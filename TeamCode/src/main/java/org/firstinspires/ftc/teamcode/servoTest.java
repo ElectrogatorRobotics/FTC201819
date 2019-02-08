@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.Servo;
@@ -8,7 +9,8 @@ import com.qualcomm.robotcore.hardware.Servo;
  * Created by luke on 11/9/2018.
  */
 
-//@TeleOp(name = "servo test")
+@TeleOp(name = "servo test")
+@Disabled
 public class servoTest extends LinearOpMode {
     Servo_PWM servoConverter;
     Servo servo;

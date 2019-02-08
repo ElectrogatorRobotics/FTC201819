@@ -47,6 +47,7 @@ public interface Drive {
 	double setMotorSpeed(double speed, MotorControlMode mcm);
 
 	void forward(int inches);
+
     void turn(double angle);
 	void slide (double distnce);
 

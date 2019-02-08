@@ -122,15 +122,11 @@ public class TeleOp_Mecanum extends LinearOpMode {
                 lg.retract();
             }
 
-            if (gamepad2.a) {
-                scoop.runRubberBandWheel(1.0);
-            } else if(gamepad2.y) {
-                scoop.runRubberBandWheel(0);
-            }
-            else{
-                scoop.runRubberBandWheel(0.5);
-            }
+//            if (gamepad2.a) {
+//                scoop.runRubberBandWheel(1.0);
+//            } else scoop.runRubberBandWheel(0.5);
 
+            scoop.runRubberBandWheel((gamepad2.right_stick_y+1)/2);
             if (gamepad2.dpad_down) {
                 marker.KickOutTheMrker();
             }
@@ -155,7 +151,7 @@ public class TeleOp_Mecanum extends LinearOpMode {
 //                    scoop.frontScoopCycle();
 //                }
                 servoVal = (gamepad2.left_stick_y);
-                scoop.setFrontScoopPos(servoVal);
+                scoop.setFrontScoopPos(servoVal*0.8);
 //            if(gamepad1.left_bumper)scoop.frontScoopDown();
 //            if(gamepad1.right_bumper)scoop.frontScoopTransfer();
             }

@@ -6,8 +6,8 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.teamcode.library.MotorControls;
 
-//@Autonomous(name = "motor test", group = "Testing")
-//@Disabled
+@Autonomous(name = "motor test", group = "Testing")
+@Disabled
 public class MotorTesting extends LinearOpMode {
     MotorControls motorControls = new MotorControls();
 
