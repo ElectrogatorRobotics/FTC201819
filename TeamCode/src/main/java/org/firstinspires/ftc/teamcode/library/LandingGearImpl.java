@@ -98,7 +98,7 @@ public class LandingGearImpl implements LandingGear {
         log.addData("Front",front.getPosition());
         log.addData("Back",back.getPosition());
     }
-    public void setTelemetry(Telemetry telem){
+    public void initTelemetry(Telemetry telem){
         log = telem;
     }
 

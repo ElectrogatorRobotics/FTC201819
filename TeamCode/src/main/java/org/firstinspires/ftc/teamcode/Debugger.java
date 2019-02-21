@@ -2,12 +2,10 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.library.Drive;
 import org.firstinspires.ftc.teamcode.library.DriveImpl;
 import org.firstinspires.ftc.teamcode.library.ElectorgatorHardware;
-import org.firstinspires.ftc.teamcode.library.LandingGear;
 import org.firstinspires.ftc.teamcode.library.LandingGearImpl;
 
 /**
@@ -28,7 +26,7 @@ public class Debugger extends LinearOpMode {
         telemetry.update();
 
         hardware.initMotors(hardwareMap);
-       lg.setTelemetry(telemetry);
+       lg.initTelemetry(telemetry);
        Drive go = new DriveImpl();
        go.initMotors(hardwareMap);
         lg.init(hardwareMap,go,this);

@@ -29,9 +29,12 @@
 
 package org.firstinspires.ftc.teamcode;
 
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
+import android.provider.ContactsContract;
+
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.ClassFactory;
 import org.firstinspires.ftc.robotcore.external.matrices.OpenGLMatrix;
@@ -49,6 +52,7 @@ import org.firstinspires.ftc.teamcode.library.GoldPosition;
 import org.firstinspires.ftc.teamcode.library.ImageTargetVisible;
 import org.firstinspires.ftc.teamcode.library.LandingGear;
 import org.firstinspires.ftc.teamcode.library.LandingGearImpl;
+import org.firstinspires.ftc.teamcode.library.Marker;
 import org.firstinspires.ftc.teamcode.library.Scoops;
 import org.firstinspires.ftc.teamcode.library.ScoopsImpl;
 
@@ -72,7 +76,7 @@ import static org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocaliz
  * IMPORTANT: In order to use this OpMode, you need to obtain your own Vuforia license key as
  * is explained below.
  */
-@TeleOp(name = "Camera autonomous")
+@Autonomous(name = "Autonomous")
 //@Disabled
 public class TensorFlowObjectDetection extends LinearOpMode {
     private static final String VUFORIA_KEY = "Ac3oCab/////AAABmREMMJWRLkxMm4OITflE1z8RQ4ee4yZidzAzHq4xSudcJwaeO7SVeH1B9T/xDMkrokkJZADdb50jlZXPf27E+CCSQ+JtWreq2NDmSjcKwUbouJVs2WwCh4JJNhPubfFKNGBhTbKoMGbnyOeXnnVNtS2LkIYG1OCjUJ2tlIo/sHkmXJXyySbyxTpBAbvNhucWMLrz/xL/VAH01ZOsiEcqWzIFpSuRpcdtcxb8TDAYqnmGDeaDtbp/KtKUdDqSpudckUxjUvLzI7vDDuUKF99sqeD4HDtZ5DG8kEcov4zGdAX/TWjNrh/uR65Ee0mA+Xb/thqVbByP/E4RJ71J6do2RuAGfR4RuLqkhvk961KJK1/G";
@@ -107,11 +111,19 @@ public class TensorFlowObjectDetection extends LinearOpMode {
     Drive drive = new DriveImpl();
     LandingGear landingGear = new LandingGearImpl();
     Scoops scoops = new ScoopsImpl();
+    Marker marker = new Marker();
+    ElapsedTime runtime = new ElapsedTime();
 
     @Override
     public void runOpMode() throws InterruptedException {
         telemetry.addLine("Initialising... please wait.");
         telemetry.update();
+
+        drive.setTelemetry(telemetry);
+        drive.initMotors(hardwareMap);
+        drive.initialiseIMU(hardwareMap);
+        drive.passLinearOp(this);
+        landingGear.init(hardwareMap, drive, this);
         scoops.init(hardwareMap, telemetry);
 
         // initialise Vuforia
@@ -123,7 +135,7 @@ public class TensorFlowObjectDetection extends LinearOpMode {
         int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
 //        VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters(cameraMonitorViewId);
 
-        VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters();
+        VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters(cameraMonitorViewId);
 
         parameters.vuforiaLicenseKey = VUFORIA_KEY;
         parameters.cameraDirection = CAMERA_CHOICE;
@@ -262,6 +274,8 @@ public class TensorFlowObjectDetection extends LinearOpMode {
         telemetry.update();
         waitForStart();
 
+        runtime.reset();
+
         if (opModeIsActive()) {
             scoops.setFrontScoopPos(0.5);
             sleep(1000);
@@ -277,7 +291,7 @@ public class TensorFlowObjectDetection extends LinearOpMode {
             }
 
             if (opModeIsActive()) {
-                while (tfod != null && opModeIsActive()) {
+                while (tfod != null && opModeIsActive() && runtime.seconds() < 5) { // time out after 5 seconds
                     // getUpdatedRecognitions() will return null if no new information is available since
                     // the last time that call was made.
                     List<Recognition> updatedRecognitions = tfod.getUpdatedRecognitions();
@@ -301,27 +315,21 @@ public class TensorFlowObjectDetection extends LinearOpMode {
 
                             // we already know there are 2 minerals if we get to here
                             // first if we can't see the gold mineral, it has to be on the right
-                            telemetry.addData("Gold = ",goldMineralX);
-                            telemetry.addData("White1 = ",silverMineral1X);
-                            telemetry.addData("White2 = ",silverMineral2X);
                             if (goldMineralX == -1) {
                                 telemetry.addData("Gold Mineral Position", "Right");
-                                driveToGold(GoldPosition.RIGHT);
                                 telemetry.update();
-                                sleep(2000);
+                                goldPosition = GoldPosition.RIGHT;
                                 break;
                             // if the gold mineral is less then the silver mineral, it is on the left, otherwise it is in the center.
                             } else if (goldMineralX > silverMineral1X) {
                                 telemetry.addData("Gold Mineral Position", "Center");
-                                driveToGold(GoldPosition.CENTER);
                                 telemetry.update();
-                                sleep(2000);
+                                goldPosition = GoldPosition.CENTER;
                                 break;
                             } else {
                                 telemetry.addData("Gold Mineral Position", "Left");
-                                driveToGold(GoldPosition.LEFT);
                                 telemetry.update();
-                                sleep(2000);
+                                goldPosition = GoldPosition.LEFT;
                                 break;
                             }
 
@@ -331,13 +339,16 @@ public class TensorFlowObjectDetection extends LinearOpMode {
 
                 }
                 scoops.backScoopDown();
-                landingGear.stand_up();
-                sleep(1000);
 
+                deploy();
+
+                sleep(1000); //debugging
 
                 telemetry.addLine("turning 45 deg ccw");
+                telemetry.update();
                 sleep(1000);
-//                drive.turn(45);
+                drive.turn(-45);
+                drive.forward(24);
 
             // disable TensorFlow
                 tfod.deactivate();
@@ -346,6 +357,7 @@ public class TensorFlowObjectDetection extends LinearOpMode {
                  * now it is time to detect the image target to find out which side where the robot is.
                  */
                 telemetry.addLine("activating Vuforia");
+                telemetry.update();
 
                 targetsRoverRuckus.activate();
                 targetVisible = false;
@@ -354,19 +366,18 @@ public class TensorFlowObjectDetection extends LinearOpMode {
                         if (((VuforiaTrackableDefaultListener) trackable.getListener()).isVisible()) {
                             telemetry.addData("Visible Target", trackable.getName());
                             targetVisible = true;
-                            // TODO: 1/19/2019 add driving code
                             if (trackable.getTrackables() == targetsRoverRuckus.get(0)) {
                                 // rover target is visible
-                                // use targetVisible(imageTarget.BLUE_ROVER) or something similar
+                                imageTarget = ImageTargetVisible.BLUE_ROVER;
                             } else if (trackable.getTrackables() == targetsRoverRuckus.get(1)) {
                                 // footprint target is visible
-                                // use targetVisible(imageTarget.RED_FOOTPRINT) or something similar
+                                imageTarget = ImageTargetVisible.RED_FOOTPRINT;
                             } else if (trackable.getTrackables() == targetsRoverRuckus.get(2)) {
                                 // craters target is visible
-                                // use targetVisible(imageTarget.FRONT_CRATERS) or something similar
+                                imageTarget = ImageTargetVisible.FRONT_CRATERS;
                             } else {
                                 // space target is visible
-                                // use targetVisible(imageTarget.BACK_SPACE) or something similar
+                                imageTarget = ImageTargetVisible.BACK_SPACE;
                             }
 
                             // getUpdatedRobotLocation() will return null if no new information is available since
@@ -378,8 +389,6 @@ public class TensorFlowObjectDetection extends LinearOpMode {
                             break;
                         }
                     }
-
-                    // TODO: 1/18/2019 disable Vuforia once robot position has been determined
                     // display the chordates of the image that is visible
                     if (targetVisible) {
                         // express position (translation) of robot in inches.
@@ -398,35 +407,147 @@ public class TensorFlowObjectDetection extends LinearOpMode {
                         break;
                 }
             }
+            // deactivate Vuforia
+            targetsRoverRuckus.deactivate();
+            // drive to 32 inches from the center of the field
+            driveToDistanceFromTarget(lastLocation, 32);
+            // drive to the mineral
+            driveToGold(goldPosition, imageTarget);
+            marker.KickOutTheMrker();
+            //back out of the depo so our alliance partner can score
+            moveOutOfDepo(imageTarget);
         }
     }
 
     private void initTfod() {
         int tfodMonitorViewId = hardwareMap.appContext.getResources().getIdentifier(
                 "tfodMonitorViewId", "id", hardwareMap.appContext.getPackageName());
-        TFObjectDetector.Parameters tfodParameters = new TFObjectDetector.Parameters(tfodMonitorViewId);
+        TFObjectDetector.Parameters tfodParameters = new TFObjectDetector.Parameters();
         tfod = ClassFactory.getInstance().createTFObjectDetector(tfodParameters, vuforia);
         tfod.loadModelFromAsset(TFOD_MODEL_ASSET, LABEL_GOLD_MINERAL, LABEL_SILVER_MINERAL);
     }
 
-    void driveToGold (GoldPosition goldPosition) {
+    void driveToGold (GoldPosition goldPosition, ImageTargetVisible imageTarget) {
+        int distnaceToGold = 24;
         switch (goldPosition) {
             case LEFT:
-                telemetry.addLine("Left");
+                drive.turn(-90);
+                drive.forward(distnaceToGold);
+                pickupGold();
+
+                if (imageTarget == ImageTargetVisible.RED_FOOTPRINT || imageTarget == ImageTargetVisible.BLUE_ROVER && opModeIsActive()) {
+                    telemetry.addLine("taking the long way around");
+//                    telemetry.addLine(imageTarget.name()+ "is visible");
+                    telemetry.update();
+                    drive.turn(30);
+                    drive.forward(30);
+                } else {
+                    drive.forward(-24);
+                    drive.turn(-90);
+                    drive.forward(48);
+                    drive.turn(135);
+                    drive.forward(24);
+                }
                 break;
 
             case CENTER:
-                telemetry.addLine("Center");
+                drive.forward(14.5);
+                drive.turn(-90);
+                pickupGold();
+
+                if (imageTarget == ImageTargetVisible.RED_FOOTPRINT || imageTarget == ImageTargetVisible.BLUE_ROVER && opModeIsActive()) {
+                    telemetry.addLine("taking the long way around");
+//                    telemetry.addLine(imageTarget.name()+ "is visible");
+                    telemetry.update();
+                    drive.forward(60);
+                    drive.turn(180);
+                } else {
+                    drive.forward(-24);
+                    drive.turn(-90);
+                    drive.forward(62.5);
+                    drive.turn(135);
+                    drive.forward(24);
+                }
                 break;
 
             case RIGHT:
-                telemetry.addLine(goldPosition.name());
+                drive.forward(29);
+                drive.turn(-90);
+                pickupGold();
+
+                if (imageTarget == ImageTargetVisible.RED_FOOTPRINT || imageTarget == ImageTargetVisible.BLUE_ROVER && opModeIsActive()) {
+                    telemetry.addLine("taking the long way around");
+//                    telemetry.addLine(imageTarget.name()+ "is visible");
+                    telemetry.update();
+                    drive.turn(-30);
+                    drive.forward(30);
+                } else {
+                    drive.forward(-24);
+                    drive.turn(-90);
+                    drive.forward(77);
+                    drive.turn(135);
+                    drive.forward(24);
+                }
                 break;
 
                 default:
-                    telemetry.addLine("None visible");
-                    break;
+                    if (imageTarget == ImageTargetVisible.RED_FOOTPRINT || imageTarget == ImageTargetVisible.BLUE_ROVER) {
+                        telemetry.addLine("Can't find minerals! \n driving to depo");
+                        telemetry.update();
+
+                        drive.forward(24);
+                        drive.turn(-90);
+                        drive.forward(60);
+                        drive.turn(180);
+                        marker.KickOutTheMrker();
+                        drive.forward(24); // move out of depo
+                    } else if (imageTarget == ImageTargetVisible.FRONT_CRATERS || imageTarget == ImageTargetVisible.BACK_SPACE) {
+                        telemetry.addLine("Can't find minerals! \n driving to depo");
+                        telemetry.update();
+
+                        drive.forward(48);
+                        drive.turn(180);
+                        marker.KickOutTheMrker();
+                        drive.forward(24); // move out of depo
+                    } else {
+                        telemetry.addLine("nothing found killing in 2 seconds");
+                        telemetry.update();
+                        sleep(2000);
+                        stop(); // kill the opmode, no image or minerals found.
+                    }
         }
     }
 
+    void driveToDistanceFromTarget(OpenGLMatrix lastLocation, double distanceFromCenterOfField) {
+        VectorF traslation;
+        double distanceFromTarget = 0, distanceToDrive = 0;
+        traslation = lastLocation.getTranslation();
+        distanceFromTarget = traslation.get(1) / mmPerInch; // get the Y distance from the target in inches
+        distanceToDrive = (distanceFromCenterOfField-distanceFromTarget);
+        drive.forward(distanceToDrive);
+    }
+
+    void moveOutOfDepo (ImageTargetVisible imageTarget) {
+        telemetry.addLine("Moving out of depo");
+        telemetry.update();
+
+        drive.forward(24);
+    }
+
+    void pickupGold () {
+        scoops.runRubberBandWheel(1.0);
+        scoops.setFrontScoopPos(0.25);
+        sleep(500);
+        scoops.setFrontScoopPos(0.0);
+        scoops.runRubberBandWheel(0.0);
+        scoops.setFrontScoopPos(-0.5);
+        sleep(500);
+        scoops.setFrontScoopPos(0.0);
+    }
+
+    void deploy () {
+        scoops.backScoopDown();
+        landingGear.stand_up();
+        landingGear.deploy();
+    }
 }
