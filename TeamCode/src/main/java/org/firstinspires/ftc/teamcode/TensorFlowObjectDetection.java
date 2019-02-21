@@ -108,23 +108,26 @@ public class TensorFlowObjectDetection extends LinearOpMode {
     ImageTargetVisible imageTarget;
     GoldPosition goldPosition;
 
-    Drive drive = new DriveImpl();
-    LandingGear landingGear = new LandingGearImpl();
-    Scoops scoops = new ScoopsImpl();
-    Marker marker = new Marker();
     ElapsedTime runtime = new ElapsedTime();
+
+    Drive drive;
+    LandingGear lg;
+    Marker marker;
+    Scoops scoops;
 
     @Override
     public void runOpMode() throws InterruptedException {
+        // initialise the motors
         telemetry.addLine("Initialising... please wait.");
         telemetry.update();
 
-        drive.setTelemetry(telemetry);
-        drive.initMotors(hardwareMap);
-        drive.initialiseIMU(hardwareMap);
-        drive.passLinearOp(this);
-        landingGear.init(hardwareMap, drive, this);
-        scoops.init(hardwareMap, telemetry);
+        drive = new DriveImpl(hardwareMap,telemetry,this);
+
+        marker = new Marker(hardwareMap,telemetry);
+
+        lg = new LandingGearImpl(hardwareMap,drive,this);
+
+        scoops = new ScoopsImpl(hardwareMap, telemetry);
 
         // initialise Vuforia
         /*
@@ -547,7 +550,7 @@ public class TensorFlowObjectDetection extends LinearOpMode {
 
     void deploy () {
         scoops.backScoopDown();
-        landingGear.stand_up();
-        landingGear.deploy();
+        lg.stand_up();
+        lg.deploy();
     }
 }

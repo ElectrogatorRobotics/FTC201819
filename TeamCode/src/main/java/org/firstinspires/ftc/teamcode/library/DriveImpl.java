@@ -60,15 +60,14 @@ public class DriveImpl implements Drive {
 
     public enum MoveMethod{STRAIGHT, TURN, SLIDE, DEPLOY}
 
-    public DriveImpl(){}
     public DriveImpl(HardwareMap hwm, Telemetry telem, LinearOpMode lop){
-        setTelemetry(telem);
+        initTelemetry(telem);
         initMotors(hwm);
         initialiseIMU(hwm);
         lom = lop;
     }
 
-    public void setTelemetry(Telemetry telem){
+    public void initTelemetry(Telemetry telem){
         LOG = telem;
     }
     public void passLinearOp(LinearOpMode lop){
@@ -260,7 +259,7 @@ public class DriveImpl implements Drive {
 
     //endregion
 
-	public void forward(int inches){
+	public void forward(double inches){
         setMotorDriveDirection(MoveMethod.STRAIGHT);
         int ticks = (int)Math.round(inches * ENCODER_COUNTS_PER_INCH);
         setTargetTolerance(50);

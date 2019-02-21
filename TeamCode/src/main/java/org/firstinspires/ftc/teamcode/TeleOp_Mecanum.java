@@ -19,10 +19,6 @@ import org.firstinspires.ftc.teamcode.library.ScoopsImpl;
 @TeleOp(name = "DRIVE!")
 public class TeleOp_Mecanum extends LinearOpMode {
     ElectorgatorHardware hardware = new ElectorgatorHardware();
-    Drive drive;
-    LandingGear lg = new LandingGearImpl();
-    Scoops scoop = new ScoopsImpl();
-    Marker marker = new Marker();
 
     static final double WALL_SCALE_FACTOR = 0.5; //set other side to half power;
 
@@ -30,29 +26,28 @@ public class TeleOp_Mecanum extends LinearOpMode {
     boolean startRelic = false;
     double maxDrive = 0;
 
+    Drive drive;
+    LandingGear lg;
+    Marker mark;
+    Scoops scoop;
+
     @Override
     public void runOpMode() throws InterruptedException {
         // initialise the motors
         telemetry.addLine("Initialising... please wait.");
         telemetry.update();
 
+        drive = new DriveImpl(hardwareMap,telemetry,this);
+
+        mark = new Marker(hardwareMap,telemetry);
+
+        lg = new LandingGearImpl(hardwareMap,drive,this);
+
+        scoop = new ScoopsImpl(hardwareMap, telemetry);
+
         double adjFactorFront, adjFactorBack;
         double throtle;
         double servoVal = 0;
-
-        drive = new DriveImpl();
-
-        hardware.initMotors(hardwareMap);
-        drive.setTelemetry(telemetry);
-        drive.initMotors(hardwareMap);
-        drive.setupDriveForTeleop();
-
-        lg.init(hardwareMap, drive,this);
-
-        scoop.init(hardwareMap, telemetry);
-        scoop.backScoopDown();
-
-        marker.init(hardwareMap, telemetry);
 
         telemetry.addLine("Ready to start... thank you for waiting!");
         telemetry.update();
@@ -130,7 +125,7 @@ public class TeleOp_Mecanum extends LinearOpMode {
 
             scoop.runRubberBandWheel((gamepad2.right_stick_y+1)/2);
             if (gamepad2.dpad_down) {
-                marker.KickOutTheMrker();
+                mark.KickOutTheMrker();
             }
             // display the motor speeds
 

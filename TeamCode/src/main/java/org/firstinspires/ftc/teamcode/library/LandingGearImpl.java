@@ -17,7 +17,7 @@ public class LandingGearImpl implements LandingGear {
     private ElapsedTime runtime = new ElapsedTime();
 
 
-    public void init(HardwareMap hm, Drive drivetrain, LinearOpMode lop){
+    public LandingGearImpl(HardwareMap hm, Drive drivetrain, LinearOpMode lop){
         front = hm.servo.get("front servo");
         back = hm.servo.get("back servo");
         // scale the range of the 0-1 signal to match the range of the servos

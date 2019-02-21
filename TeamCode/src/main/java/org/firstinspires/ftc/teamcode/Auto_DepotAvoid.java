@@ -25,11 +25,12 @@ public class Auto_DepotAvoid extends LinearOpMode {
     private static final boolean stand = false;
     private static final boolean scan = false;
 
-	Drive drive = new DriveImpl();
-	LandingGear lg = new LandingGearImpl();
-    Marker mark = new Marker();
-    Scoops scoop = new ScoopsImpl();
     TensorID tensor = new TensorIDImpl();
+
+    Drive drive;
+    LandingGear lg;
+    Marker mark;
+    Scoops scoop;
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -37,17 +38,14 @@ public class Auto_DepotAvoid extends LinearOpMode {
         telemetry.addLine("Initialising... please wait.");
         telemetry.update();
 
-        drive = new DriveImpl();
-        drive.setTelemetry(telemetry);
-        drive.initMotors(hardwareMap);
-        drive.initialiseIMU(hardwareMap);
-        drive.passLinearOp(this);
+        drive = new DriveImpl(hardwareMap,telemetry,this);
 
-        mark.init(hardwareMap,telemetry);
+        mark = new Marker(hardwareMap,telemetry);
 
-        lg.init(hardwareMap,drive,this);
+        lg = new LandingGearImpl(hardwareMap,drive,this);
 
-        scoop.init(hardwareMap, telemetry);
+        scoop = new ScoopsImpl(hardwareMap, telemetry);
+
 
         telemetry.addLine("Retracting!!!");
         telemetry.update();

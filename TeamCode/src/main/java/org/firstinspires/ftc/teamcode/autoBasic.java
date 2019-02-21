@@ -20,9 +20,8 @@ import org.firstinspires.ftc.teamcode.library.Marker;
 public class autoBasic extends LinearOpMode {
     ElectorgatorHardware hardware = new ElectorgatorHardware();
 	Drive drive;
-	LandingGear lg= new LandingGearImpl();
-    Marker mark = new Marker();
-
+	LandingGear lg;
+    Marker mark;
 
     double maxDrive = 0;
 
@@ -32,17 +31,9 @@ public class autoBasic extends LinearOpMode {
         telemetry.addLine("Initialising... please wait.");
         telemetry.update();
 
-        drive = new DriveImpl();
-        hardware.initMotors(hardwareMap);
-
-        mark.init(hardwareMap,telemetry);
-
-        drive.setTelemetry(telemetry);
-        drive.initMotors(hardwareMap);
-        drive.initialiseIMU(hardwareMap);
-        drive.passLinearOp(this);
-
-        lg.init(hardwareMap,drive,this);
+        drive = new DriveImpl(hardwareMap, telemetry, this );
+        mark = new Marker(hardwareMap, telemetry);
+        lg = new LandingGearImpl(hardwareMap, drive, this);
 
         telemetry.addLine("Retracting!!!");
         telemetry.update();

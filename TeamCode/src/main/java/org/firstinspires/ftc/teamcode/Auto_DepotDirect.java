@@ -11,6 +11,8 @@ import org.firstinspires.ftc.teamcode.library.ElectorgatorHardware;
 import org.firstinspires.ftc.teamcode.library.LandingGear;
 import org.firstinspires.ftc.teamcode.library.LandingGearImpl;
 import org.firstinspires.ftc.teamcode.library.Marker;
+import org.firstinspires.ftc.teamcode.library.Scoops;
+import org.firstinspires.ftc.teamcode.library.ScoopsImpl;
 
 /**
  * Created by mira on 11/26/2018.
@@ -22,9 +24,11 @@ public class Auto_DepotDirect extends LinearOpMode {
     private static final boolean live = false;
     private static final boolean stand = false;
 
-	Drive drive = new DriveImpl();
-	LandingGear lg = new LandingGearImpl();
-    Marker mark = new Marker();
+
+    Drive drive;
+    LandingGear lg;
+    Marker mark;
+    Scoops scoop;
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -32,15 +36,14 @@ public class Auto_DepotDirect extends LinearOpMode {
         telemetry.addLine("Initialising... please wait.");
         telemetry.update();
 
-        drive = new DriveImpl();
-        drive.setTelemetry(telemetry);
-        drive.initMotors(hardwareMap);
-        drive.initialiseIMU(hardwareMap);
-        drive.passLinearOp(this);
+        drive = new DriveImpl(hardwareMap,telemetry,this);
 
-        mark.init(hardwareMap,telemetry);
+        mark = new Marker(hardwareMap,telemetry);
 
-        lg.init(hardwareMap,drive,this);
+        lg = new LandingGearImpl(hardwareMap,drive,this);
+
+        scoop = new ScoopsImpl(hardwareMap, telemetry);
+
 
         telemetry.addLine("Retracting!!!");
         telemetry.update();

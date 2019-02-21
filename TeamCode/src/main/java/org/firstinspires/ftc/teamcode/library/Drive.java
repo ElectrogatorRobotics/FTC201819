@@ -16,7 +16,7 @@ public interface Drive {
 
     void initMotors(HardwareMap hardware);
 	void initialiseIMU(HardwareMap hardwareMap);
-	void setTelemetry(Telemetry telem);
+	void initTelemetry(Telemetry telem);
 	void passLinearOp(LinearOpMode lop);
 
 	/**
@@ -46,8 +46,7 @@ public interface Drive {
 
 	double setMotorSpeed(double speed, MotorControlMode mcm);
 
-	void forward(int inches);
-
+	void forward(double inches);
     void turn(double angle);
 	void slide (double distnce);
 

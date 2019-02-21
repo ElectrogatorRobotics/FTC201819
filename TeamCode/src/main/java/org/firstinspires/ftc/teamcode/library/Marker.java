@@ -17,7 +17,7 @@ public class Marker {
     private Telemetry log;
     private ElapsedTime runtime = new ElapsedTime();
 
-    public void init(HardwareMap hm, Telemetry telm){
+    public Marker(HardwareMap hm, Telemetry telm){
         mServo = hm.servo.get("Marker");
         log = telm;
     }

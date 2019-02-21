@@ -10,6 +10,8 @@ import org.firstinspires.ftc.teamcode.library.ElectorgatorHardware;
 import org.firstinspires.ftc.teamcode.library.LandingGear;
 import org.firstinspires.ftc.teamcode.library.LandingGearImpl;
 import org.firstinspires.ftc.teamcode.library.Marker;
+import org.firstinspires.ftc.teamcode.library.Scoops;
+import org.firstinspires.ftc.teamcode.library.ScoopsImpl;
 
 /**
  * Created by mira on 11/26/2018.
@@ -17,13 +19,11 @@ import org.firstinspires.ftc.teamcode.library.Marker;
 
 @Autonomous(name = "Auto: Just Deploy crater")
 public class autoBasicCrater extends LinearOpMode {
-    ElectorgatorHardware hardware = new ElectorgatorHardware();
-	Drive drive;
-	LandingGear lg= new LandingGearImpl();
-    Marker mark = new Marker();
-
-
     double maxDrive = 0;
+    Drive drive;
+    LandingGear lg;
+    Marker mark;
+    Scoops scoop;
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -31,17 +31,13 @@ public class autoBasicCrater extends LinearOpMode {
         telemetry.addLine("Initialising... please wait.");
         telemetry.update();
 
-        drive = new DriveImpl();
-        hardware.initMotors(hardwareMap);
+        drive = new DriveImpl(hardwareMap,telemetry,this);
 
-        mark.init(hardwareMap,telemetry);
+        mark = new Marker(hardwareMap,telemetry);
 
-        drive.setTelemetry(telemetry);
-        drive.initMotors(hardwareMap);
-        drive.initialiseIMU(hardwareMap);
-        drive.passLinearOp(this);
+        lg = new LandingGearImpl(hardwareMap,drive,this);
 
-        lg.init(hardwareMap,drive,this);
+        scoop = new ScoopsImpl(hardwareMap, telemetry);
 
         telemetry.addLine("Retracting!!!");
         telemetry.update();

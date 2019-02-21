@@ -34,13 +34,6 @@ public interface LandingGear {
     void deploy();
 
     /**
-     * Setup the servos so they can be actuated in the system
-     *
-     * @param hm The hardware map file for getting the sensors
-     */
-    void init(HardwareMap hm, Drive drivetrain, LinearOpMode lop);
-
-    /**
      * Returns the value of what the server was set for and should match one of the values above
      *
      * @return double of the servo's set angle
