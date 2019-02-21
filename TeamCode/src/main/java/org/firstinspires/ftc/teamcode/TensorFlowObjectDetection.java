@@ -277,9 +277,9 @@ public class TensorFlowObjectDetection extends LinearOpMode {
         runtime.reset();
 
         if (opModeIsActive()) {
-            scoops.setFrontScoopPos(0.5);
-            sleep(1000);
-            scoops.setFrontScoopPos(0.0);
+//            scoops.setFrontScoopPos(0.5);
+//            sleep(1000);
+//            scoops.setFrontScoopPos(0.0);
             scoops.backScoopDump();
 
             /**

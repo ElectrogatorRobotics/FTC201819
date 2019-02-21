@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.library;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.util.ElapsedTime;
@@ -44,7 +45,7 @@ public class LandingGearImpl implements LandingGear {
         front.setPosition(LandingGear.LEGS_STRAIGHT);
         back.setPosition(LandingGear.LEGS_STRAIGHT);
         if(da){
-            sleep(2000);
+            sleep(500);
             drivesystem.stop();
         }
     }
@@ -52,7 +53,7 @@ public class LandingGearImpl implements LandingGear {
     public void retract(){
         back.setPosition(LandingGear.LEGS_RETRACT);
         if(back.getPosition() < LandingGear.LEGS_RETRACT) {
-            sleep(2000);
+            sleep(1000);
         }
         front.setPosition(LandingGear.LEGS_RETRACT);
 
@@ -67,21 +68,23 @@ public class LandingGearImpl implements LandingGear {
 
 
     public void deploy(){
+        drivesystem.setBreak(false);
 //        frontRight.setPosition(LandingGear.LEGS_OUT);
 //        frontLeft.setPosition(LandingGear.LEGS_OUT);
 //        backLeft.setPosition (LandingGear.LEGS_OUT);
 //        backRight.setPosition(LandingGear.LEGS_OUT);
 
-        boolean da = false;
+        boolean da = true;
         if(front.getPosition()>LandingGear.LEGS_STAGE) {
             stage();
             da = true;
             drivesystem.deploy_assist();
         }
+        drivesystem.deploy_assist();
         front.setPosition(LEGS_FR_DEPLOY);
         back.setPosition(LEGS_BR_DEPLOY);
         if(da){
-            sleep(2000);
+            sleep(500);
             drivesystem.stop();
         }
 

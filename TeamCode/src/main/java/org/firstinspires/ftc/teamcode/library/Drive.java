@@ -46,8 +46,12 @@ public interface Drive {
 
 	double setMotorSpeed(double speed, MotorControlMode mcm);
 
-	void forward(int inches);
+	void forward(double inches);
 
+    /**
+     * positive angles turn clockwise
+     * @param angle
+     */
     void turn(double angle);
 	void slide (double distnce);
 
@@ -59,6 +63,8 @@ public interface Drive {
 	void stop();
 
 	void setupDriveForTeleop ();
+
+    void setBreak(boolean breakOn);
 
 	//can we get rid of this,because,I dont know what in the world it is for
 	// shutdown is used to shut the motors and it is used in the DriveImpl.java so i am confused

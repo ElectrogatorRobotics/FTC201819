@@ -118,6 +118,20 @@ public class DriveImpl implements Drive {
         }
     }
 
+    public void setBreak(boolean breakOn) {
+        if (breakOn) {
+            frontRightDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+            frontLeftDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+            backRightDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+            backLeftDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        } else {
+            frontRightDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+            frontLeftDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+            backRightDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+            backLeftDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+        }
+    }
+
     public void setMotorNoEncoders(){
         LOG.addLine("NoEncoders. Disabling");
         frontRightDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
@@ -160,10 +174,10 @@ public class DriveImpl implements Drive {
         LOG.addData("SettingDrive", system);
         switch(system) {
             case TURN:
-                frontLeftDrive.setDirection(DcMotorSimple.Direction.REVERSE);
-                backLeftDrive.setDirection(DcMotorSimple.Direction.REVERSE);
-                frontRightDrive.setDirection(DcMotorSimple.Direction.REVERSE);
-                backRightDrive.setDirection(DcMotorSimple.Direction.REVERSE);
+                frontLeftDrive.setDirection(DcMotorSimple.Direction.FORWARD);
+                backLeftDrive.setDirection(DcMotorSimple.Direction.FORWARD);
+                frontRightDrive.setDirection(DcMotorSimple.Direction.FORWARD);
+                backRightDrive.setDirection(DcMotorSimple.Direction.FORWARD);
                 break;
             case SLIDE:
                 frontLeftDrive.setDirection(DcMotorSimple.Direction.REVERSE);
@@ -224,7 +238,8 @@ public class DriveImpl implements Drive {
 
     //endregion
 
-	public void forward(int inches){
+    // forward can go backwards????
+	public void forward(double inches){
         setMotorDriveDirection(MoveMethod.STRAIGHT);
         int ticks = (int)Math.round(inches * ENCODER_COUNTS_PER_INCH);
         setTargetTolerance(50);
@@ -331,9 +346,10 @@ public class DriveImpl implements Drive {
          * set {@link angleToTurn} equal to the {@link imu}'s Z axes
          */
 
-        double targetAngle = (angle.thirdAngle + angleToTurn + 360)%360;
         double power = TURN_POWER;
-        if(Math.sin(angle.thirdAngle - targetAngle) < 0) power *= -1;
+        if(angleToTurn < 0) power *= -1;
+        angleToTurn *= -1;
+        double targetAngle = (angle.thirdAngle + angleToTurn + 360)%360;
         if(targetAngle >180){
             targetAngle -= 360;
         }
