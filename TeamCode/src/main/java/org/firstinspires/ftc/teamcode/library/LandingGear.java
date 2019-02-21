@@ -3,6 +3,8 @@ package org.firstinspires.ftc.teamcode.library;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
+import org.firstinspires.ftc.robotcore.external.Telemetry;
+
 public interface LandingGear {
 
     double LEGS_STRAIGHT = 0.27;
@@ -17,6 +19,11 @@ public interface LandingGear {
     double LEGS_FL_DEPLOY = 0.18;
     double LEGS_FR_DEPLOY = 0.0;
 //    double LEGS_FR_DEPLOY = 0.2;
+
+    /**
+     * Sets the landing gear up on the robot
+     */
+    void init(HardwareMap hm, Drive drivetrain, LinearOpMode lop);
 
     /**
      * Used to stand the robot vertical on the deployed legs to unhook from the rover

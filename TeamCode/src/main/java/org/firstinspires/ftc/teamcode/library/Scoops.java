@@ -13,6 +13,8 @@ public interface Scoops {
     double BACK_DUMP = 0;
     double BACK_CYCLE_TIME = 1100;
 
+    void init(HardwareMap hm, Telemetry telm);
+
     void setFrontScoopPos(double pos);
 
     void moveFrontScoop(long time);

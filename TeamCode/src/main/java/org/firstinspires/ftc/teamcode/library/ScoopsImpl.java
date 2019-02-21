@@ -23,7 +23,10 @@ public class ScoopsImpl implements Scoops {
     private ElapsedTime runtime = new ElapsedTime();
     private Boolean cycling;
 
-    public ScoopsImpl(HardwareMap hm, Telemetry telm){
+    public ScoopsImpl(HardwareMap hm, Telemetry telm) {
+        init(hm,telm);
+    }
+    public void init(HardwareMap hm, Telemetry telm){
         frontScoop = hm.get(DcMotorSimple.class,"front scoop");
         backScoop = hm.servo.get("back scoop");
         frontScoopWheel = hm.servo.get("wheel servo");
