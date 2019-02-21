@@ -2,11 +2,11 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.teamcode.library.Drive;
 import org.firstinspires.ftc.teamcode.library.DriveImpl;
+import org.firstinspires.ftc.teamcode.library.ElectorgatorHardware;
 import org.firstinspires.ftc.teamcode.library.LandingGear;
 import org.firstinspires.ftc.teamcode.library.LandingGearImpl;
 import org.firstinspires.ftc.teamcode.library.Marker;
@@ -15,14 +15,15 @@ import org.firstinspires.ftc.teamcode.library.Marker;
  * Created by mira on 11/26/2018.
  */
 
-@Autonomous(name = "Crater")
-public class Auto_CraterDirect extends LinearOpMode {
-    private static final boolean live = true;
-    private static final boolean stand = false;
-
-	Drive drive = new DriveImpl();
-	LandingGear lg = new LandingGearImpl();
+@Autonomous(name = "Auto: Just Deploy crater")
+public class autoBasicCrater extends LinearOpMode {
+    ElectorgatorHardware hardware = new ElectorgatorHardware();
+	Drive drive;
+	LandingGear lg= new LandingGearImpl();
     Marker mark = new Marker();
+
+
+    double maxDrive = 0;
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -31,57 +32,37 @@ public class Auto_CraterDirect extends LinearOpMode {
         telemetry.update();
 
         drive = new DriveImpl();
+        hardware.initMotors(hardwareMap);
+
+        mark.init(hardwareMap,telemetry);
+
         drive.setTelemetry(telemetry);
         drive.initMotors(hardwareMap);
         drive.initialiseIMU(hardwareMap);
         drive.passLinearOp(this);
 
-        mark.init(hardwareMap,telemetry);
-
         lg.init(hardwareMap,drive,this);
 
         telemetry.addLine("Retracting!!!");
         telemetry.update();
-        if(live) lg.retract();///!!!Illegal?
+        lg.retract();///!!!Illegal?
 
         telemetry.addLine("Ready to start... thank you for waiting!");
         telemetry.update();
 
         waitForStart();
-
-        kick_block();
-
-        //turn to direct angle
-        drive.forward(84);
-        //drive.turn(10);
-        //drive.forward(30);
-
+        //lg.stand_up();
+//        drive.turn(-20);
+        lg.deploy();
+        drive.turn(-179);
+        //drive.forward(6);
+        //drive.turn(-25);
+        drive.forward(-50);
     }
 
-    public void kick_block(){
-        if(live && stand) {
-            lg.stand_up();
-            drive.turn(10);
+    void setMaxDrive(double motor) {
+        if (Math.abs(motor) > maxDrive) {
+            maxDrive = Math.abs(motor);
         }
-        if(live){
-            lg.deploy();
-        }
-        if(live && stand) {
-            drive.turn(35);
-        }
-        else{
-            drive.turn(-45);
-        }
-        drive.forward(40);
-        drive.turn(90);
-        drive.forward(-50);
-        //angle at block
-        //drive to kill
-        //turn to degrees
-        //drive to depot
-        //line up again
-        //drive some more
-        //turn to position
-        mark.KickOutTheMrker();
     }
 }

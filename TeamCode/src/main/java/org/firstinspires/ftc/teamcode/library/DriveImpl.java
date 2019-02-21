@@ -1,7 +1,6 @@
 package org.firstinspires.ftc.teamcode.library;
 
 import com.qualcomm.hardware.bosch.BNO055IMU;
-import com.qualcomm.hardware.rev.RevSPARKMini;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
@@ -144,6 +143,7 @@ public class DriveImpl implements Drive {
         LOG.update();
     }
 
+    /* motors drive correctly? *
     public void setMotorDriveDirection(MoveMethod system){
         // set direction
         LOG.addData("SettingDrive", system);
@@ -153,6 +153,40 @@ public class DriveImpl implements Drive {
                 backLeftDrive.setDirection(DcMotorSimple.Direction.REVERSE);
                 frontRightDrive.setDirection(DcMotorSimple.Direction.REVERSE);
                 backRightDrive.setDirection(DcMotorSimple.Direction.REVERSE);
+                break;
+            case SLIDE:
+                frontLeftDrive.setDirection(DcMotorSimple.Direction.FORWARD);
+                backLeftDrive.setDirection(DcMotorSimple.Direction.REVERSE);
+                frontRightDrive.setDirection(DcMotorSimple.Direction.FORWARD);
+                backRightDrive.setDirection(DcMotorSimple.Direction.REVERSE);
+                break;
+            case DEPLOY: // this should be the same as default?
+                frontLeftDrive.setDirection(DcMotorSimple.Direction.FORWARD);
+                backLeftDrive.setDirection(DcMotorSimple.Direction.REVERSE);
+                frontRightDrive.setDirection(DcMotorSimple.Direction.REVERSE);
+                backRightDrive.setDirection(DcMotorSimple.Direction.FORWARD);
+                break;
+            case STRAIGHT:
+            default:
+                frontLeftDrive.setDirection(DcMotorSimple.Direction.REVERSE);
+                backLeftDrive.setDirection(DcMotorSimple.Direction.REVERSE);
+                frontRightDrive.setDirection(DcMotorSimple.Direction.FORWARD);
+                backRightDrive.setDirection(DcMotorSimple.Direction.FORWARD);
+                break;
+        }
+    }
+    //*/
+
+    /* motors backwards */
+    public void setMotorDriveDirection(MoveMethod system){
+        // set direction
+        LOG.addData("SettingDrive", system);
+        switch(system) {
+            case TURN:
+                frontLeftDrive.setDirection(DcMotorSimple.Direction.FORWARD);
+                backLeftDrive.setDirection(DcMotorSimple.Direction.FORWARD);
+                frontRightDrive.setDirection(DcMotorSimple.Direction.FORWARD);
+                backRightDrive.setDirection(DcMotorSimple.Direction.FORWARD);
                 break;
             case SLIDE:
                 frontLeftDrive.setDirection(DcMotorSimple.Direction.REVERSE);
@@ -175,6 +209,7 @@ public class DriveImpl implements Drive {
                 break;
         }
     }
+    //*/
 
     public void setupDriveForTeleop () {
         frontLeftDrive.setDirection(DcMotorSimple.Direction.REVERSE);
@@ -315,9 +350,10 @@ public class DriveImpl implements Drive {
          * set {@link angleToTurn} equal to the {@link imu}'s Z axes
          */
 
-        double targetAngle = (angle.thirdAngle + angleToTurn + 360)%360;
         double power = TURN_POWER;
-        if(Math.sin(angle.thirdAngle - targetAngle) < 0) power *= -1;
+        if(angleToTurn < 0) power *= -1;
+        angleToTurn *= -1;
+        double targetAngle = (angle.thirdAngle + angleToTurn + 360)%360;
         if(targetAngle >180){
             targetAngle -= 360;
         }

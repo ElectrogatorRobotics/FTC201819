@@ -2,6 +2,7 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.teamcode.library.Drive;
@@ -16,6 +17,7 @@ import org.firstinspires.ftc.teamcode.library.Marker;
  */
 
 @Autonomous(name = "Depot - Direct")
+@Disabled
 public class Auto_DepotDirect extends LinearOpMode {
     private static final boolean live = false;
     private static final boolean stand = false;

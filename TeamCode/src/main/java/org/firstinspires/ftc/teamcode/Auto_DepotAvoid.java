@@ -6,22 +6,30 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.teamcode.library.Drive;
 import org.firstinspires.ftc.teamcode.library.DriveImpl;
+import org.firstinspires.ftc.teamcode.library.GoldPosition;
 import org.firstinspires.ftc.teamcode.library.LandingGear;
 import org.firstinspires.ftc.teamcode.library.LandingGearImpl;
 import org.firstinspires.ftc.teamcode.library.Marker;
+import org.firstinspires.ftc.teamcode.library.Scoops;
+import org.firstinspires.ftc.teamcode.library.ScoopsImpl;
+import org.firstinspires.ftc.teamcode.library.TensorID;
+import org.firstinspires.ftc.teamcode.library.TensorIDImpl;
 
 /**
  * Created by mira on 11/26/2018.
  */
 
-@Autonomous(name = "Depot - Avoid")
+@Autonomous(name = "Depot - InOut")
 public class Auto_DepotAvoid extends LinearOpMode {
-    private static final boolean live = false;
+    private static final boolean live = true;
     private static final boolean stand = false;
+    private static final boolean scan = false;
 
 	Drive drive = new DriveImpl();
 	LandingGear lg = new LandingGearImpl();
     Marker mark = new Marker();
+    Scoops scoop = new ScoopsImpl();
+    TensorID tensor = new TensorIDImpl();
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -39,54 +47,96 @@ public class Auto_DepotAvoid extends LinearOpMode {
 
         lg.init(hardwareMap,drive,this);
 
+        scoop.init(hardwareMap, telemetry);
+
         telemetry.addLine("Retracting!!!");
         telemetry.update();
         if(live) lg.retract();///!!!Illegal?
+
+        tensor.initTensorID( telemetry, scoop, this );
 
         telemetry.addLine("Ready to start... thank you for waiting!");
         telemetry.update();
 
         waitForStart();
 
-        //kick_block
-        //turn to avoid
-        drive.forward(36);//head to the split
+        kick_block();
+        drive.forward(40);
+        return;
+        /*turn to avoid*
+        drive.forward(40);//head to the split
         drive.turn(-90);//turn right toward lander
         drive.forward(20); //approach lander
         drive.turn(-45);   //turn parallel to the lander
-        drive.forward(56); //slide along depot side
+        drive.forward(44); //slide along depot side
         drive.turn(90); //turn to go along the side of the crater
-        drive.forward(56);  //drive past the other lander side
+        drive.forward(44);  //drive past the other lander side
         drive.turn(-45);    //turn right to face wall
         drive.forward(20);  //drive to the wall
         drive.turn(-90);    //turn right
-        drive.forward(43);  //head to crater
+        drive.forward(12);  //head to crater
+        //*/
     }
 
 
     public void kick_block(){
-        if(live && stand) {
-            lg.stand_up();
-            drive.turn(10);
+        GoldPosition gp = GoldPosition.UNKNOWN;
+        if(live) {
+             if(stand)lg.stand_up();
+             else{
+                 lg.deploy();
+             }
+             drive.turn(10);
+             drive.forward(4);
+             if(stand)
+                 lg.deploy();
+             drive.turn(-11);
         }
-        if(live){
-            lg.deploy();
+        if(scan){
+            gp = tensor.getGoldPosition();
         }
-        if(live && stand) {
-            drive.turn(35);
+        if(gp != GoldPosition.UNKNOWN && scan) {
+            switch (gp) {
+                case LEFT:
+                    drive.turn(-35);
+                    break;
+                case RIGHT:
+                    drive.turn(35);
+                    break;
+            }
+            scoop.moveFrontScoop(250);
+            scoop.runRubberBandWheel(1);
+            drive.forward(30);
+            scoop.moveFrontScoop(-1000);
+            scoop.runRubberBandWheel(0);
+
+            switch (gp) {
+                case LEFT:
+                    drive.turn(100);
+                    break;
+                case CENTER:
+                    drive.turn(180);
+                    break;
+                case RIGHT:
+                    drive.turn(-100);
+                    break;
+            }
+            drive.forward(-40);
+            mark.KickOutTheMrker();
+
+            switch (gp) {
+                case CENTER:
+                    drive.turn(46);
+                    break;
+                case RIGHT:
+                    drive.turn(91);
+                    break;
+            }
         }
         else{
-            drive.turn(45);
+            drive.turn(-179);
+            drive.forward(-50);
+            mark.KickOutTheMrker();
         }
-        drive.forward(12);
-        //read Vuforia
-        // update our position
-        drive.forward(-12);
-        //angle at block
-        //drive to kill
-        //turn to degrees
-        //drive to depot
-        //turn to position
-        mark.KickOutTheMrker();
     }
 }

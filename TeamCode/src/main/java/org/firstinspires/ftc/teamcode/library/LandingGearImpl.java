@@ -51,9 +51,9 @@ public class LandingGearImpl implements LandingGear {
 
     public void retract(){
         back.setPosition(LandingGear.LEGS_RETRACT);
-        if(back.getPosition() < LandingGear.LEGS_RETRACT) {
-            sleep(2000);
-        }
+        //if(back.getPosition() < LandingGear.LEGS_RETRACT) {
+            sleep(1000);
+        //}
         front.setPosition(LandingGear.LEGS_RETRACT);
 
     }

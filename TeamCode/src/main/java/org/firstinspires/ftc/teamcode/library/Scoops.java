@@ -17,6 +17,8 @@ public interface Scoops {
 
     void setFrontScoopPos(double pos);
 
+    void moveFrontScoop(long time);
+
     void setBackScoopPos(double pos);
 
     void backScoopDown();

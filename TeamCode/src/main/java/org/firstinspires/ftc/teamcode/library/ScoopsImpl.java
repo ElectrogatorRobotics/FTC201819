@@ -27,7 +27,7 @@ public class ScoopsImpl implements Scoops {
         frontScoop = hm.get(DcMotorSimple.class,"front scoop");
         backScoop = hm.servo.get("back scoop");
         frontScoopWheel = hm.servo.get("wheel servo");
-        frontScoopDistance = hm.get(DistanceSensor.class, "front distance");
+        //frontScoopDistance = hm.get(DistanceSensor.class, "front distance");
         log = telm;
         cycling = false;
     }
@@ -45,6 +45,17 @@ public class ScoopsImpl implements Scoops {
     }
     public void setFrontScoopPos(double pos){
         frontScoop.setPower(pos);
+    }
+
+    public void moveFrontScoop(long time){
+        double power = 0.5;
+        if(time < 0){
+            power = -0.5;
+        }
+        time = Math.abs(time);
+        setFrontScoopPos(power);
+        sleep(time);
+        setFrontScoopPos(0.0);
     }
 
     //Back Scoops
@@ -83,6 +94,15 @@ public class ScoopsImpl implements Scoops {
                 cycling=false;
             }
         }
+    }
+
+    private void sleep(long milliseconds){
+        ElapsedTime runtime = new ElapsedTime();
+        double time;
+        do {
+            time = runtime.milliseconds();
+            Thread.yield(); //effectively what the LinearOpMode idle call does
+        } while (time < milliseconds);
     }
 
     public void runRubberBandWheel (double speed) {
