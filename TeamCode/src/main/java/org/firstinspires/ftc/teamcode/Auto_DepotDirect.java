@@ -7,7 +7,6 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.teamcode.library.Drive;
 import org.firstinspires.ftc.teamcode.library.DriveImpl;
-import org.firstinspires.ftc.teamcode.library.ElectorgatorHardware;
 import org.firstinspires.ftc.teamcode.library.LandingGear;
 import org.firstinspires.ftc.teamcode.library.LandingGearImpl;
 import org.firstinspires.ftc.teamcode.library.Marker;

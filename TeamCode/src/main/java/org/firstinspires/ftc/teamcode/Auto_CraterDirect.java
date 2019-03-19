@@ -18,6 +18,7 @@ import org.firstinspires.ftc.teamcode.library.ScoopsImpl;
  */
 
 @Autonomous(name = "Crater")
+@Disabled
 public class Auto_CraterDirect extends LinearOpMode {
     private static final boolean live = true;
     private static final boolean stand = false;

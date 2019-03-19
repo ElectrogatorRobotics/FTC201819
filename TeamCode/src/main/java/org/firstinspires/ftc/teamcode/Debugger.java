@@ -1,11 +1,12 @@
 
 package org.firstinspires.ftc.teamcode;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.library.Drive;
 import org.firstinspires.ftc.teamcode.library.DriveImpl;
-import org.firstinspires.ftc.teamcode.library.ElectorgatorHardware;
 import org.firstinspires.ftc.teamcode.library.LandingGear;
 import org.firstinspires.ftc.teamcode.library.LandingGearImpl;
 import org.firstinspires.ftc.teamcode.library.Marker;
@@ -16,7 +17,8 @@ import org.firstinspires.ftc.teamcode.library.ScoopsImpl;
  * Created by Luke on 10/1/2017.
  */
 
-//@TeleOp(name = "Debugger")
+@TeleOp(name = "Debugger")
+@Disabled
 public class Debugger extends LinearOpMode {
 
 	double position = 0.3;

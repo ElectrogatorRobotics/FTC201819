@@ -17,6 +17,7 @@ import org.firstinspires.ftc.teamcode.library.ScoopsImpl;
  */
 
 @TeleOp(name = "DRIVE!")
+//@Disabled
 public class TeleOp_Mecanum extends LinearOpMode {
     ElectorgatorHardware hardware = new ElectorgatorHardware();
 

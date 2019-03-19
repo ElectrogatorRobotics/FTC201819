@@ -1,8 +1,6 @@
 package org.firstinspires.ftc.teamcode.library;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
@@ -28,7 +26,7 @@ public interface Drive {
 	 * @param expoBase
 	 * @return
 	 */
-	//double setMotorSpeed(double speed, DriveImpl.MotorControlMode controlMode, double expoBase);
+	//double setMotorSpeed(double speed, DriveV2_Impl.MotorControlMode controlMode, double expoBase);
 
 	/**
 	 * Set the speed of a motor with or with out expo.
@@ -38,7 +36,7 @@ public interface Drive {
 	 * @param controlMode
 	 * @return
 	 */
-	//double setMotorSpeed(double speed, DriveImpl.MotorControlMode controlMode);
+	//double setMotorSpeed(double speed, DriveV2_Impl.MotorControlMode controlMode);
 
 	void setMotorDriveDirection(DriveImpl.MoveMethod system);
 
@@ -60,7 +58,7 @@ public interface Drive {
 	void setupDriveForTeleop ();
 
 	//can we get rid of this,because,I dont know what in the world it is for
-	// shutdown is used to shut the motors and it is used in the DriveImpl.java so i am confused
+	// shutdown is used to shut the motors and it is used in the DriveV2_Impl.java so i am confused
 	void shutdown();
 
 	/**
