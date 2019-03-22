@@ -12,6 +12,7 @@ import org.firstinspires.ftc.teamcode.library.LandingGearImpl;
 import org.firstinspires.ftc.teamcode.library.Marker;
 import org.firstinspires.ftc.teamcode.library.Scoops;
 import org.firstinspires.ftc.teamcode.library.ScoopsImpl;
+import org.firstinspires.ftc.teamcode.library.TensorID;
 
 /**
  * Created by mira on 11/26/2018.
@@ -21,9 +22,12 @@ import org.firstinspires.ftc.teamcode.library.ScoopsImpl;
 public class Auto_CraterDirect extends LinearOpMode {
     private static final boolean live = true;
     private static final boolean stand = false;
+    private static final boolean scan = false;
 
-	Drive drive;
-	LandingGear lg;
+    TensorID tensor;
+
+    Drive drive;
+    LandingGear lg;
     Marker mark;
     Scoops scoop;
 
@@ -49,6 +53,8 @@ public class Auto_CraterDirect extends LinearOpMode {
         telemetry.update();
 
         waitForStart();
+
+
 
         kick_block();
 

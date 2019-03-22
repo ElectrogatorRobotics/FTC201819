@@ -45,6 +45,6 @@ public interface LandingGear {
      *
      * @return double of the servo's set angle
      */
-    double getState();
+    void unhook(boolean stand);
 
 }

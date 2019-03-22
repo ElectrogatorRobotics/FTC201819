@@ -25,7 +25,7 @@ public class Auto_DepotAvoid extends LinearOpMode {
     private static final boolean stand = false;
     private static final boolean scan = false;
 
-    TensorID tensor = new TensorIDImpl();
+    TensorID tensor;
 
     Drive drive;
     LandingGear lg;
@@ -51,7 +51,7 @@ public class Auto_DepotAvoid extends LinearOpMode {
         telemetry.update();
         if(live) lg.retract();///!!!Illegal?
 
-        tensor.initTensorID( telemetry, scoop, this );
+        tensor = new TensorIDImpl(telemetry, scoop, this);
 
         telemetry.addLine("Ready to start... thank you for waiting!");
         telemetry.update();

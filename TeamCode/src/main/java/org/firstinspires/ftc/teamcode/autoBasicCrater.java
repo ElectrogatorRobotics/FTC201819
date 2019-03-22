@@ -32,11 +32,8 @@ public class autoBasicCrater extends LinearOpMode {
         telemetry.update();
 
         drive = new DriveImpl(hardwareMap,telemetry,this);
-
         mark = new Marker(hardwareMap,telemetry);
-
         lg = new LandingGearImpl(hardwareMap,drive,this);
-
         scoop = new ScoopsImpl(hardwareMap, telemetry);
 
         telemetry.addLine("Retracting!!!");
@@ -47,8 +44,8 @@ public class autoBasicCrater extends LinearOpMode {
         telemetry.update();
 
         waitForStart();
-        //lg.stand_up();
-//        drive.turn(-20);
+        lg.stand_up();
+        drive.turn(-20);
         lg.deploy();
         drive.turn(-179);
         //drive.forward(6);

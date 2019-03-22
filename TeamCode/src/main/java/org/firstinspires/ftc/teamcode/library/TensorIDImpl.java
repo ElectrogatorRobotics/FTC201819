@@ -33,8 +33,12 @@ public class TensorIDImpl implements TensorID {
     HardwareMap hardwareMap;
     GoldPosition gp = GoldPosition.UNKNOWN;
 
+    public TensorIDImpl(Telemetry telem, Scoops scp, LinearOpMode lo){
+        init(telem, scp, lo);
+    }
+
     @Override
-    public boolean initTensorID(Telemetry telem, Scoops scop, LinearOpMode lop) {
+    public boolean init(Telemetry telem, Scoops scop, LinearOpMode lop) {
         telemetry = telem;
         scoops = scop;
         lom = lop;

@@ -30,13 +30,6 @@ public class LandingGearImpl implements LandingGear {
         lom = lop;
     }
 
-    private void stage(){
-        front.setPosition(LandingGear.LEGS_STAGE);
-        sleep(2000);
-        back.setPosition(LandingGear.LEGS_STAGE);
-        sleep(1000);
-    }
-
     public void stand_up(){
         boolean da = false;
         if(front.getPosition()>LandingGear.LEGS_STAGE) {
@@ -61,14 +54,6 @@ public class LandingGearImpl implements LandingGear {
 
     }
 
-    private void sleep(long milisecs) {
-        runtime.reset();
-        while(runtime.milliseconds() < milisecs && lom.opModeIsActive()){
-            Thread.yield();
-        }
-    }
-
-
     public void deploy(){
 //        frontRight.setPosition(LandingGear.LEGS_OUT);
 //        frontLeft.setPosition(LandingGear.LEGS_OUT);
@@ -90,8 +75,33 @@ public class LandingGearImpl implements LandingGear {
 
     }
 
+    public void unhook(boolean stand){
+        if(stand){
+            stand_up();
+        }
+        else{
+            deploy();
+        }
+        drivesystem.slide(4);
+        if(stand){
+            deploy();
+        }
+    }
+
     public double getState(){
         return back.getPosition();
+    }
+    private void sleep(long milisecs) {
+        runtime.reset();
+        while(runtime.milliseconds() < milisecs && lom.opModeIsActive()){
+            Thread.yield();
+        }
+    }
+    private void stage(){
+        front.setPosition(LandingGear.LEGS_STAGE);
+        sleep(2000);
+        back.setPosition(LandingGear.LEGS_STAGE);
+        sleep(1000);
     }
 
     //debug functions
