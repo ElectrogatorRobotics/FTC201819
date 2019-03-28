@@ -1,21 +1,22 @@
 
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.teamcode.OldCode;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
-import org.firstinspires.ftc.teamcode.library.Drive;
-import org.firstinspires.ftc.teamcode.library.DriveImpl;
-import org.firstinspires.ftc.teamcode.library.ElectorgatorHardware;
-import org.firstinspires.ftc.teamcode.library.LandingGear;
-import org.firstinspires.ftc.teamcode.library.LandingGearImpl;
+import org.firstinspires.ftc.teamcode.OldCode.library.Drive;
+import org.firstinspires.ftc.teamcode.OldCode.library.DriveImpl;
+import org.firstinspires.ftc.teamcode.OldCode.library.ElectorgatorHardware;
+import org.firstinspires.ftc.teamcode.OldCode.library.LandingGear;
+import org.firstinspires.ftc.teamcode.OldCode.library.LandingGearImpl;
 
 /**
  * Created by mira on 11/26/2018.
  */
 
-//@Autonomous(name = "Auto: Pick Me Luke")
+@Autonomous(name = "Auto: Pick Me Luke")
+@Disabled
 public class autoBasic extends LinearOpMode {
     ElectorgatorHardware hardware = new ElectorgatorHardware();
 	Drive drive;

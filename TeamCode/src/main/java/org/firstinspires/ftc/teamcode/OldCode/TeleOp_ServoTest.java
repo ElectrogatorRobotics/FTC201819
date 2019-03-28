@@ -1,19 +1,17 @@
 
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.teamcode.OldCode;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.Servo;
-
-import org.firstinspires.ftc.teamcode.library.Drive;
-import org.firstinspires.ftc.teamcode.library.DriveImpl;
-import org.firstinspires.ftc.teamcode.library.ElectorgatorHardware;
 
 /**
  * Created by Luke on 10/1/2017.
  */
 
 @TeleOp(name = "Servo test")
+@Disabled
 public class TeleOp_ServoTest extends LinearOpMode {
     public Servo s1 = null;
     public Servo s2 = null;

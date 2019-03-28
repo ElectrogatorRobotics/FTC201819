@@ -1,20 +1,22 @@
 
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.teamcode.OldCode;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
-import org.firstinspires.ftc.teamcode.library.Drive;
-import org.firstinspires.ftc.teamcode.library.DriveImpl;
-import org.firstinspires.ftc.teamcode.library.LandingGear;
-import org.firstinspires.ftc.teamcode.library.LandingGearImpl;
-import org.firstinspires.ftc.teamcode.library.Marker;
+import org.firstinspires.ftc.teamcode.OldCode.library.Drive;
+import org.firstinspires.ftc.teamcode.OldCode.library.DriveImpl;
+import org.firstinspires.ftc.teamcode.OldCode.library.LandingGear;
+import org.firstinspires.ftc.teamcode.OldCode.library.LandingGearImpl;
+import org.firstinspires.ftc.teamcode.OldCode.library.Marker;
 
 /**
  * Created by mira on 11/26/2018.
  */
 
 @Autonomous(name = "Crater - Avoid")
+@Disabled
 public class Auto_CraterAvoid extends LinearOpMode {
     private static final boolean live = false;
     private static final boolean stand = false;

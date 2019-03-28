@@ -27,13 +27,11 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.firstinspires.ftc.teamcode;
-
-import android.provider.ContactsContract;
+package org.firstinspires.ftc.teamcode.OldCode;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.ClassFactory;
@@ -46,15 +44,15 @@ import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackableDefau
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackables;
 import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
 import org.firstinspires.ftc.robotcore.external.tfod.TFObjectDetector;
-import org.firstinspires.ftc.teamcode.library.Drive;
-import org.firstinspires.ftc.teamcode.library.DriveImpl;
-import org.firstinspires.ftc.teamcode.library.GoldPosition;
-import org.firstinspires.ftc.teamcode.library.ImageTargetVisible;
-import org.firstinspires.ftc.teamcode.library.LandingGear;
-import org.firstinspires.ftc.teamcode.library.LandingGearImpl;
-import org.firstinspires.ftc.teamcode.library.Marker;
-import org.firstinspires.ftc.teamcode.library.Scoops;
-import org.firstinspires.ftc.teamcode.library.ScoopsImpl;
+import org.firstinspires.ftc.teamcode.OldCode.library.Drive;
+import org.firstinspires.ftc.teamcode.OldCode.library.DriveImpl;
+import org.firstinspires.ftc.teamcode.OldCode.library.GoldPosition;
+import org.firstinspires.ftc.teamcode.OldCode.library.ImageTargetVisible;
+import org.firstinspires.ftc.teamcode.OldCode.library.LandingGear;
+import org.firstinspires.ftc.teamcode.OldCode.library.LandingGearImpl;
+import org.firstinspires.ftc.teamcode.OldCode.library.Marker;
+import org.firstinspires.ftc.teamcode.OldCode.library.Scoops;
+import org.firstinspires.ftc.teamcode.OldCode.library.ScoopsImpl;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -77,7 +75,7 @@ import static org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocaliz
  * is explained below.
  */
 @Autonomous(name = "Autonomous")
-//@Disabled
+@Disabled
 public class TensorFlowObjectDetection extends LinearOpMode {
     private static final String VUFORIA_KEY = "Ac3oCab/////AAABmREMMJWRLkxMm4OITflE1z8RQ4ee4yZidzAzHq4xSudcJwaeO7SVeH1B9T/xDMkrokkJZADdb50jlZXPf27E+CCSQ+JtWreq2NDmSjcKwUbouJVs2WwCh4JJNhPubfFKNGBhTbKoMGbnyOeXnnVNtS2LkIYG1OCjUJ2tlIo/sHkmXJXyySbyxTpBAbvNhucWMLrz/xL/VAH01ZOsiEcqWzIFpSuRpcdtcxb8TDAYqnmGDeaDtbp/KtKUdDqSpudckUxjUvLzI7vDDuUKF99sqeD4HDtZ5DG8kEcov4zGdAX/TWjNrh/uR65Ee0mA+Xb/thqVbByP/E4RJ71J6do2RuAGfR4RuLqkhvk961KJK1/G";
     private static final String TFOD_MODEL_ASSET = "RoverRuckus.tflite";

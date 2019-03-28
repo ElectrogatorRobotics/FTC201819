@@ -1,14 +1,16 @@
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.teamcode.OldCode;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
-import org.firstinspires.ftc.teamcode.library.Drive;
-import org.firstinspires.ftc.teamcode.library.DriveImpl;
-import org.firstinspires.ftc.teamcode.library.LandingGear;
-import org.firstinspires.ftc.teamcode.library.LandingGearImpl;
+import org.firstinspires.ftc.teamcode.OldCode.library.Drive;
+import org.firstinspires.ftc.teamcode.OldCode.library.DriveImpl;
+import org.firstinspires.ftc.teamcode.OldCode.library.LandingGear;
+import org.firstinspires.ftc.teamcode.OldCode.library.LandingGearImpl;
 
 @TeleOp
+@Disabled
 public class RetractServos extends LinearOpMode {
     Drive drive;
     LandingGear landingGear;
