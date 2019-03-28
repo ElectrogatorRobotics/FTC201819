@@ -108,7 +108,7 @@ public class DriveV2_Impl implements DriveV2 {
         backLeftServo.setPosition(backPosition);
     }
 
-    // TODO: 3/28/2019 fix servo positions 
+    // TODO: 3/28/2019 fix servo positions
     public driveServoState driveServoState(driveServoState state) {
         switch (state) {
             case RETRACT:
