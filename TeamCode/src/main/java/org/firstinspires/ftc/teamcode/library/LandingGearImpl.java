@@ -32,13 +32,13 @@ public class LandingGearImpl implements LandingGear {
 
     public void stand_up(){
         boolean da = false;
-        if(front.getPosition()>LandingGear.LEGS_STAGE) {
+        if(front.getPosition()> LEGS_STAGE) {
             stage();
             da = true;
             drivesystem.deploy_assist();
         }
-        front.setPosition(LandingGear.LEGS_STRAIGHT);
-        back.setPosition(LandingGear.LEGS_STRAIGHT);
+        front.setPosition(LEGS_STRAIGHT);
+        back.setPosition(LEGS_STRAIGHT);
         if(da){
             sleep(2000);
             drivesystem.stop();
@@ -46,11 +46,11 @@ public class LandingGearImpl implements LandingGear {
     }
 
     public void retract(){
-        back.setPosition(LandingGear.LEGS_RETRACT);
+        back.setPosition(LEGS_RETRACT);
         //if(back.getPosition() < LandingGear.LEGS_RETRACT) {
             sleep(1000);
         //}
-        front.setPosition(LandingGear.LEGS_RETRACT);
+        front.setPosition(LEGS_RETRACT);
 
     }
 
@@ -61,7 +61,7 @@ public class LandingGearImpl implements LandingGear {
 //        backRight.setPosition(LandingGear.LEGS_OUT);
 
         boolean da = false;
-        if(front.getPosition()>LandingGear.LEGS_STAGE) {
+        if(front.getPosition()> LEGS_STAGE) {
             stage();
             da = true;
             drivesystem.deploy_assist();

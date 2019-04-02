@@ -2,6 +2,7 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.teamcode.library.Drive;
@@ -20,6 +21,7 @@ import org.firstinspires.ftc.teamcode.library.TensorIDImpl;
  */
 
 @Autonomous(name = "Depot - InOut")
+@Disabled
 public class Auto_DepotAvoid extends LinearOpMode {
     private static final boolean live = true;
     private static final boolean stand = false;

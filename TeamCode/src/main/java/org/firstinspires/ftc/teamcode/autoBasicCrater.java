@@ -2,11 +2,11 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.teamcode.library.Drive;
 import org.firstinspires.ftc.teamcode.library.DriveImpl;
-import org.firstinspires.ftc.teamcode.library.ElectorgatorHardware;
 import org.firstinspires.ftc.teamcode.library.LandingGear;
 import org.firstinspires.ftc.teamcode.library.LandingGearImpl;
 import org.firstinspires.ftc.teamcode.library.Marker;
@@ -18,6 +18,7 @@ import org.firstinspires.ftc.teamcode.library.ScoopsImpl;
  */
 
 @Autonomous(name = "Auto: Just Deploy crater")
+@Disabled
 public class autoBasicCrater extends LinearOpMode {
     double maxDrive = 0;
     Drive drive;

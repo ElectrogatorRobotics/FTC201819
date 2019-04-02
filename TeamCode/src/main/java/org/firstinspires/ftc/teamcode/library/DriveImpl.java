@@ -2,11 +2,9 @@ package org.firstinspires.ftc.teamcode.library;
 
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.hardware.motors.RevRobotics20HdHexMotor;
-import com.qualcomm.hardware.rev.RevSPARKMini;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
-import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.configuration.typecontainers.MotorConfigurationType;
 import com.qualcomm.robotcore.util.ElapsedTime;
@@ -423,7 +421,7 @@ public class DriveImpl implements Drive {
         backLeftDrive.setPower(power);
     }
 
-// this is not lit up in the Drive.java so i am so confused
+// this is not lit up in the DriveV2_Impl.java so i am so confused
     public void shutdown () {
         backRightDrive.close();
         backLeftDrive.close();

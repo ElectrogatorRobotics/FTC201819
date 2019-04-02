@@ -3,8 +3,6 @@ package org.firstinspires.ftc.teamcode.library;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
-import org.firstinspires.ftc.robotcore.external.Telemetry;
-
 public interface LandingGear {
 
     double LEGS_STRAIGHT = 0.27;
