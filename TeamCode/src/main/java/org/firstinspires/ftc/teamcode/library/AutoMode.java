@@ -5,7 +5,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 public abstract class AutoMode extends LinearOpMode {
     protected static final boolean live = false;
     protected static final boolean stand = false;
-    protected static final boolean scan = true;
+    protected static final boolean scan = false;
 
     protected Drive drive;
     protected LandingGear lg;
