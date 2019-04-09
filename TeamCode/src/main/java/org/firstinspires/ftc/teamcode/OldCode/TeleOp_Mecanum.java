@@ -1,16 +1,16 @@
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.teamcode.OldCode;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
-import org.firstinspires.ftc.teamcode.library.Drive;
-import org.firstinspires.ftc.teamcode.library.DriveImpl;
-import org.firstinspires.ftc.teamcode.library.ElectorgatorHardware;
-import org.firstinspires.ftc.teamcode.library.LandingGear;
-import org.firstinspires.ftc.teamcode.library.LandingGearImpl;
-import org.firstinspires.ftc.teamcode.library.Marker;
-import org.firstinspires.ftc.teamcode.library.Scoops;
-import org.firstinspires.ftc.teamcode.library.ScoopsImpl;
+import org.firstinspires.ftc.teamcode.OldCode.library.Drive;
+import org.firstinspires.ftc.teamcode.OldCode.library.DriveImpl;
+import org.firstinspires.ftc.teamcode.OldCode.library.ElectorgatorHardware;
+import org.firstinspires.ftc.teamcode.OldCode.library.LandingGear;
+import org.firstinspires.ftc.teamcode.OldCode.library.LandingGearImpl;
+import org.firstinspires.ftc.teamcode.OldCode.library.Marker;
+import org.firstinspires.ftc.teamcode.OldCode.library.Scoops;
+import org.firstinspires.ftc.teamcode.OldCode.library.ScoopsImpl;
 
 /**
  * Created by Luke on 10/1/2017.
@@ -124,7 +124,7 @@ public class TeleOp_Mecanum extends LinearOpMode {
 //                scoop.runRubberBandWheel(1.0);
 //            } else scoop.runRubberBandWheel(0.5);
 
-            scoop.runRubberBandWheel((gamepad2.right_stick_y+1)/2);
+            scoop.runRubberBandWheel(((-gamepad2.right_stick_y)+1)/2);
             if (gamepad2.dpad_down) {
                 mark.KickOutTheMrker();
             }
@@ -148,8 +148,8 @@ public class TeleOp_Mecanum extends LinearOpMode {
 //                if(gamepad2.left_trigger > .5){
 //                    scoop.frontScoopCycle();
 //                }
-                servoVal = (gamepad2.left_stick_y);
-                scoop.setFrontScoopPos(servoVal*0.8);
+                servoVal = (-gamepad2.left_stick_y);
+                scoop.setFrontScoopPos(servoVal*0.6);
 //            if(gamepad1.left_bumper)scoop.frontScoopDown();
 //            if(gamepad1.right_bumper)scoop.frontScoopTransfer();
             }
