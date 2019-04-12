@@ -7,7 +7,7 @@ public abstract class AutoMode extends LinearOpMode {
     protected static final boolean stand = false;
     protected static final boolean scan = false;
 
-    protected Drive drive;
+    protected DriveV2 drive;
     protected LandingGear lg;
     protected Marker mark;
     protected Scoops scoop;
@@ -18,7 +18,7 @@ public abstract class AutoMode extends LinearOpMode {
         telemetry.addLine("Initialising... please wait.");
         telemetry.update();
 
-        drive = new DriveImpl(hardwareMap,telemetry,this);
+        drive = new DriveV2_Impl(hardwareMap,telemetry,this);
         mark = new Marker(hardwareMap,telemetry);
         lg = new LandingGearImpl(hardwareMap,drive,this);
         scoop = new ScoopsImpl(hardwareMap, telemetry);

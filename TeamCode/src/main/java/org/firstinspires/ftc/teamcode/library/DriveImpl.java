@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.library;
 
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.hardware.motors.RevRobotics20HdHexMotor;
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
@@ -9,7 +10,6 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.configuration.typecontainers.MotorConfigurationType;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
-import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
@@ -58,14 +58,15 @@ public class DriveImpl implements Drive {
 
     public enum MoveMethod{STRAIGHT, TURN, SLIDE, DEPLOY}
 
+    public DriveImpl(){}
     public DriveImpl(HardwareMap hwm, Telemetry telem, LinearOpMode lop){
-        initTelemetry(telem);
+        setTelemetry(telem);
         initMotors(hwm);
         initialiseIMU(hwm);
         lom = lop;
     }
 
-    public void initTelemetry(Telemetry telem){
+    public void setTelemetry(Telemetry telem){
         LOG = telem;
     }
     public void passLinearOp(LinearOpMode lop){
@@ -88,17 +89,13 @@ public class DriveImpl implements Drive {
     }
 
     public void initialiseIMU(HardwareMap hardwareMap) {
-        BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
-        parameters.angleUnit = BNO055IMU.AngleUnit.DEGREES;
-        parameters.gyroBandwidth = BNO055IMU.GyroBandwidth.HZ116;
+        bno055IMU = hardwareMap.get( BNO055IMU.class, "imu");
+        BNO055IMU.Parameters parameters = null;
         parameters.gyroPowerMode = BNO055IMU.GyroPowerMode.NORMAL;
-        parameters.calibrationDataFile = "BNO055IMUCalibration.json";
-        parameters.loggingEnabled = true;
-        parameters.loggingTag = "IMU";
-
-        imu = hardwareMap.get(BNO055IMU.class, "imu");
-        imu.initialize(parameters);
-
+        parameters.gyroBandwidth = BNO055IMU.GyroBandwidth.HZ32;
+        parameters.angleUnit = BNO055IMU.AngleUnit.DEGREES;
+        parameters.mode = BNO055IMU.SensorMode.COMPASS;
+        bno055IMU.initialize(parameters);
     }
 
     //region SET MOTOR BEHAVIOR
@@ -112,6 +109,20 @@ public class DriveImpl implements Drive {
             default:
                 setMotorWithEncoders();
                 break;
+        }
+    }
+
+    public void setBreak(boolean breakOn) {
+        if (breakOn) {
+            frontRightDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+            frontLeftDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+            backRightDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+            backLeftDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        } else {
+            frontRightDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+            frontLeftDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+            backRightDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+            backLeftDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
         }
     }
 
@@ -152,41 +163,6 @@ public class DriveImpl implements Drive {
         LOG.update();
     }
 
-    /* motors drive correctly? *
-    public void setMotorDriveDirection(MoveMethod system){
-        // set direction
-        LOG.addData("SettingDrive", system);
-        switch(system) {
-            case TURN:
-                frontLeftDrive.setDirection(DcMotorSimple.Direction.REVERSE);
-                backLeftDrive.setDirection(DcMotorSimple.Direction.REVERSE);
-                frontRightDrive.setDirection(DcMotorSimple.Direction.REVERSE);
-                backRightDrive.setDirection(DcMotorSimple.Direction.REVERSE);
-                break;
-            case SLIDE:
-                frontLeftDrive.setDirection(DcMotorSimple.Direction.FORWARD);
-                backLeftDrive.setDirection(DcMotorSimple.Direction.REVERSE);
-                frontRightDrive.setDirection(DcMotorSimple.Direction.FORWARD);
-                backRightDrive.setDirection(DcMotorSimple.Direction.REVERSE);
-                break;
-            case DEPLOY: // this should be the same as default?
-                frontLeftDrive.setDirection(DcMotorSimple.Direction.FORWARD);
-                backLeftDrive.setDirection(DcMotorSimple.Direction.REVERSE);
-                frontRightDrive.setDirection(DcMotorSimple.Direction.REVERSE);
-                backRightDrive.setDirection(DcMotorSimple.Direction.FORWARD);
-                break;
-            case STRAIGHT:
-            default:
-                frontLeftDrive.setDirection(DcMotorSimple.Direction.REVERSE);
-                backLeftDrive.setDirection(DcMotorSimple.Direction.REVERSE);
-                frontRightDrive.setDirection(DcMotorSimple.Direction.FORWARD);
-                backRightDrive.setDirection(DcMotorSimple.Direction.FORWARD);
-                break;
-        }
-    }
-    //*/
-
-    /* motors backwards */
     public void setMotorDriveDirection(MoveMethod system){
         // set direction
         LOG.addData("SettingDrive", system);
@@ -218,7 +194,6 @@ public class DriveImpl implements Drive {
                 break;
         }
     }
-    //*/
 
     public void setupDriveForTeleop () {
         frontLeftDrive.setDirection(DcMotorSimple.Direction.REVERSE);
@@ -257,6 +232,7 @@ public class DriveImpl implements Drive {
 
     //endregion
 
+    // forward can go backwards????
 	public void forward(double inches){
         setMotorDriveDirection(MoveMethod.STRAIGHT);
         int ticks = (int)Math.round(inches * ENCODER_COUNTS_PER_INCH);
@@ -421,7 +397,7 @@ public class DriveImpl implements Drive {
         backLeftDrive.setPower(power);
     }
 
-// this is not lit up in the DriveV2_Impl.java so i am so confused
+// this is not lit up in the Drive.java so i am so confused
     public void shutdown () {
         backRightDrive.close();
         backLeftDrive.close();

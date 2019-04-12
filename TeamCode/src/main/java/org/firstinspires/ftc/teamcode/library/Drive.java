@@ -14,7 +14,7 @@ public interface Drive {
 
     void initMotors(HardwareMap hardware);
 	void initialiseIMU(HardwareMap hardwareMap);
-	void initTelemetry(Telemetry telem);
+	void setTelemetry(Telemetry telem);
 	void passLinearOp(LinearOpMode lop);
 
 	/**
@@ -26,7 +26,7 @@ public interface Drive {
 	 * @param expoBase
 	 * @return
 	 */
-	//double setMotorSpeed(double speed, DriveV2_Impl.MotorControlMode controlMode, double expoBase);
+	//double setMotorSpeed(double speed, DriveImpl.MotorControlMode controlMode, double expoBase);
 
 	/**
 	 * Set the speed of a motor with or with out expo.
@@ -36,7 +36,7 @@ public interface Drive {
 	 * @param controlMode
 	 * @return
 	 */
-	//double setMotorSpeed(double speed, DriveV2_Impl.MotorControlMode controlMode);
+	//double setMotorSpeed(double speed, DriveImpl.MotorControlMode controlMode);
 
 	void setMotorDriveDirection(DriveImpl.MoveMethod system);
 
@@ -45,8 +45,13 @@ public interface Drive {
 	double setMotorSpeed(double speed, MotorControlMode mcm);
 
 	void forward(double inches);
+
+    /**
+     * positive angles turn clockwise
+     * @param angle
+     */
     void turn(double angle);
-	void slide (double distnce);
+	void slide(double distnce);
 
 	void forward_time(int milliseconds);
 	void turn_time(int milliseconds);
@@ -55,10 +60,12 @@ public interface Drive {
 	void deploy_assist();
 	void stop();
 
-	void setupDriveForTeleop ();
+	void setupDriveForTeleop();
+
+    void setBreak(boolean breakOn);
 
 	//can we get rid of this,because,I dont know what in the world it is for
-	// shutdown is used to shut the motors and it is used in the DriveV2_Impl.java so i am confused
+	// shutdown is used to shut the motors and it is used in the DriveImpl.java so i am confused
 	void shutdown();
 
 	/**

@@ -9,87 +9,72 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 
 public class LandingGearImpl implements LandingGear {
 
-    public Servo front;
-    public Servo back;
+    public Servo frontRightServo = null;
+    public Servo frontLeftServo = null;
+    public Servo backRightServo = null;
+    public Servo backLeftServo = null;
     private Telemetry log;
-    private Drive drivesystem;
     private LinearOpMode lom;
+    private Drive drivetrain;
     private ElapsedTime runtime = new ElapsedTime();
 
+    private final static double MIN_SERVO_SCALE_VALUE = 0.18;
+    private final static double MAX_SERVO_SCALE_VALUE = 0.8;
 
-    public LandingGearImpl(HardwareMap hm, Drive drivetrain, LinearOpMode lop) {
-        init(hm, drivetrain, lop);
+    double LEGS_BK_STRAIGHT = 0.15;
+    double LEGS_FR_STRAIGHT = 0.11;
+
+    double LEGS_RETRACT = 0.5;
+
+    double LEGS_BK_DEPLOY = 0.0;
+    double LEGS_FR_DEPLOY = 0.0;
+
+
+    public LandingGearImpl(HardwareMap hm, Drive drive, LinearOpMode lop) {
+        init(hm, drive, lop);
     }
-    public void init(HardwareMap hm, Drive drivetrain, LinearOpMode lop){
-        front = hm.servo.get("front servo");
-        back = hm.servo.get("back servo");
-        // scale the range of the 0-1 signal to match the range of the servos
-        back.scaleRange(0.2, 0.82);
-        front.scaleRange(0.2, 0.79);
-        drivesystem = drivetrain;
+    public void init(HardwareMap hm, Drive drive, LinearOpMode lop){
+        frontRightServo = hardwareMap.servo.get("front right servo");
+        frontRightServo.scaleRange(MIN_SERVO_SCALE_VALUE, MAX_SERVO_SCALE_VALUE);
+        frontRightServo.setDirection(Servo.Direction.FORWARD);
+
+        frontLeftServo = hardwareMap.servo.get("front left servo");
+        frontLeftServo.scaleRange(MIN_SERVO_SCALE_VALUE, MAX_SERVO_SCALE_VALUE);
+        frontLeftServo.setDirection(Servo.Direction.FORWARD);
+
+        backRightServo = hardwareMap.servo.get("back right servo");
+        backRightServo.scaleRange(MIN_SERVO_SCALE_VALUE, MAX_SERVO_SCALE_VALUE);
+        backRightServo.setDirection(Servo.Direction.FORWARD);
+
+        backLeftServo = hardwareMap.servo.get("back left servo");
+        backLeftServo.scaleRange(MIN_SERVO_SCALE_VALUE, MAX_SERVO_SCALE_VALUE);
+        backLeftServo.setDirection(Servo.Direction.FORWARD);
+
+        drivetrain = drive;
+
         lom = lop;
     }
 
     public void stand_up(){
-        boolean da = false;
-        if(front.getPosition()> LEGS_STAGE) {
-            stage();
-            da = true;
-            drivesystem.deploy_assist();
-        }
-        front.setPosition(LEGS_STRAIGHT);
-        back.setPosition(LEGS_STRAIGHT);
-        if(da){
-            sleep(2000);
-            drivesystem.stop();
-        }
+        setServoPosition(LEGS_FR_STRAIGHT, LEGS_BK_STRAIGHT);
     }
 
     public void retract(){
-        back.setPosition(LEGS_RETRACT);
-        //if(back.getPosition() < LandingGear.LEGS_RETRACT) {
-            sleep(1000);
-        //}
-        front.setPosition(LEGS_RETRACT);
-
+        setServoPosition(LEGS_RETRACT, LEGS_RETRACT);
     }
 
     public void deploy(){
-//        frontRight.setPosition(LandingGear.LEGS_OUT);
-//        frontLeft.setPosition(LandingGear.LEGS_OUT);
-//        backLeft.setPosition (LandingGear.LEGS_OUT);
-//        backRight.setPosition(LandingGear.LEGS_OUT);
-
-        boolean da = false;
-        if(front.getPosition()> LEGS_STAGE) {
-            stage();
-            da = true;
-            drivesystem.deploy_assist();
-        }
-        front.setPosition(LEGS_FR_DEPLOY);
-        back.setPosition(LEGS_BR_DEPLOY);
-        if(da){
-            sleep(2000);
-            drivesystem.stop();
-        }
-
+        setServoPosition(LEGS_FR_DEPLOY, LEGS_BK_DEPLOY);
     }
 
     public void unhook(boolean stand){
-        if(stand){
-            stand_up();
-        }
-        else{
-            deploy();
-        }
-        drivesystem.slide(4);
-        if(stand){
-            deploy();
-        }
+        stand_up();
+        drivetrain.slide(4);
+        deploy();
     }
 
     public double getState(){
-        return back.getPosition();
+        return backLeftServo.getPosition();
     }
     private void sleep(long milisecs) {
         runtime.reset();
@@ -97,22 +82,13 @@ public class LandingGearImpl implements LandingGear {
             Thread.yield();
         }
     }
-    private void stage(){
-        front.setPosition(LandingGear.LEGS_STAGE);
-        sleep(2000);
-        back.setPosition(LandingGear.LEGS_STAGE);
-        sleep(1000);
-    }
 
     //debug functions
-    public void setPosition(double position){
-        front.setPosition(position);
-        back.setPosition(position);
-        log.addData("Front",front.getPosition());
-        log.addData("Back",back.getPosition());
-    }
-    public void initTelemetry(Telemetry telem){
-        log = telem;
+    public void setServoPosition (double frontPosition, double backPosition) {
+        frontRightServo.setPosition(frontPosition);
+        frontLeftServo.setPosition(frontPosition);
+        backRightServo.setPosition(backPosition);
+        backLeftServo.setPosition(backPosition);
     }
 
 }

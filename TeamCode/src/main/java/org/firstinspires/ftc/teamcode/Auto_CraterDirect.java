@@ -6,15 +6,10 @@ import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.teamcode.library.AutoMode;
-import org.firstinspires.ftc.teamcode.library.Drive;
-import org.firstinspires.ftc.teamcode.library.DriveImpl;
 import org.firstinspires.ftc.teamcode.library.GoldPosition;
 import org.firstinspires.ftc.teamcode.library.LandingGear;
-import org.firstinspires.ftc.teamcode.library.LandingGearImpl;
-import org.firstinspires.ftc.teamcode.library.Marker;
 import org.firstinspires.ftc.teamcode.library.Scoops;
 import org.firstinspires.ftc.teamcode.library.ScoopsImpl;
-import org.firstinspires.ftc.teamcode.library.TensorID;
 
 /**
  * Created by mira on 11/26/2018.
