@@ -18,7 +18,6 @@ public class DriveV2_Impl implements DriveV2 {
     public Servo frontLeftServo = null;
     public Servo backRightServo = null;
     public Servo backLeftServo = null;
-    public Servo liftServo = null;
 
     public BNO055IMU bno055IMU = null;
 
@@ -78,15 +77,6 @@ public class DriveV2_Impl implements DriveV2 {
         bno055IMU.initialize(parameters);
     }
 
-    public void initLift (HardwareMap hardwareMap) {
-        liftServo = hardwareMap.servo.get("lift servo");
-        liftServo.setDirection(Servo.Direction.FORWARD);
-    }
-
-    public void setLiftPosition (double liftPosition) {
-        liftServo.setPosition(liftPosition);
-    }
-
     public void setDriveSpeed (double power){
         frontRightDrive.setPower(power);
         frontLeftDrive.setPower(power);
@@ -116,11 +106,11 @@ public class DriveV2_Impl implements DriveV2 {
                 break;
 
             case STRAIGHT:
-                setServoPosition(0.11, .15); // wheels are straight down
+                setServoPosition(0.07, .0); // wheels are straight down
                 break;
 
             case DRIVE:
-                setServoPosition(0,0); // wheels are out at ~30deg
+                setServoPosition(0.02419,0.02419); // wheels are out at ~30deg
             default:
                 break;
 

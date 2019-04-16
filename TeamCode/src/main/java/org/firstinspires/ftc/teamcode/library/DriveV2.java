@@ -34,16 +34,4 @@ public interface DriveV2 {
      * @param backLeft
      */
     void setDriveSpeed(double frontRight, double backRight, double frontLeft, double backLeft);
-
-    /**
-     * initialise the the lift servos and motors
-     * @param hardwareMap
-     */
-    void initLift(HardwareMap hardwareMap);
-
-    /**
-     * set the position of the scoring lift servo
-     * @param liftPosition
-     */
-    void setLiftPosition(double liftPosition);
 }

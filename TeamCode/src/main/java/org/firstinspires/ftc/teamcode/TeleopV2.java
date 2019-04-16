@@ -5,17 +5,23 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.library.DriveV2;
 import org.firstinspires.ftc.teamcode.library.DriveV2_Impl;
+import org.firstinspires.ftc.teamcode.library.ScoringArms;
+import org.firstinspires.ftc.teamcode.library.ScoringArmsImpl;
 
 @TeleOp
 public class TeleopV2 extends LinearOpMode {
     DriveV2 drive = new DriveV2_Impl();
+//    ScoringArms scoringArms = new ScoringArmsImpl();
+    ScoringArmsImpl scoringArms;
+
     double frontLeftDrive, frontRightDrive, backRightDrive, backLeftDrive;
     double maxDrive = 0;
 
     @Override
     public void runOpMode() throws InterruptedException {
+        scoringArms = new ScoringArmsImpl();
         drive.initDrive(hardwareMap);
-        drive.initLift(hardwareMap);
+        scoringArms.initScoringSystems(hardwareMap);
         double adjFactorFront, adjFactorBack;
         double throtle;
 
@@ -31,10 +37,10 @@ public class TeleopV2 extends LinearOpMode {
              * not multiplied by the throttle, because it is used for sliding sideways and can not be controlled
              * efficiently with the throttle due to the high power requirements of sliding.
              */
-            frontRightDrive = ((gamepad1.left_stick_y * throtle) + (gamepad1.left_stick_x * throtle) - (gamepad1.right_stick_x) * throtle);
-            frontLeftDrive = ((gamepad1.left_stick_y * throtle) - (gamepad1.left_stick_x * throtle) + (gamepad1.right_stick_x) * throtle);
-            backRightDrive = ((gamepad1.left_stick_y * throtle) + (gamepad1.left_stick_x * throtle) + (gamepad1.right_stick_x) * throtle);
-            backLeftDrive = ((gamepad1.left_stick_y * throtle) - (gamepad1.left_stick_x * throtle) - (gamepad1.right_stick_x) * throtle);
+            frontRightDrive = ((gamepad1.left_stick_y * throtle) + (gamepad1.left_stick_x * throtle) + (gamepad1.right_stick_x) * throtle);
+            frontLeftDrive = ((gamepad1.left_stick_y * throtle) - (gamepad1.left_stick_x * throtle) - (gamepad1.right_stick_x) * throtle);
+            backRightDrive = ((gamepad1.left_stick_y * throtle) + (gamepad1.left_stick_x * throtle) - (gamepad1.right_stick_x) * throtle);
+            backLeftDrive = ((gamepad1.left_stick_y * throtle) - (gamepad1.left_stick_x * throtle) + (gamepad1.right_stick_x) * throtle);
 
             /**
              * The motor powers can be calculated to be higher than 1.0 and less than -1.0, so rater than just
@@ -65,8 +71,15 @@ public class TeleopV2 extends LinearOpMode {
             if (gamepad2.a && gamepad2.right_bumper)
                 drive.driveServoState(DriveV2.driveServoState.STRAIGHT);
 
-            if (gamepad2.left_bumper) drive.setLiftPosition(1);
-            else drive.setLiftPosition(0);
+            scoringArms.setIntakeMotorPower(gamepad2.right_stick_y);
+//            scoringArms.setScoringArmServoPosition(gamepad2.left_trigger);
+            scoringArms.setIntakeArmMotorPower(gamepad2.left_stick_y);
+            scoringArms.setScoringArmServoPosition(gamepad2.left_bumper);
+//            scoringArms.intakeMotor.setPower(gamepad2.right_stick_y);
+
+            telemetry.addData("intake motor power", scoringArms.intakeArmMotor.getPower())
+                    .addData("intake arm motor power", scoringArms.intakeArmMotor.getPower())
+                    .addData("scoring arm servo position", scoringArms.scoringArmServo.getPosition());
 
             telemetry.addData("front right drive motor", frontRightDrive)
                     .addData("front left drive motor", frontLeftDrive)
