@@ -30,7 +30,7 @@ public class TensorIDImpl implements TensorID {
     boolean ready = false;
     LinearOpMode lom;
     HardwareMap hardwareMap;
-    GoldPosition gp = GoldPosition.UNKNOWN;
+    GoldPosition gp = GoldPosition.NONE;
 
     public TensorIDImpl(Telemetry telem, Scoops scp, LinearOpMode lo){
         init(telem, scp, lo);

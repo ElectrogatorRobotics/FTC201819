@@ -89,13 +89,13 @@ public class DriveImpl implements Drive {
     }
 
     public void initialiseIMU(HardwareMap hardwareMap) {
-        bno055IMU = hardwareMap.get( BNO055IMU.class, "imu");
+        imu = hardwareMap.get( BNO055IMU.class, "imu");
         BNO055IMU.Parameters parameters = null;
         parameters.gyroPowerMode = BNO055IMU.GyroPowerMode.NORMAL;
         parameters.gyroBandwidth = BNO055IMU.GyroBandwidth.HZ32;
         parameters.angleUnit = BNO055IMU.AngleUnit.DEGREES;
         parameters.mode = BNO055IMU.SensorMode.COMPASS;
-        bno055IMU.initialize(parameters);
+        imu.initialize(parameters);
     }
 
     //region SET MOTOR BEHAVIOR

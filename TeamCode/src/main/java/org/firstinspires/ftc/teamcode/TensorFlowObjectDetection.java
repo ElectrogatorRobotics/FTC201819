@@ -44,6 +44,8 @@ import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackableDefau
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackables;
 import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
 import org.firstinspires.ftc.robotcore.external.tfod.TFObjectDetector;
+import org.firstinspires.ftc.teamcode.library.Drive;
+import org.firstinspires.ftc.teamcode.library.DriveImpl;
 import org.firstinspires.ftc.teamcode.library.GoldPosition;
 import org.firstinspires.ftc.teamcode.library.ImageTargetVisible;
 import org.firstinspires.ftc.teamcode.library.LandingGear;

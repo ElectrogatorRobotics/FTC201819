@@ -7,7 +7,7 @@ public abstract class AutoMode extends LinearOpMode {
     protected static final boolean stand = false;
     protected static final boolean scan = false;
 
-    protected DriveV2 drive;
+    protected Drive drive;
     protected LandingGear lg;
     protected Marker mark;
     protected Scoops scoop;
@@ -18,9 +18,9 @@ public abstract class AutoMode extends LinearOpMode {
         telemetry.addLine("Initialising... please wait.");
         telemetry.update();
 
-        drive = new DriveV2_Impl(hardwareMap,telemetry,this);
+        drive = new DriveImpl(hardwareMap,telemetry,this);
         mark = new Marker(hardwareMap,telemetry);
-        lg = new LandingGearImpl(hardwareMap,drive,this);
+        lg = new LandingGearImpl(hardwareMap, drive,this);
         scoop = new ScoopsImpl(hardwareMap, telemetry);
 
         telemetry.addLine("Retracting!!!");
@@ -28,7 +28,7 @@ public abstract class AutoMode extends LinearOpMode {
         if(live) lg.retract();///!!!Illegal?
 
         tensor = new TensorIDImpl(telemetry, scoop, this);
-        GoldPosition gp = GoldPosition.UNKNOWN;
+        GoldPosition gp = GoldPosition.NONE;
         if(scan){
             gp = tensor.getGoldPosition();
         }

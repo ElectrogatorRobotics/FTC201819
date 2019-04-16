@@ -34,19 +34,19 @@ public class LandingGearImpl implements LandingGear {
         init(hm, drive, lop);
     }
     public void init(HardwareMap hm, Drive drive, LinearOpMode lop){
-        frontRightServo = hardwareMap.servo.get("front right servo");
+        frontRightServo = hm.servo.get("front right servo");
         frontRightServo.scaleRange(MIN_SERVO_SCALE_VALUE, MAX_SERVO_SCALE_VALUE);
         frontRightServo.setDirection(Servo.Direction.FORWARD);
 
-        frontLeftServo = hardwareMap.servo.get("front left servo");
+        frontLeftServo = hm.servo.get("front left servo");
         frontLeftServo.scaleRange(MIN_SERVO_SCALE_VALUE, MAX_SERVO_SCALE_VALUE);
         frontLeftServo.setDirection(Servo.Direction.FORWARD);
 
-        backRightServo = hardwareMap.servo.get("back right servo");
+        backRightServo = hm.servo.get("back right servo");
         backRightServo.scaleRange(MIN_SERVO_SCALE_VALUE, MAX_SERVO_SCALE_VALUE);
         backRightServo.setDirection(Servo.Direction.FORWARD);
 
-        backLeftServo = hardwareMap.servo.get("back left servo");
+        backLeftServo = hm.servo.get("back left servo");
         backLeftServo.scaleRange(MIN_SERVO_SCALE_VALUE, MAX_SERVO_SCALE_VALUE);
         backLeftServo.setDirection(Servo.Direction.FORWARD);
 
@@ -67,7 +67,7 @@ public class LandingGearImpl implements LandingGear {
         setServoPosition(LEGS_FR_DEPLOY, LEGS_BK_DEPLOY);
     }
 
-    public void unhook(boolean stand){
+    public void unhook(){
         stand_up();
         drivetrain.slide(4);
         deploy();
