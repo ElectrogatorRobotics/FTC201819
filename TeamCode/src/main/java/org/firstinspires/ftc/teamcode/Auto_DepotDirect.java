@@ -50,17 +50,17 @@ public class Auto_DepotDirect extends AutoMode {
                 drive.turn(10);
                 break;
         }
-        scoop.moveFrontScoop(250);
+
         drive.forward(24);
-        scoop.moveFrontScoop(-1000);
+
         switch (gp) {
             case LEFT:
                 drive.turn(15);
-                drive.forward(10);
+                drive.forward(3);
                 break;
             case RIGHT:
                 drive.turn(-15);
-                drive.forward(10);
+                drive.forward(3);
                 break;
         }
         drive.forward(10);
