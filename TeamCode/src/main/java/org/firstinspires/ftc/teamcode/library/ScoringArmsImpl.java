@@ -13,6 +13,8 @@ public class ScoringArmsImpl implements ScoringArms {
     public Servo scoringArmServo = null;
     public TouchSensor scoringArmLimit = null;
 
+    double motorPower = 0;
+
     public void initScoringSystems (HardwareMap hardwareMap) {
         intakeArmMotor = (DcMotorEx) hardwareMap.dcMotor.get("intake arm motor");
         intakeArmMotor.setDirection(DcMotorSimple.Direction.FORWARD);
@@ -22,16 +24,17 @@ public class ScoringArmsImpl implements ScoringArms {
         intakeMotor.setDirection(DcMotorSimple.Direction.FORWARD);
 
         scoringArmServo = hardwareMap.servo.get("scoring arm servo");
-        scoringArmServo.scaleRange(0.0, 0.95);
-        scoringArmServo.setDirection(Servo.Direction.FORWARD);
+        scoringArmServo.scaleRange(0.0, 0.75);
+        scoringArmServo.setDirection(Servo.Direction.REVERSE);
 
         scoringArmLimit = hardwareMap.touchSensor.get("scoring arm limit");
     }
 
     public void setScoringArmServoPosition (boolean cycle) {
         if (cycle){
+            cycle = false;
             scoringArmServo.setPosition(0);
-        } else scoringArmServo.setPosition(0.5);
+        } else scoringArmServo.setPosition(.37);
     }
 
     public void setIntakeMotorPower (double power) {
@@ -39,7 +42,6 @@ public class ScoringArmsImpl implements ScoringArms {
     }
 
     public void setIntakeArmMotorPower (double power) {
-        double motorPower = 0;
         if (scoringArmLimit.isPressed()&&power>0)
             motorPower = 0;
         else motorPower = power;
