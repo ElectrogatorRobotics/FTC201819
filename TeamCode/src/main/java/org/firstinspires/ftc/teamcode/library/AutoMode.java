@@ -25,7 +25,6 @@ public abstract class AutoMode extends LinearOpMode {
 
         telemetry.addLine("Retracting!!!");
         telemetry.update();
-        if(live) lg.retract();///!!!Illegal?
 
         tensor = new TensorIDImpl(telemetry, scoop, this);
         GoldPosition gp = GoldPosition.NONE;
@@ -40,22 +39,18 @@ public abstract class AutoMode extends LinearOpMode {
 
         unhook();
 
+        scoopDown();
+
         run(gp);
 
     }
 
     public void unhook(){
-        if(live) {
-            if(stand)lg.stand_up();
-            else{
-                lg.deploy();
-            }
-            drive.turn(-20);
-            drive.forward(2);
-            if(stand)
-                lg.deploy();
-            drive.turn(20);
-        }
+        lg.unhook();
+    }
+
+    public void scoopDown(){
+        scoop.moveFrontScoop(1000);
     }
 
     public abstract void run(GoldPosition gp);
