@@ -72,10 +72,8 @@ public class TeleopV2 extends LinearOpMode {
                 drive.driveServoState(DriveV2.driveServoState.STRAIGHT);
 
             scoringArms.setIntakeMotorPower(gamepad2.right_stick_y);
-//            scoringArms.setScoringArmServoPosition(gamepad2.left_trigger);
             scoringArms.setIntakeArmMotorPower(gamepad2.left_stick_y);
             scoringArms.setScoringArmServoPosition(gamepad2.left_bumper);
-//            scoringArms.intakeMotor.setPower(gamepad2.right_stick_y);
 
             telemetry.addData("intake motor power", scoringArms.intakeArmMotor.getPower())
                     .addData("intake arm motor power", scoringArms.intakeArmMotor.getPower())

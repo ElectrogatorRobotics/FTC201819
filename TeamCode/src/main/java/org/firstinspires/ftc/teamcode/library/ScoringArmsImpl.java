@@ -24,6 +24,8 @@ public class ScoringArmsImpl implements ScoringArms {
         scoringArmServo = hardwareMap.servo.get("scoring arm servo");
         scoringArmServo.scaleRange(0.0, 0.95);
         scoringArmServo.setDirection(Servo.Direction.FORWARD);
+
+        scoringArmLimit = hardwareMap.touchSensor.get("scoring arm limit");
     }
 
     public void setScoringArmServoPosition (boolean cycle) {
@@ -37,6 +39,11 @@ public class ScoringArmsImpl implements ScoringArms {
     }
 
     public void setIntakeArmMotorPower (double power) {
-        intakeArmMotor.setPower(power);
+        double motorPower = 0;
+        if (scoringArmLimit.isPressed()&&power>0)
+            motorPower = 0;
+        else motorPower = power;
+
+        intakeArmMotor.setPower(motorPower);
     }
 }
