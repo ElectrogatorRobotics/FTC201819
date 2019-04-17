@@ -33,17 +33,6 @@ public class ScoopsImpl implements Scoops {
         cycling = false;
     }
 
-    public double frontScoopDownWithSensor () {
-        double distance;
-        if (frontScoopDistance.getDistance(DistanceUnit.INCH)>0)
-            distance = frontScoopDistance.getDistance(DistanceUnit.INCH);
-        else distance = 0;
-
-        while (distance > 2.5) {
-            setFrontScoopPos(0.5);
-        }
-        return frontScoopDistance.getDistance(DistanceUnit.INCH);
-    }
     public void setFrontScoopPos(double pos){
         frontScoop.setPower(pos);
     }
