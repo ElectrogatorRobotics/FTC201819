@@ -3,14 +3,14 @@ package org.firstinspires.ftc.teamcode.library;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 public abstract class AutoMode extends LinearOpMode {
-    protected static final boolean live = false;
+    protected static final boolean live = true;
     protected static final boolean stand = false;
     protected static final boolean scan = false;
 
     protected Drive drive;
+    protected DriveV2 drive2;
     protected LandingGear lg;
-    protected Marker mark;
-    protected Scoops scoop;
+    protected ScoringArms scoop;
     protected TensorID tensor;
 
     public void runOpMode() throws InterruptedException{
@@ -18,12 +18,20 @@ public abstract class AutoMode extends LinearOpMode {
         telemetry.addLine("Initialising... please wait.");
         telemetry.update();
 
-        drive = new DriveImpl(hardwareMap,telemetry,this);
-        mark = new Marker(hardwareMap,telemetry);
-        lg = new LandingGearImpl(hardwareMap, drive,this);
-        scoop = new ScoopsImpl(hardwareMap, telemetry);
 
-        telemetry.addLine("Retracting!!!");
+        drive2 = new DriveV2_Impl();
+        drive2.initDrive(hardwareMap);
+        drive2.init_bno055IMU(hardwareMap);
+        drive = new DriveImpl(drive2, telemetry,this);
+
+        lg = new LandingGearImpl(drive2, drive,this);
+        scoop = new ScoringArmsImpl();
+        scoop.initScoringSystems(hardwareMap);
+
+        if(live) {
+            telemetry.addLine("Retracting!!!");
+            drive2.driveServoState(DriveV2.driveServoState.RETRACT);
+        }
         telemetry.update();
 
         tensor = new TensorIDImpl(telemetry, scoop, this);
@@ -50,7 +58,8 @@ public abstract class AutoMode extends LinearOpMode {
     }
 
     public void scoopDown(){
-        scoop.moveFrontScoop(1000);
+        //TODO: Fix drop scoop down
+        //scoop.moveFrontScoop(1000);
     }
 
     public abstract void run(GoldPosition gp);

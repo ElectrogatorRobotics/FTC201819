@@ -46,13 +46,15 @@ import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
 import org.firstinspires.ftc.robotcore.external.tfod.TFObjectDetector;
 import org.firstinspires.ftc.teamcode.library.Drive;
 import org.firstinspires.ftc.teamcode.library.DriveImpl;
+import org.firstinspires.ftc.teamcode.library.DriveV2;
+import org.firstinspires.ftc.teamcode.library.DriveV2_Impl;
 import org.firstinspires.ftc.teamcode.library.GoldPosition;
 import org.firstinspires.ftc.teamcode.library.ImageTargetVisible;
 import org.firstinspires.ftc.teamcode.library.LandingGear;
 import org.firstinspires.ftc.teamcode.library.LandingGearImpl;
 import org.firstinspires.ftc.teamcode.library.Marker;
-import org.firstinspires.ftc.teamcode.library.Scoops;
-import org.firstinspires.ftc.teamcode.library.ScoopsImpl;
+import org.firstinspires.ftc.teamcode.library.ScoringArms;
+import org.firstinspires.ftc.teamcode.library.ScoringArmsImpl;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -109,9 +111,10 @@ public class TensorFlowObjectDetection extends LinearOpMode {
     ElapsedTime runtime = new ElapsedTime();
 
     Drive drive;
+    DriveV2 drive2;
     LandingGear lg;
     Marker marker;
-    Scoops scoops;
+    ScoringArms scoops;
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -119,13 +122,16 @@ public class TensorFlowObjectDetection extends LinearOpMode {
         telemetry.addLine("Initialising... please wait.");
         telemetry.update();
 
-        drive = new DriveImpl(hardwareMap,telemetry,this);
+        drive2 = new DriveV2_Impl();
+        drive2.initDrive(hardwareMap);
+        drive2.init_bno055IMU(hardwareMap);
+        drive = new DriveImpl(drive2,telemetry,this);
 
         marker = new Marker(hardwareMap,telemetry);
 
-        lg = new LandingGearImpl(hardwareMap,drive,this);
+        lg = new LandingGearImpl(drive2, drive,this);
 
-        scoops = new ScoopsImpl(hardwareMap, telemetry);
+        scoops = new ScoringArmsImpl();
 
         // initialise Vuforia
         /*
@@ -278,10 +284,10 @@ public class TensorFlowObjectDetection extends LinearOpMode {
         runtime.reset();
 
         if (opModeIsActive()) {
-            scoops.setFrontScoopPos(0.5);
+            //scoops.setFrontScoopPos(0.5);
             sleep(1000);
-            scoops.setFrontScoopPos(0.0);
-            scoops.backScoopDump();
+            //scoops.setFrontScoopPos(0.0);
+            //scoops.backScoopDump();
 
             /**
              * Find out where the gold mineral is.
@@ -339,9 +345,9 @@ public class TensorFlowObjectDetection extends LinearOpMode {
                     }
 
                 }
-                scoops.backScoopDown();
+                //scoops.backScoopDown();
 
-                deploy();
+                //deploy();
 
                 sleep(1000); //debugging
 
@@ -434,7 +440,7 @@ public class TensorFlowObjectDetection extends LinearOpMode {
             case LEFT:
                 drive.turn(-90);
                 drive.forward(distnaceToGold);
-                pickupGold();
+                //pickupGold();
 
                 if (imageTarget == ImageTargetVisible.RED_FOOTPRINT || imageTarget == ImageTargetVisible.BLUE_ROVER && opModeIsActive()) {
                     telemetry.addLine("taking the long way around");
@@ -454,7 +460,7 @@ public class TensorFlowObjectDetection extends LinearOpMode {
             case CENTER:
                 drive.forward(14.5);
                 drive.turn(-90);
-                pickupGold();
+                //pickupGold();
 
                 if (imageTarget == ImageTargetVisible.RED_FOOTPRINT || imageTarget == ImageTargetVisible.BLUE_ROVER && opModeIsActive()) {
                     telemetry.addLine("taking the long way around");
@@ -474,7 +480,7 @@ public class TensorFlowObjectDetection extends LinearOpMode {
             case RIGHT:
                 drive.forward(29);
                 drive.turn(-90);
-                pickupGold();
+                //pickupGold();
 
                 if (imageTarget == ImageTargetVisible.RED_FOOTPRINT || imageTarget == ImageTargetVisible.BLUE_ROVER && opModeIsActive()) {
                     telemetry.addLine("taking the long way around");
@@ -535,6 +541,7 @@ public class TensorFlowObjectDetection extends LinearOpMode {
         drive.forward(24);
     }
 
+    /*
     void pickupGold () {
         scoops.runRubberBandWheel(1.0);
         scoops.setFrontScoopPos(0.25);
@@ -551,4 +558,5 @@ public class TensorFlowObjectDetection extends LinearOpMode {
         lg.stand_up();
         lg.deploy();
     }
+    */
 }

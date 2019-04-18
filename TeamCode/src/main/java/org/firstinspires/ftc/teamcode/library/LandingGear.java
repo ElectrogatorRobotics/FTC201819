@@ -11,7 +11,7 @@ public interface LandingGear {
     /**
      * Sets the landing gear up on the robot
      */
-    void init(HardwareMap hm, Drive drivetrain, LinearOpMode lop);
+    void init(DriveV2 driveV2, Drive drivetrain, LinearOpMode lop);
 
     /**
      * Used to stand the robot vertical on the deployed legs to unhook from the rover

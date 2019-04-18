@@ -3,20 +3,16 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
-import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.teamcode.library.AutoMode;
 import org.firstinspires.ftc.teamcode.library.GoldPosition;
-import org.firstinspires.ftc.teamcode.library.LandingGear;
-import org.firstinspires.ftc.teamcode.library.Scoops;
-import org.firstinspires.ftc.teamcode.library.ScoopsImpl;
 
 /**
  * Created by mira on 11/26/2018.
  */
 
 @Autonomous(name = "Depot - Direct")
-@Disabled
+//@Disabled
 public class Auto_DepotDirect extends AutoMode {
 
 
@@ -29,7 +25,7 @@ public class Auto_DepotDirect extends AutoMode {
     @Override
     public void head_to_depot() {
         telemetry.addLine("Handling Marker");
-        mark.KickOutTheMrker();
+//        mark.KickOutTheMrker();
     }
 
     @Override

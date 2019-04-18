@@ -3,20 +3,16 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
-import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.teamcode.library.AutoMode;
 import org.firstinspires.ftc.teamcode.library.GoldPosition;
-import org.firstinspires.ftc.teamcode.library.LandingGear;
-import org.firstinspires.ftc.teamcode.library.Scoops;
-import org.firstinspires.ftc.teamcode.library.ScoopsImpl;
 
 /**
  * Created by mira on 11/26/2018.
  */
 
 @Autonomous(name = "Crater")
-@Disabled
+//@Disabled
 public class Auto_CraterDirect extends AutoMode {
 
 
@@ -35,7 +31,7 @@ public class Auto_CraterDirect extends AutoMode {
         drive.forward(40);
         drive.turn(-45);
         drive.forward(40);
-        mark.KickOutTheMrker();
+//        mark.KickOutTheMrker();
     }
 
     public void return_to_start(){
@@ -48,7 +44,7 @@ public class Auto_CraterDirect extends AutoMode {
     @Override
     public void head_to_crater() {
         telemetry.addLine("Heading to Crater");
-        drive.turn(135);
+        drive.turn(135); //TODO not crash into other team
         drive.forward(85);
     }
 
@@ -63,9 +59,9 @@ public class Auto_CraterDirect extends AutoMode {
                 drive.turn(45);
                 break;
         }
-        scoop.moveFrontScoop(250);
+//        scoop.moveFrontScoop(250);
         drive.forward(12);
-        scoop.moveFrontScoop(-1000);
+//        scoop.moveFrontScoop(-1000);
         switch (gp) {
             case LEFT:
                 drive.forward(-12);

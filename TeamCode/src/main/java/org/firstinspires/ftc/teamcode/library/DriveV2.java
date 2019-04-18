@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.library;
 
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
@@ -14,10 +15,12 @@ public interface DriveV2 {
      */
     void initDrive(HardwareMap hardwareMap);
 
-    /**
-     * set the state of the servos on the "legs"
-     * @param state
-     */
+    void init_bno055IMU (HardwareMap hardwareMap);
+
+        /**
+         * set the state of the servos on the "legs"
+         * @param state
+         */
     driveServoState driveServoState(driveServoState state);
 
     /**
@@ -25,6 +28,14 @@ public interface DriveV2 {
      * @param speed
      */
     void setDriveSpeed(double speed);
+
+    void setTargetPosition (int targetPosition);
+
+    /**
+     * tolerance is measured in encoder ticks
+     * @param tolerance
+     */
+    void setTargetTolerance(int tolerance);
 
     /**
      * set the power of each drive motor to a unique value
@@ -34,4 +45,12 @@ public interface DriveV2 {
      * @param backLeft
      */
     void setDriveSpeed(double frontRight, double backRight, double frontLeft, double backLeft);
+
+    void stop();
+
+    void slideOff(int targetPosition, LinearOpMode lom);
+
+    void driveByPosition(double power, LinearOpMode lom);
+
+    double turnToAngle (double angleToTurn, LinearOpMode lom);
 }

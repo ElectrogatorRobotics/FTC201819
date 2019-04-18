@@ -3,26 +3,16 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
-import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.teamcode.library.AutoMode;
-import org.firstinspires.ftc.teamcode.library.DriveV2;
-import org.firstinspires.ftc.teamcode.library.DriveV2_Impl;
 import org.firstinspires.ftc.teamcode.library.GoldPosition;
-import org.firstinspires.ftc.teamcode.library.LandingGear;
-import org.firstinspires.ftc.teamcode.library.LandingGearImpl;
-import org.firstinspires.ftc.teamcode.library.Marker;
-import org.firstinspires.ftc.teamcode.library.Scoops;
-import org.firstinspires.ftc.teamcode.library.ScoopsImpl;
-import org.firstinspires.ftc.teamcode.library.TensorID;
-import org.firstinspires.ftc.teamcode.library.TensorIDImpl;
 
 /**
  * Created by mira on 11/26/2018.
  */
 
 @Autonomous(name = "Depot - InOut")
-@Disabled
+//@Disabled
 public class Auto_DepotAvoid extends AutoMode {
 
 
@@ -35,7 +25,7 @@ public class Auto_DepotAvoid extends AutoMode {
     @Override
     public void head_to_depot() {
         telemetry.addLine("Handling Marker");
-        mark.KickOutTheMrker();
+//        mark.KickOutTheMrker();
     }
 
     @Override
@@ -56,9 +46,9 @@ public class Auto_DepotAvoid extends AutoMode {
                 drive.turn(10);
                 break;
         }
-        scoop.moveFrontScoop(250);
+//        scoop.moveFrontScoop(250);
         drive.forward(24);
-        scoop.moveFrontScoop(-1000);
+//        scoop.moveFrontScoop(-1000);
         switch (gp) {
             case LEFT:
                 drive.turn(15);

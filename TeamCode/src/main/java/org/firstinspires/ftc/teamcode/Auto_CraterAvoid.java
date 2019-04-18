@@ -3,20 +3,16 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
-import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.teamcode.library.AutoMode;
 import org.firstinspires.ftc.teamcode.library.GoldPosition;
-import org.firstinspires.ftc.teamcode.library.LandingGear;
-import org.firstinspires.ftc.teamcode.library.Scoops;
-import org.firstinspires.ftc.teamcode.library.ScoopsImpl;
 
 /**
  * Created by mira on 11/26/2018.
  */
 
 @Autonomous(name = "Crater - Avoid")
-@Disabled
+//@Disabled
 public class Auto_CraterAvoid extends AutoMode {
 
 
@@ -37,7 +33,7 @@ public class Auto_CraterAvoid extends AutoMode {
         drive.forward(20);
         drive.turn(-90);
         drive.forward(-40);
-        mark.KickOutTheMrker();
+//        mark.KickOutTheMrker();
     }
 
     @Override
@@ -61,11 +57,11 @@ public class Auto_CraterAvoid extends AutoMode {
                 drive.turn(45);
                 break;
         }
-        scoop.moveFrontScoop(250);
-        scoop.runRubberBandWheel(1);
+//        scoop.moveFrontScoop(250);
+//        scoop.runRubberBandWheel(1);
         drive.forward(24);
-        scoop.moveFrontScoop(-1000);
-        scoop.runRubberBandWheel(0);
+//        scoop.moveFrontScoop(-1000);
+//        scoop.runRubberBandWheel(0);
 
         drive.forward(-24);
     }

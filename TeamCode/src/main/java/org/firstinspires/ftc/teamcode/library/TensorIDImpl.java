@@ -26,18 +26,18 @@ public class TensorIDImpl implements TensorID {
     VuforiaLocalizer vuforia;
     private Telemetry telemetry;
 
-    Scoops scoops;
+    ScoringArms scoops;
     boolean ready = false;
     LinearOpMode lom;
     HardwareMap hardwareMap;
     GoldPosition gp = GoldPosition.NONE;
 
-    public TensorIDImpl(Telemetry telem, Scoops scp, LinearOpMode lo){
+    public TensorIDImpl(Telemetry telem, ScoringArms scp, LinearOpMode lo){
         init(telem, scp, lo);
     }
 
     @Override
-    public boolean init(Telemetry telem, Scoops scop, LinearOpMode lop) {
+    public boolean init(Telemetry telem, ScoringArms scop, LinearOpMode lop) {
         telemetry = telem;
         scoops = scop;
         lom = lop;
@@ -66,8 +66,7 @@ public class TensorIDImpl implements TensorID {
 
     @Override
     public GoldPosition getGoldPosition() {
-        scoops.moveFrontScoop(1000);
-        scoops.backScoopDump();
+        //scoops.moveFrontScoop(1000);    //TODO: Move arm down
 
         /**
          * Find out where the gold mineral is.
@@ -129,7 +128,6 @@ public class TensorIDImpl implements TensorID {
                 }
 
             }
-            scoops.backScoopDown();
         }
         return gp;
     }

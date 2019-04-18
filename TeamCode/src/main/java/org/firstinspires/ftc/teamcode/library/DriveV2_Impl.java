@@ -1,12 +1,20 @@
 package org.firstinspires.ftc.teamcode.library;
 
 import com.qualcomm.hardware.bosch.BNO055IMU;
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.configuration.typecontainers.MotorConfigurationType;
+import com.qualcomm.robotcore.util.ElapsedTime;
+
+import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
+import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
+import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 
 public class DriveV2_Impl implements DriveV2 {
     public DcMotorEx frontRightDrive = null;
@@ -21,7 +29,15 @@ public class DriveV2_Impl implements DriveV2 {
 
     public BNO055IMU bno055IMU = null;
 
+    private ElapsedTime runtime = new ElapsedTime();
+
+    public Orientation angle = null;
+
     private final static double MIN_SERVO_SCALE_VALUE = 0.18;
+    private static final double DRIVE_POWER = .3;
+    private static final double TURN_POWER = .35;
+    private static final double SLIDE_POWER = .5;
+    private static final double TURN_THRESHOLD = .5;
 
     public DriveV2_Impl(){}
 
@@ -30,7 +46,7 @@ public class DriveV2_Impl implements DriveV2 {
 //        frontRightDrive.setMotorType(MotorConfigurationType.getMotorType(RevHD_VP_20_1.class));
         frontRightDrive.setDirection(DcMotorSimple.Direction.FORWARD);
         frontRightDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        frontRightDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        frontRightDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
         frontRightServo = hardwareMap.servo.get("front right servo");
         frontRightServo.scaleRange(MIN_SERVO_SCALE_VALUE, 0.8);
@@ -40,7 +56,7 @@ public class DriveV2_Impl implements DriveV2 {
 //        frontLeftDrive.setMotorType(MotorConfigurationType.getMotorType(RevHD_VP_20_1.class));
         frontLeftDrive.setDirection(DcMotorSimple.Direction.REVERSE);
         frontLeftDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        frontLeftDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        frontLeftDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
         frontLeftServo = hardwareMap.servo.get("front left servo");
         frontLeftServo.scaleRange(MIN_SERVO_SCALE_VALUE, 0.8);
@@ -50,7 +66,7 @@ public class DriveV2_Impl implements DriveV2 {
 //        backRightDrive.setMotorType(MotorConfigurationType.getMotorType(RevHD_VP_20_1.class));
         backRightDrive.setDirection(DcMotorSimple.Direction.FORWARD);
         backRightDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        backRightDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        backRightDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
         backRightServo = hardwareMap.servo.get("back right servo");
         backRightServo.scaleRange(MIN_SERVO_SCALE_VALUE, 0.8);
@@ -60,7 +76,7 @@ public class DriveV2_Impl implements DriveV2 {
 //        backLeftDrive.setMotorType(MotorConfigurationType.getMotorType(RevHD_VP_20_1.class));
         backLeftDrive.setDirection(DcMotorSimple.Direction.REVERSE);
         backLeftDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        backLeftDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        backLeftDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
         backLeftServo = hardwareMap.servo.get("back left servo");
         backLeftServo.scaleRange(MIN_SERVO_SCALE_VALUE, 0.8);
@@ -69,7 +85,7 @@ public class DriveV2_Impl implements DriveV2 {
 
     public void init_bno055IMU (HardwareMap hardwareMap) {
         bno055IMU = hardwareMap.get( BNO055IMU.class, "imu");
-        BNO055IMU.Parameters parameters = null;
+        BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
         parameters.gyroPowerMode = BNO055IMU.GyroPowerMode.NORMAL;
         parameters.gyroBandwidth = BNO055IMU.GyroBandwidth.HZ32;
         parameters.angleUnit = BNO055IMU.AngleUnit.DEGREES;
@@ -98,7 +114,72 @@ public class DriveV2_Impl implements DriveV2 {
         backLeftServo.setPosition(backPosition);
     }
 
-    // TODO: 3/28/2019 fix servo positions
+    public void setTargetPosition (int targetPosition) {
+        frontLeftDrive.setTargetPosition(frontLeftDrive.getCurrentPosition() + targetPosition);
+        frontRightDrive.setTargetPosition(frontRightDrive.getCurrentPosition() + targetPosition);
+        backLeftDrive.setTargetPosition(backLeftDrive.getCurrentPosition() + targetPosition);
+        backRightDrive.setTargetPosition(backRightDrive.getCurrentPosition() + targetPosition);
+    }
+
+    /**
+     * tolerance is measured in encoder ticks
+     * @param tolerance
+     */
+    public void setTargetTolerance(int tolerance) {
+        frontRightDrive.setTargetPositionTolerance(tolerance);
+        frontLeftDrive.setTargetPositionTolerance(tolerance);
+        backRightDrive.setTargetPositionTolerance(tolerance);
+        backLeftDrive.setTargetPositionTolerance(tolerance);
+    }
+
+    public void driveByPosition(double power, LinearOpMode lom){
+        setDriveSpeed(power);
+        do {
+            Thread.yield(); //effectively what the LinearOpMode idle call does
+        } while (frontRightDrive.isBusy() && lom.opModeIsActive());
+        stop();
+    }
+
+    public void slideOff(int targetPosition, LinearOpMode lom){
+        setTargetTolerance(50);
+        frontLeftDrive.setTargetPosition(frontLeftDrive.getCurrentPosition() + targetPosition);
+        frontRightDrive.setTargetPosition(frontRightDrive.getCurrentPosition() - targetPosition);
+        backLeftDrive.setTargetPosition(backLeftDrive.getCurrentPosition() - targetPosition);
+        backRightDrive.setTargetPosition(backRightDrive.getCurrentPosition() + targetPosition);
+        setDriveSpeed(SLIDE_POWER, SLIDE_POWER*-1, SLIDE_POWER*-1, SLIDE_POWER);
+        do {
+            Thread.yield(); //effectively what the LinearOpMode idle call does
+        } while (frontRightDrive.isBusy() && lom.opModeIsActive());
+        stop();
+    }
+
+    public double turnToAngle (double angleToTurn, LinearOpMode lom) {
+        angle = bno055IMU.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.XYZ, AngleUnit.DEGREES);
+        /**
+         * set {@link angleToTurn} equal to the {@link imu}'s Z axes
+         */
+
+        double power = TURN_POWER;
+        if(angleToTurn < 0) power *= -1;
+        angleToTurn *= -1;
+        double targetAngle = (angle.thirdAngle + angleToTurn + 360)%360;
+        if(targetAngle >180){
+            targetAngle -= 360;
+        }
+        runtime.reset();
+        while(Math.abs(angle.thirdAngle - targetAngle) > TURN_THRESHOLD && runtime.seconds() < 10 && lom.opModeIsActive()){
+            angle = bno055IMU.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.XYZ, AngleUnit.DEGREES);
+            setDriveSpeed(power, power, power*-1, power*-1);
+            Thread.yield();
+        }
+        stop();
+        return angleToTurn;
+    }
+
+    public void stop () {
+        setDriveSpeed(0.0);
+    }
+
     public driveServoState driveServoState(driveServoState state) {
         switch (state) {
             case RETRACT:
@@ -107,6 +188,10 @@ public class DriveV2_Impl implements DriveV2 {
 
             case STRAIGHT:
                 setServoPosition(0.07, .0); // wheels are straight down
+                runtime.reset();
+                while(runtime.milliseconds() < 1750){
+                    Thread.yield();
+                }
                 break;
 
             case DRIVE:
@@ -115,6 +200,7 @@ public class DriveV2_Impl implements DriveV2 {
                 break;
 
         }
+
         return state;
     }
 }
