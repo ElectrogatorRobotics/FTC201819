@@ -7,7 +7,7 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 
 public interface TensorID {
 
-    boolean init(Telemetry telem, ScoringArms scop, LinearOpMode lop);
+    boolean init(Telemetry telem, LinearOpMode lop);
 
     GoldPosition getGoldPosition();
 

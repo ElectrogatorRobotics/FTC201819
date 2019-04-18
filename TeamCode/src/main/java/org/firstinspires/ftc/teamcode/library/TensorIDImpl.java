@@ -26,20 +26,18 @@ public class TensorIDImpl implements TensorID {
     VuforiaLocalizer vuforia;
     private Telemetry telemetry;
 
-    ScoringArms scoops;
     boolean ready = false;
     LinearOpMode lom;
     HardwareMap hardwareMap;
     GoldPosition gp = GoldPosition.NONE;
 
-    public TensorIDImpl(Telemetry telem, ScoringArms scp, LinearOpMode lo){
-        init(telem, scp, lo);
+    public TensorIDImpl(Telemetry telem, LinearOpMode lo){
+        init(telem, lo);
     }
 
     @Override
-    public boolean init(Telemetry telem, ScoringArms scop, LinearOpMode lop) {
+    public boolean init(Telemetry telem,LinearOpMode lop) {
         telemetry = telem;
-        scoops = scop;
         lom = lop;
 
         VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters();
@@ -66,8 +64,6 @@ public class TensorIDImpl implements TensorID {
 
     @Override
     public GoldPosition getGoldPosition() {
-        //scoops.moveFrontScoop(1000);    //TODO: Move arm down
-
         /**
          * Find out where the gold mineral is.
          */
@@ -85,7 +81,7 @@ public class TensorIDImpl implements TensorID {
                     telemetry.addData("# Object Detected", updatedRecognitions.size());
 
                     // changed this to 2 instead of 3
-                    if (updatedRecognitions.size() == 2) {
+                    if (updatedRecognitions.size() == 3) {
                         int goldMineralX = -1;
                         int silverMineral1X = -1;
                         int silverMineral2X = -1;
@@ -99,34 +95,35 @@ public class TensorIDImpl implements TensorID {
                             }
                         }
 
-                        // we already know there are 2 minerals if we get to here
+                        // we already know there are 3 minerals if we get to here
                         // first if we can't see the gold mineral, it has to be on the right
                         telemetry.addData("Gold = ",goldMineralX);
                         telemetry.addData("White1 = ",silverMineral1X);
                         telemetry.addData("White2 = ",silverMineral2X);
-                        if (goldMineralX == -1) {
-                            telemetry.addData("Gold Mineral Position", "Right");
-                            gp = GoldPosition.RIGHT;
-                            telemetry.update();
-                            break;
-                            // if the gold mineral is less then the silver mineral, it is on the left, otherwise it is in the center.
-                        } else if (goldMineralX > silverMineral1X) {
-                            telemetry.addData("Gold Mineral Position", "Center");
-                            gp = GoldPosition.CENTER;
-                            telemetry.update();
-                            break;
-                        } else {
+
+                        // Check if the gold is less then both silvers, if it is, it is left
+                        // Next check if the gold is greater then both silvers, if it is it is right
+                        // Otherwise it is in the middle.
+                        if (goldMineralX < silverMineral1X && goldMineralX < silverMineral2X) {
                             telemetry.addData("Gold Mineral Position", "Left");
                             gp = GoldPosition.LEFT;
                             telemetry.update();
-                            break;
+                            break; // drop out of loop
+                        } else if (goldMineralX > silverMineral1X && goldMineralX > silverMineral2X) {
+                            telemetry.addData("Gold Mineral Position", "Right");
+                            gp = GoldPosition.RIGHT;
+                            telemetry.update();
+                            break; // drop out of loop
+                        } else {
+                            telemetry.addData("Gold Mineral Position", "Center");
+                            gp = GoldPosition.CENTER;
+                            telemetry.update();
+                            break; // drop out of loop
                         }
-
                     }
                     tfod.deactivate();
                     telemetry.update();
                 }
-
             }
         }
         return gp;
