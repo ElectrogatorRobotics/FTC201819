@@ -78,7 +78,7 @@ public class DriveV2_Impl implements DriveV2 {
         backLeftServo.scaleRange(MIN_SERVO_SCALE_VALUE, 0.8);
         backLeftServo.setDirection(Servo.Direction.FORWARD);
 
-        setMotorMode(MotorMode.ENCODER);
+        setMotorMode(MotorMode.POWER);
     }
 
     public void setMotorMode(MotorMode mode){

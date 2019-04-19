@@ -47,6 +47,7 @@ public class Auto_DepotDirect extends AutoMode {
                 break;
         }
 
+        scoop.setFrontTargetPosition(150);
         drive.forward(24);
 
         switch (gp) {
@@ -68,5 +69,7 @@ public class Auto_DepotDirect extends AutoMode {
                 drive.turn(5);
                 break;
         }
+
+        scoop.setFrontTargetPosition(130);
     }
 }

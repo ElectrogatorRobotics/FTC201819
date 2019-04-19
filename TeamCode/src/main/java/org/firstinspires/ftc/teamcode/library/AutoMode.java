@@ -34,7 +34,16 @@ public abstract class AutoMode extends LinearOpMode {
         }
         telemetry.update();
 
-        tensor = new TensorIDImpl(telemetry, scoop, this);
+        //Wait for the system to start auto
+        waitForStart();
+
+        scoop.setFrontTargetPosition(130);
+
+        lg.unhook();
+
+        scoop.waitForMoveEnd();
+
+        tensor = new TensorIDImpl(telemetry, this);
         GoldPosition gp = GoldPosition.NONE;
         if(scan){
             gp = tensor.getGoldPosition();
@@ -43,23 +52,8 @@ public abstract class AutoMode extends LinearOpMode {
         telemetry.addLine("Ready to start... thank you for waiting!");
         telemetry.update();
 
-        waitForStart();
-
-        unhook();
-
-        scoopDown();
-
         run(gp);
 
-    }
-
-    public void unhook(){
-        lg.unhook();
-    }
-
-    public void scoopDown(){
-        //TODO: Fix drop scoop down
-        //scoop.moveFrontScoop(1000);
     }
 
     public abstract void run(GoldPosition gp);

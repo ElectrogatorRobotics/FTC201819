@@ -44,8 +44,7 @@ public class Auto_CraterDirect extends AutoMode {
     @Override
     public void head_to_crater() {
         telemetry.addLine("Heading to Crater");
-        drive.turn(135); //TODO not crash into other team
-        drive.forward(85);
+        drive.forward(20);
     }
 
     public void hit_block(GoldPosition gp) {
