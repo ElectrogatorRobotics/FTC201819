@@ -154,11 +154,13 @@ public class DriveV2_Impl implements DriveV2 {
     }
 
     public void driveByPosition(double power, LinearOpMode lom){
+        setMotorMode(MotorMode.POSITION);
         setDriveSpeed(power);
         do {
             Thread.yield(); //effectively what the LinearOpMode idle call does
         } while (frontRightDrive.isBusy() && lom.opModeIsActive());
         stop();
+        setMotorMode(MotorMode.POWER);
     }
 
     public void slideOff(int targetPosition, LinearOpMode lom){
@@ -179,7 +181,7 @@ public class DriveV2_Impl implements DriveV2 {
         /**
          * set {@link angleToTurn} equal to the {@link imu}'s Z axes
          */
-
+        setMotorMode(MotorMode.POWER);
         double power = TURN_POWER;
         if(angleToTurn < 0) power *= -1;
         angleToTurn *= -1;
@@ -194,6 +196,7 @@ public class DriveV2_Impl implements DriveV2 {
             Thread.yield();
         }
         stop();
+        setMotorMode(MotorMode.ENCODER);
         return angleToTurn;
     }
 

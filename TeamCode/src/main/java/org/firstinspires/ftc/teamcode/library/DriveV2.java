@@ -18,6 +18,8 @@ public interface DriveV2 {
 
     void init_bno055IMU (HardwareMap hardwareMap);
 
+    void setMotorMode(MotorMode MM);
+
         /**
          * set the state of the servos on the "legs"
          * @param state
