@@ -8,6 +8,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 public interface DriveV2 {
     Orientation angle = null;
     enum driveServoState {RETRACT, STRAIGHT, DRIVE}
+    enum MotorMode {POWER, ENCODER, POSITION}
 
     /**
      * initialise the drivetrain motors and servos

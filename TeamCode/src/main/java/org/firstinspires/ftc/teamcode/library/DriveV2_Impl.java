@@ -46,7 +46,6 @@ public class DriveV2_Impl implements DriveV2 {
 //        frontRightDrive.setMotorType(MotorConfigurationType.getMotorType(RevHD_VP_20_1.class));
         frontRightDrive.setDirection(DcMotorSimple.Direction.FORWARD);
         frontRightDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        frontRightDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
         frontRightServo = hardwareMap.servo.get("front right servo");
         frontRightServo.scaleRange(MIN_SERVO_SCALE_VALUE, 0.8);
@@ -56,7 +55,6 @@ public class DriveV2_Impl implements DriveV2 {
 //        frontLeftDrive.setMotorType(MotorConfigurationType.getMotorType(RevHD_VP_20_1.class));
         frontLeftDrive.setDirection(DcMotorSimple.Direction.REVERSE);
         frontLeftDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        frontLeftDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
         frontLeftServo = hardwareMap.servo.get("front left servo");
         frontLeftServo.scaleRange(MIN_SERVO_SCALE_VALUE, 0.8);
@@ -66,7 +64,6 @@ public class DriveV2_Impl implements DriveV2 {
 //        backRightDrive.setMotorType(MotorConfigurationType.getMotorType(RevHD_VP_20_1.class));
         backRightDrive.setDirection(DcMotorSimple.Direction.FORWARD);
         backRightDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        backRightDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
         backRightServo = hardwareMap.servo.get("back right servo");
         backRightServo.scaleRange(MIN_SERVO_SCALE_VALUE, 0.8);
@@ -76,11 +73,35 @@ public class DriveV2_Impl implements DriveV2 {
 //        backLeftDrive.setMotorType(MotorConfigurationType.getMotorType(RevHD_VP_20_1.class));
         backLeftDrive.setDirection(DcMotorSimple.Direction.REVERSE);
         backLeftDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        backLeftDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
         backLeftServo = hardwareMap.servo.get("back left servo");
         backLeftServo.scaleRange(MIN_SERVO_SCALE_VALUE, 0.8);
         backLeftServo.setDirection(Servo.Direction.FORWARD);
+
+        setMotorMode(MotorMode.ENCODER);
+    }
+
+    public void setMotorMode(MotorMode mode){
+        switch(mode){
+            case POWER:
+                frontLeftDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+                frontRightDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+                backLeftDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+                backRightDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+                break;
+            case ENCODER:
+                frontLeftDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+                frontRightDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+                backLeftDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+                backRightDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+                break;
+            case POSITION:
+                frontLeftDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                frontRightDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                backLeftDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                backRightDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                break;
+        }
     }
 
     public void init_bno055IMU (HardwareMap hardwareMap) {
