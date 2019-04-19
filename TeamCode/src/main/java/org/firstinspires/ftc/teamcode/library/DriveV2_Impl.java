@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.library;
 
 import com.qualcomm.hardware.bosch.BNO055IMU;
+import com.qualcomm.hardware.motors.RevRobotics20HdHexMotor;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
@@ -43,7 +44,8 @@ public class DriveV2_Impl implements DriveV2 {
 
     public void initDrive(HardwareMap hardwareMap) {
         frontRightDrive = (DcMotorEx) hardwareMap.dcMotor.get("front right drive");
-//        frontRightDrive.setMotorType(MotorConfigurationType.getMotorType(RevHD_VP_20_1.class));
+        frontRightDrive.setMotorType(MotorConfigurationType.getMotorType(RevRobotics20HdHexMotor.class));
+        frontRightDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         frontRightDrive.setDirection(DcMotorSimple.Direction.FORWARD);
         frontRightDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
@@ -52,7 +54,8 @@ public class DriveV2_Impl implements DriveV2 {
         frontRightServo.setDirection(Servo.Direction.FORWARD);
 
         frontLeftDrive = (DcMotorEx) hardwareMap.dcMotor.get("front left drive");
-//        frontLeftDrive.setMotorType(MotorConfigurationType.getMotorType(RevHD_VP_20_1.class));
+        frontLeftDrive.setMotorType(MotorConfigurationType.getMotorType(RevRobotics20HdHexMotor.class));
+        frontLeftDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         frontLeftDrive.setDirection(DcMotorSimple.Direction.REVERSE);
         frontLeftDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
@@ -61,8 +64,9 @@ public class DriveV2_Impl implements DriveV2 {
         frontLeftServo.setDirection(Servo.Direction.FORWARD);
 
         backRightDrive = (DcMotorEx) hardwareMap.dcMotor.get("back right drive");
-//        backRightDrive.setMotorType(MotorConfigurationType.getMotorType(RevHD_VP_20_1.class));
+        backRightDrive.setMotorType(MotorConfigurationType.getMotorType(RevRobotics20HdHexMotor.class));
         backRightDrive.setDirection(DcMotorSimple.Direction.FORWARD);
+        backRightDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         backRightDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         backRightServo = hardwareMap.servo.get("back right servo");
@@ -70,7 +74,8 @@ public class DriveV2_Impl implements DriveV2 {
         backRightServo.setDirection(Servo.Direction.FORWARD);
 
         backLeftDrive = (DcMotorEx) hardwareMap.dcMotor.get("back left drive");
-//        backLeftDrive.setMotorType(MotorConfigurationType.getMotorType(RevHD_VP_20_1.class));
+        backLeftDrive.setMotorType(MotorConfigurationType.getMotorType(RevRobotics20HdHexMotor.class));
+        backRightDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         backLeftDrive.setDirection(DcMotorSimple.Direction.REVERSE);
         backLeftDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
