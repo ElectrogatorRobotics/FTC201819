@@ -38,7 +38,6 @@ public class LandingGearImpl implements LandingGear {
     }
 
     public void unhook(){
-        stand_up();
         drivetrain.slide(6);
         deploy();
     }

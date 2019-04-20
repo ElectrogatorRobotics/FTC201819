@@ -14,4 +14,6 @@ public interface ScoringArms {
     void setIntakeMotorPower (double power);
 
     void setIntakeArmMotorPower (double power);
+
+    int getIntakeArmPosition();
 }

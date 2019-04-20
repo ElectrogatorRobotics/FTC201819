@@ -39,6 +39,8 @@ import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer.Came
 import org.firstinspires.ftc.robotcore.external.tfod.TFObjectDetector;
 import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
 
+import static org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer.CameraDirection.BACK;
+
 /**
  * This 2018-2019 OpMode illustrates the basics of using the TensorFlow Object Detection API to
  * determine the position of the gold and silver minerals.
@@ -50,7 +52,7 @@ import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
  * is explained below.
  */
 @TeleOp(name = "Concept: TensorFlow Object Detection", group = "Concept")
-@Disabled
+//@Disabled
 public class ConceptTensorFlowObjectDetection extends LinearOpMode {
     private static final String TFOD_MODEL_ASSET = "RoverRuckus.tflite";
     private static final String LABEL_GOLD_MINERAL = "Gold Mineral";
@@ -68,9 +70,9 @@ public class ConceptTensorFlowObjectDetection extends LinearOpMode {
      * Once you've obtained a license key, copy the string from the Vuforia web site
      * and paste it in to your code on the next line, between the double quotes.
      */
-    private static final String VUFORIA_KEY = " -- YOUR NEW VUFORIA KEY GOES HERE  --- ";
+    private static final String VUFORIA_KEY = "Ac3oCab/////AAABmREMMJWRLkxMm4OITflE1z8RQ4ee4yZidzAzHq4xSudcJwaeO7SVeH1B9T/xDMkrokkJZADdb50jlZXPf27E+CCSQ+JtWreq2NDmSjcKwUbouJVs2WwCh4JJNhPubfFKNGBhTbKoMGbnyOeXnnVNtS2LkIYG1OCjUJ2tlIo/sHkmXJXyySbyxTpBAbvNhucWMLrz/xL/VAH01ZOsiEcqWzIFpSuRpcdtcxb8TDAYqnmGDeaDtbp/KtKUdDqSpudckUxjUvLzI7vDDuUKF99sqeD4HDtZ5DG8kEcov4zGdAX/TWjNrh/uR65Ee0mA+Xb/thqVbByP/E4RJ71J6do2RuAGfR4RuLqkhvk961KJK1/G";
 
-    /**
+     /**
      * {@link #vuforia} is the variable we will use to store our instance of the Vuforia
      * localization engine.
      */

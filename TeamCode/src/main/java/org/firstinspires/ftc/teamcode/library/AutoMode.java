@@ -3,9 +3,9 @@ package org.firstinspires.ftc.teamcode.library;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 public abstract class AutoMode extends LinearOpMode {
-    protected static final boolean live = true;
-    protected static final boolean stand = false;
-    protected static final boolean scan = false;
+    protected static final boolean live = false;
+    protected static final boolean unhook = false;
+    protected static final boolean scan = true;
 
     protected Drive drive;
     protected DriveV2 drive2;
@@ -32,26 +32,47 @@ public abstract class AutoMode extends LinearOpMode {
             telemetry.addLine("Retracting!!!");
             drive2.driveServoState(DriveV2.driveServoState.RETRACT);
         }
+
+        telemetry.addLine("Ready to run.....");
         telemetry.update();
 
         //Wait for the system to start auto
         waitForStart();
 
-        scoop.setFrontTargetPosition(130);
-
-        lg.unhook();
-
+        scoop.setFrontTargetPosition(160);
+        if(unhook)lg.stand_up();
         scoop.waitForMoveEnd();
+
+        telemetry.addData("Final scoop position",scoop.getIntakeArmPosition());
+        telemetry.addLine("Scanning....");
+        telemetry.update();
 
         tensor = new TensorIDImpl(telemetry, this);
         GoldPosition gp = GoldPosition.NONE;
         if(scan){
             gp = tensor.getGoldPosition();
+            switch(gp){
+                case LEFT:
+                    telemetry.addLine("LEFT");
+                    break;
+                case CENTER:
+                    telemetry.addLine("CENTER");
+                    break;
+                case RIGHT:
+                    telemetry.addLine("RIGHT");
+                    break;
+                case NONE:
+                    telemetry.addLine("NONE");
+                    break;
+            }
         }
 
-        telemetry.addLine("Ready to start... thank you for waiting!");
+        telemetry.addLine("Unhooking....");
         telemetry.update();
 
+        scoop.setFrontTargetPosition(155);
+        if(unhook)lg.unhook();
+        
         run(gp);
 
     }

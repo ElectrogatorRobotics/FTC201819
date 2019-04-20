@@ -121,10 +121,10 @@ public class TensorIDImpl implements TensorID {
                             break; // drop out of loop
                         }
                     }
-                    tfod.deactivate();
-                    telemetry.update();
                 }
             }
+            tfod.deactivate();
+            telemetry.update();
         }
         return gp;
     }

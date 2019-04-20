@@ -169,6 +169,7 @@ public class DriveV2_Impl implements DriveV2 {
     }
 
     public void slideOff(int targetPosition, LinearOpMode lom){
+        setMotorMode(MotorMode.POSITION);
         setTargetTolerance(50);
         frontLeftDrive.setTargetPosition(frontLeftDrive.getCurrentPosition() + targetPosition);
         frontRightDrive.setTargetPosition(frontRightDrive.getCurrentPosition() - targetPosition);
@@ -179,6 +180,7 @@ public class DriveV2_Impl implements DriveV2 {
             Thread.yield(); //effectively what the LinearOpMode idle call does
         } while (frontRightDrive.isBusy() && lom.opModeIsActive());
         stop();
+        setMotorMode(MotorMode.POWER);
     }
 
     public double turnToAngle (double angleToTurn, LinearOpMode lom) {

@@ -20,7 +20,7 @@ public class ScoringArmsImpl implements ScoringArms {
 
     double BACK_CYCLE_TIME = 1100;
 
-    double TICKS_PER_DEGREE = 13.333;
+    double TICKS_PER_DEGREE = 25;
 
     public void initScoringSystems (HardwareMap hardwareMap) {
         intakeArmMotor = (DcMotorEx) hardwareMap.dcMotor.get("intake arm motor");
@@ -35,22 +35,23 @@ public class ScoringArmsImpl implements ScoringArms {
         scoringArmServo.scaleRange(0.0, 0.75);
         scoringArmServo.setDirection(Servo.Direction.REVERSE);
 
-        scoringArmLimit = hardwareMap.touchSensor.get("scoring arm limit");
+        scoringArmLimit = hardwareMap.touchSensor.get("intake arm limit");
     }
 
     public void setFrontTargetPosition(double angle){
-        int ticks = (int) Math.round(TICKS_PER_DEGREE * angle);
+        int ticks = (int) Math.round(TICKS_PER_DEGREE * angle * -1);
         intakeArmMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         intakeArmMotor.setTargetPositionTolerance(10);
         intakeArmMotor.setTargetPosition(ticks);
         runtime.reset();
-        setIntakeMotorPower(.5);
+        setIntakeArmMotorPower(-.5);
     }
 
     public void waitForMoveEnd(){
-        while(intakeArmMotor.isBusy() && runtime.milliseconds() < 1500){
+        while(intakeArmMotor.isBusy() && runtime.milliseconds() < 3000){
             Thread.yield();
         }
+        setIntakeArmMotorPower(0);
         intakeArmMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
     }
 
@@ -83,5 +84,9 @@ public class ScoringArmsImpl implements ScoringArms {
         else motorPower = power;
 
         intakeArmMotor.setPower(motorPower);
+    }
+
+    public int getIntakeArmPosition(){
+        return intakeArmMotor.getCurrentPosition();
     }
 }
