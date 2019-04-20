@@ -28,6 +28,8 @@ public abstract class AutoMode extends LinearOpMode {
         scoop = new ScoringArmsImpl();
         scoop.initScoringSystems(hardwareMap);
 
+        tensor = new TensorIDImpl(telemetry, this);
+
         if(live) {
             telemetry.addLine("Retracting!!!");
             drive2.driveServoState(DriveV2.driveServoState.RETRACT);
@@ -47,7 +49,6 @@ public abstract class AutoMode extends LinearOpMode {
         telemetry.addLine("Scanning....");
         telemetry.update();
 
-        tensor = new TensorIDImpl(telemetry, this);
         GoldPosition gp = GoldPosition.NONE;
         if(scan){
             gp = tensor.getGoldPosition();
