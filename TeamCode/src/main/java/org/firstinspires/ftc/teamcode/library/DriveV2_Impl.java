@@ -45,7 +45,6 @@ public class DriveV2_Impl implements DriveV2 {
     public void initDrive(HardwareMap hardwareMap) {
         frontRightDrive = (DcMotorEx) hardwareMap.dcMotor.get("front right drive");
         frontRightDrive.setMotorType(MotorConfigurationType.getMotorType(RevRobotics20HdHexMotor.class));
-        frontRightDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         frontRightDrive.setDirection(DcMotorSimple.Direction.FORWARD);
         frontRightDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
@@ -55,7 +54,6 @@ public class DriveV2_Impl implements DriveV2 {
 
         frontLeftDrive = (DcMotorEx) hardwareMap.dcMotor.get("front left drive");
         frontLeftDrive.setMotorType(MotorConfigurationType.getMotorType(RevRobotics20HdHexMotor.class));
-        frontLeftDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         frontLeftDrive.setDirection(DcMotorSimple.Direction.REVERSE);
         frontLeftDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
@@ -66,7 +64,6 @@ public class DriveV2_Impl implements DriveV2 {
         backRightDrive = (DcMotorEx) hardwareMap.dcMotor.get("back right drive");
         backRightDrive.setMotorType(MotorConfigurationType.getMotorType(RevRobotics20HdHexMotor.class));
         backRightDrive.setDirection(DcMotorSimple.Direction.FORWARD);
-        backRightDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         backRightDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         backRightServo = hardwareMap.servo.get("back right servo");
@@ -75,7 +72,6 @@ public class DriveV2_Impl implements DriveV2 {
 
         backLeftDrive = (DcMotorEx) hardwareMap.dcMotor.get("back left drive");
         backLeftDrive.setMotorType(MotorConfigurationType.getMotorType(RevRobotics20HdHexMotor.class));
-        backRightDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         backLeftDrive.setDirection(DcMotorSimple.Direction.REVERSE);
         backLeftDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
@@ -83,7 +79,7 @@ public class DriveV2_Impl implements DriveV2 {
         backLeftServo.scaleRange(MIN_SERVO_SCALE_VALUE, 0.8);
         backLeftServo.setDirection(Servo.Direction.FORWARD);
 
-        setMotorMode(MotorMode.POWER);
+        setMotorMode(MotorMode.ENCODER);
     }
 
     public void setMotorMode(MotorMode mode){
@@ -180,7 +176,7 @@ public class DriveV2_Impl implements DriveV2 {
             Thread.yield(); //effectively what the LinearOpMode idle call does
         } while (frontRightDrive.isBusy() && lom.opModeIsActive());
         stop();
-        setMotorMode(MotorMode.POWER);
+        setMotorMode(MotorMode.ENCODER);
     }
 
     public double turnToAngle (double angleToTurn, LinearOpMode lom) {

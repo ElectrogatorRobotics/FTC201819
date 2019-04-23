@@ -31,7 +31,7 @@ public class TensorIDImpl implements TensorID {
     HardwareMap hardwareMap;
     GoldPosition gp = GoldPosition.NONE;
 
-    public TensorIDImpl(Telemetry telem, LinearOpMode lo){
+    public  TensorIDImpl(Telemetry telem, LinearOpMode lo){
         init(telem, lo);
     }
 
