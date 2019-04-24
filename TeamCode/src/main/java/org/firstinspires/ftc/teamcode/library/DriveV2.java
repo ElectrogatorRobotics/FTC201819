@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.library;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
+import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 
 public interface DriveV2 {
@@ -55,5 +56,5 @@ public interface DriveV2 {
 
     void driveByPosition(double power, LinearOpMode lom);
 
-    double turnToAngle (double angleToTurn, LinearOpMode lom);
+    double turnToAngle (double angleToTurn, LinearOpMode lom, Telemetry telemetry);
 }

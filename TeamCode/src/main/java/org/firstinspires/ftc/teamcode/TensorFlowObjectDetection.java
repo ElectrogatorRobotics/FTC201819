@@ -127,11 +127,11 @@ public class TensorFlowObjectDetection extends LinearOpMode {
         drive2.init_bno055IMU(hardwareMap);
         drive = new DriveImpl(drive2,telemetry,this);
 
-        marker = new Marker(hardwareMap,telemetry);
-
         lg = new LandingGearImpl(drive2, drive,this);
 
         scoops = new ScoringArmsImpl();
+
+        marker = new Marker(scoops,telemetry);
 
         // initialise Vuforia
         /*

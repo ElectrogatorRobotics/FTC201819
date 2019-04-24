@@ -9,19 +9,19 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 
 public class Marker {
 
-    public Servo mServo;
+    public static final long CYCLE_TIME = 200;
 
-    public static final double DUMP = 0.75;
-    public static final double PARK = 0.3;
+    public Servo mServo;
 
     private Telemetry log;
     private ElapsedTime runtime = new ElapsedTime();
+    private ScoringArms scoops;
 
-    public Marker(HardwareMap hm, Telemetry telm) {
-        init(hm, telm);
+    public Marker(ScoringArms sa, Telemetry telm) {
+        init(sa, telm);
     }
-    public void init(HardwareMap hm, Telemetry telm){
-        mServo = hm.servo.get("Marker");
+    public void init(ScoringArms sa, Telemetry telm){
+        scoops = sa;
         log = telm;
     }
 
@@ -31,9 +31,13 @@ public class Marker {
 
     public void KickOutTheMrker(){
         log.addLine("MARKER = EJECTED!");
-        setMarkerPos(DUMP);
-        sleep(1000);
-        setMarkerPos(PARK);
+        scoops.setScoringArmServoPosition(true);
+        sleep(CYCLE_TIME);
+        scoops.setScoringArmServoPosition(false);
+        sleep(CYCLE_TIME);
+        scoops.setScoringArmServoPosition(true);
+        sleep(CYCLE_TIME);
+        scoops.setScoringArmServoPosition(false);
     }
 
 
