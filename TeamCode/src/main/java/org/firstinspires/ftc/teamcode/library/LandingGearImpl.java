@@ -37,8 +37,12 @@ public class LandingGearImpl implements LandingGear {
         drive2.driveServoState(DriveV2.driveServoState.DRIVE);
     }
 
-    public void unhook(){
-        drivetrain.slide(6);
+    public void unhook() throws InterruptedException {
+        drivetrain.slide(4);
+        Thread.sleep(500);
+        drivetrain.turn(0);
+        Thread.sleep(500);
+
         deploy();
     }
 

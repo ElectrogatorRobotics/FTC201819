@@ -3,8 +3,8 @@ package org.firstinspires.ftc.teamcode.library;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 public abstract class AutoMode extends LinearOpMode {
-    protected static final boolean live = false;
-    protected static final boolean unhook = false;
+    protected static final boolean live = true;
+    protected static final boolean unhook = true;
     protected static final boolean scan = true;
 
     protected Drive drive;
@@ -12,6 +12,7 @@ public abstract class AutoMode extends LinearOpMode {
     protected LandingGear lg;
     protected ScoringArms scoop;
     protected TensorID tensor;
+    protected Marker mark;
 
     public void runOpMode() throws InterruptedException{
         // initialise the motors
@@ -28,6 +29,8 @@ public abstract class AutoMode extends LinearOpMode {
         scoop = new ScoringArmsImpl();
         scoop.initScoringSystems(hardwareMap);
 
+        mark = new Marker(scoop,telemetry);
+
         tensor = new TensorIDImpl(telemetry, this);
 
         if(live) {
@@ -41,7 +44,7 @@ public abstract class AutoMode extends LinearOpMode {
         //Wait for the system to start auto
         waitForStart();
 
-        scoop.setFrontTargetPosition(160);
+        scoop.setFrontTargetPosition(140);
         if(unhook)lg.stand_up();
         scoop.waitForMoveEnd();
 
@@ -71,9 +74,11 @@ public abstract class AutoMode extends LinearOpMode {
         telemetry.addLine("Unhooking....");
         telemetry.update();
 
-        scoop.setFrontTargetPosition(155);
+        //scoop.setFrontTargetPosition(150);
         if(unhook)lg.unhook();
-        
+//        drive.turn(0);
+//        sleep(500);
+        //scoop.waitForMoveEnd();
         run(gp);
 
     }

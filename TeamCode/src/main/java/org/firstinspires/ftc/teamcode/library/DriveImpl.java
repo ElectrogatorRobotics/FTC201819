@@ -80,11 +80,11 @@ public class DriveImpl implements Drive {
     }
 
     public void turn(double angle) {
-        drive2.turnToAngle(angle, lom);
+        drive2.turnToAngle(angle, lom, LOG);
     }
 
     public void slide(double inches){
-        int ticks = (int) Math.round(inches * ENCODER_COUNTS_PER_INCH);
+        int ticks = (int) (Math.round(inches * ENCODER_COUNTS_PER_INCH)*3);
         drive2.slideOff(ticks, lom);
     }
 

@@ -44,7 +44,7 @@ public class ScoringArmsImpl implements ScoringArms {
         intakeArmMotor.setTargetPositionTolerance(10);
         intakeArmMotor.setTargetPosition(ticks);
         runtime.reset();
-        setIntakeArmMotorPower(-.5);
+        setIntakeArmMotorPower(0.5);
     }
 
     public void waitForMoveEnd(){
@@ -65,6 +65,15 @@ public class ScoringArmsImpl implements ScoringArms {
         }
     }
 
+    public void moveFrontArmTime(double time){
+        intakeArmMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        runtime.reset();
+        while(runtime.milliseconds() < time){
+            setIntakeArmMotorPower(1);
+        }
+        setIntakeArmMotorPower(0);
+    }
+
     public void checkCycling() {
         if (cycling){
             if(runtime.milliseconds() > BACK_CYCLE_TIME ){
@@ -79,6 +88,7 @@ public class ScoringArmsImpl implements ScoringArms {
     }
 
     public void setIntakeArmMotorPower (double power) {
+
         if (scoringArmLimit.isPressed()&&power>0)
             motorPower = 0;
         else motorPower = power;

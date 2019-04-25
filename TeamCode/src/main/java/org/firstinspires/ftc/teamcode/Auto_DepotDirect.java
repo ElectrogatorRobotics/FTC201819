@@ -25,13 +25,15 @@ public class Auto_DepotDirect extends AutoMode {
     @Override
     public void head_to_depot() {
         telemetry.addLine("Handling Marker");
-//        mark.KickOutTheMrker();
+        mark.KickOutTheMrker();
     }
 
     @Override
     public void head_to_crater() {
         telemetry.addLine("Heading to Crater");
-        drive.turn(135);
+        drive.turn(-135);
+        scoop.moveFrontArmTime(1000);
+
         drive.forward(85);
     }
 
@@ -40,10 +42,10 @@ public class Auto_DepotDirect extends AutoMode {
         telemetry.update();
         switch (gp) {
             case LEFT:
-                drive.turn(-10);
+                drive.turn(10);
                 break;
             case RIGHT:
-                drive.turn(10);
+                drive.turn(-10);
                 break;
         }
 
@@ -52,24 +54,29 @@ public class Auto_DepotDirect extends AutoMode {
 
         switch (gp) {
             case LEFT:
-                drive.turn(15);
+                drive.turn(-5);
                 drive.forward(3);
                 break;
             case RIGHT:
-                drive.turn(-15);
+                drive.turn(5);
                 drive.forward(3);
                 break;
         }
         drive.forward(10);
         switch (gp) {
             case LEFT:
-                drive.turn(-5);
-                break;
             case RIGHT:
-                drive.turn(5);
+                drive.turn(0);
                 break;
         }
 
-        scoop.setFrontTargetPosition(130);
+//        scoop.setFrontTargetPosition(130);
+        scoop.setIntakeArmMotorPower(-1);
+        try {
+            Thread.sleep(250);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        scoop.setIntakeArmMotorPower(0.0);
     }
 }

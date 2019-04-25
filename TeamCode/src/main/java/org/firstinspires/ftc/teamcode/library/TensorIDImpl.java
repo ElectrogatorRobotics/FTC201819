@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.library;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.ClassFactory;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
@@ -25,13 +26,14 @@ public class TensorIDImpl implements TensorID {
     TFObjectDetector tfod;
     VuforiaLocalizer vuforia;
     private Telemetry telemetry;
+    private ElapsedTime runtime;
 
     boolean ready = false;
     LinearOpMode lom;
     HardwareMap hardwareMap;
     GoldPosition gp = GoldPosition.NONE;
 
-    public TensorIDImpl(Telemetry telem, LinearOpMode lo){
+    public  TensorIDImpl(Telemetry telem, LinearOpMode lo){
         init(telem, lo);
     }
 
@@ -39,6 +41,7 @@ public class TensorIDImpl implements TensorID {
     public boolean init(Telemetry telem,LinearOpMode lop) {
         telemetry = telem;
         lom = lop;
+        runtime = new ElapsedTime();
 
         VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters();
         parameters.vuforiaLicenseKey = VUFORIA_KEY;
@@ -72,8 +75,10 @@ public class TensorIDImpl implements TensorID {
             tfod.activate();
         }
 
+        runtime.reset();
+
         if (lom.opModeIsActive()) {
-            while (tfod != null && lom.opModeIsActive()) {
+            while (tfod != null && lom.opModeIsActive() && runtime.milliseconds() < 2000) {
                 // getUpdatedRecognitions() will return null if no new information is available since
                 // the last time that call was made.
                 List<Recognition> updatedRecognitions = tfod.getUpdatedRecognitions();

@@ -36,7 +36,7 @@ public class DriveV2_Impl implements DriveV2 {
 
     private final static double MIN_SERVO_SCALE_VALUE = 0.18;
     private static final double DRIVE_POWER = .3;
-    private static final double TURN_POWER = .35;
+    private static final double TURN_POWER = .2;
     private static final double SLIDE_POWER = .5;
     private static final double TURN_THRESHOLD = .5;
 
@@ -45,7 +45,6 @@ public class DriveV2_Impl implements DriveV2 {
     public void initDrive(HardwareMap hardwareMap) {
         frontRightDrive = (DcMotorEx) hardwareMap.dcMotor.get("front right drive");
         frontRightDrive.setMotorType(MotorConfigurationType.getMotorType(RevRobotics20HdHexMotor.class));
-        frontRightDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         frontRightDrive.setDirection(DcMotorSimple.Direction.FORWARD);
         frontRightDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
@@ -55,7 +54,6 @@ public class DriveV2_Impl implements DriveV2 {
 
         frontLeftDrive = (DcMotorEx) hardwareMap.dcMotor.get("front left drive");
         frontLeftDrive.setMotorType(MotorConfigurationType.getMotorType(RevRobotics20HdHexMotor.class));
-        frontLeftDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         frontLeftDrive.setDirection(DcMotorSimple.Direction.REVERSE);
         frontLeftDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
@@ -66,7 +64,6 @@ public class DriveV2_Impl implements DriveV2 {
         backRightDrive = (DcMotorEx) hardwareMap.dcMotor.get("back right drive");
         backRightDrive.setMotorType(MotorConfigurationType.getMotorType(RevRobotics20HdHexMotor.class));
         backRightDrive.setDirection(DcMotorSimple.Direction.FORWARD);
-        backRightDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         backRightDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         backRightServo = hardwareMap.servo.get("back right servo");
@@ -75,7 +72,6 @@ public class DriveV2_Impl implements DriveV2 {
 
         backLeftDrive = (DcMotorEx) hardwareMap.dcMotor.get("back left drive");
         backLeftDrive.setMotorType(MotorConfigurationType.getMotorType(RevRobotics20HdHexMotor.class));
-        backRightDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         backLeftDrive.setDirection(DcMotorSimple.Direction.REVERSE);
         backLeftDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
@@ -83,7 +79,7 @@ public class DriveV2_Impl implements DriveV2 {
         backLeftServo.scaleRange(MIN_SERVO_SCALE_VALUE, 0.8);
         backLeftServo.setDirection(Servo.Direction.FORWARD);
 
-        setMotorMode(MotorMode.POWER);
+        setMotorMode(MotorMode.ENCODER);
     }
 
     public void setMotorMode(MotorMode mode){
@@ -112,10 +108,11 @@ public class DriveV2_Impl implements DriveV2 {
     public void init_bno055IMU (HardwareMap hardwareMap) {
         bno055IMU = hardwareMap.get( BNO055IMU.class, "imu");
         BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
+//        parameters.calibrationDataFile = "BNO055IMUCalibration.json"; // see the calibration sample opmode
         parameters.gyroPowerMode = BNO055IMU.GyroPowerMode.NORMAL;
         parameters.gyroBandwidth = BNO055IMU.GyroBandwidth.HZ32;
         parameters.angleUnit = BNO055IMU.AngleUnit.DEGREES;
-        parameters.mode = BNO055IMU.SensorMode.COMPASS;
+//        parameters.mode = BNO055IMU.SensorMode.GYRONLY;
         bno055IMU.initialize(parameters);
     }
 
@@ -180,27 +177,45 @@ public class DriveV2_Impl implements DriveV2 {
             Thread.yield(); //effectively what the LinearOpMode idle call does
         } while (frontRightDrive.isBusy() && lom.opModeIsActive());
         stop();
-        setMotorMode(MotorMode.POWER);
+        setMotorMode(MotorMode.ENCODER);
     }
 
-    public double turnToAngle (double angleToTurn, LinearOpMode lom) {
+    public double turnToAngle (double angleToTurn, LinearOpMode lom, Telemetry telemetry) {
         angle = bno055IMU.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.XYZ, AngleUnit.DEGREES);
         /**
          * set {@link angleToTurn} equal to the {@link imu}'s Z axes
          */
-        setMotorMode(MotorMode.POWER);
+        setMotorMode(MotorMode.ENCODER);
         double power = TURN_POWER;
-        if(angleToTurn < 0) power *= -1;
-        angleToTurn *= -1;
-        double targetAngle = (angle.thirdAngle + angleToTurn + 360)%360;
-        if(targetAngle >180){
-            targetAngle -= 360;
-        }
+        telemetry.addData("Angle to turn, before if", angleToTurn);
+        telemetry.update();
+
+        boolean targeted = false;
+        boolean ccw = (angle.thirdAngle < angleToTurn);
+
         runtime.reset();
-        while(Math.abs(angle.thirdAngle - targetAngle) > TURN_THRESHOLD && runtime.seconds() < 10 && lom.opModeIsActive()){
+        while(!targeted && runtime.seconds() < 10 && lom.opModeIsActive()){
             angle = bno055IMU.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.XYZ, AngleUnit.DEGREES);
-            setDriveSpeed(power, power, power*-1, power*-1);
-            Thread.yield();
+            if(Math.abs(angleToTurn - angle.thirdAngle) < TURN_THRESHOLD){
+                targeted = true;
+                break;
+            }
+            else if(angle.thirdAngle < angleToTurn){
+                if(!ccw){
+                    power = -0.5 * TURN_POWER;
+                }
+                else power = Math.abs(power)*-1;
+            }
+            else{
+                if(ccw){
+                    power = TURN_POWER * .5;
+                }
+                else power = Math.abs(power);
+            }
+            telemetry.addData("angle", angle.thirdAngle);
+            telemetry.addData("target", angleToTurn);
+            telemetry.update();
+            setDriveSpeed(power*-1, power*-1, power*1, power*1);
         }
         stop();
         setMotorMode(MotorMode.ENCODER);
