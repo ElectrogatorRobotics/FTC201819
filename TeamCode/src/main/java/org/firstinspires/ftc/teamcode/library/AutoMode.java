@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.library;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
 public abstract class AutoMode extends LinearOpMode {
     protected static final boolean live = true;
@@ -13,6 +14,7 @@ public abstract class AutoMode extends LinearOpMode {
     protected ScoringArms scoop;
     protected TensorID tensor;
     protected Marker mark;
+    protected  ElapsedTime runtime = new ElapsedTime();
 
     public void runOpMode() throws InterruptedException{
         // initialise the motors
@@ -32,6 +34,8 @@ public abstract class AutoMode extends LinearOpMode {
         mark = new Marker(scoop,telemetry);
 
         tensor = new TensorIDImpl(telemetry, this);
+
+
 
         if(live) {
             telemetry.addLine("Retracting!!!");
