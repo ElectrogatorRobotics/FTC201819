@@ -2,7 +2,6 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 
 import org.firstinspires.ftc.teamcode.library.AutoMode;
 import org.firstinspires.ftc.teamcode.library.GoldPosition;
@@ -18,8 +17,11 @@ public class Auto_DepotDirect extends AutoMode {
 
     public void run(GoldPosition gp) {
         hit_block(gp);
-        head_to_depot();
-        head_to_crater();
+//        scoop.setIntakeMotorPower(.5);
+//        head_to_depot();
+        scoop.setIntakeMotorPower(0);
+        drive.forward(-18);
+//        head_to_crater();
     }
 
     @Override
@@ -42,10 +44,10 @@ public class Auto_DepotDirect extends AutoMode {
         telemetry.update();
         switch (gp) {
             case LEFT:
-                drive.turn(10);
+                drive.turn(14);
                 break;
             case RIGHT:
-                drive.turn(-10);
+                drive.turn(-14);
                 break;
         }
 
@@ -70,13 +72,9 @@ public class Auto_DepotDirect extends AutoMode {
                 break;
         }
 
-//        scoop.setFrontTargetPosition(130);
-        scoop.setIntakeArmMotorPower(-1);
-        try {
-            Thread.sleep(250);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        scoop.setIntakeArmMotorPower(0.0);
+        scoop.setFrontTargetPosition(130);
+
+        mark.KickOutTheMrker();
     }
 }
+

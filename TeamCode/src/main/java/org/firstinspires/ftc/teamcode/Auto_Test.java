@@ -42,7 +42,8 @@ public class Auto_Test extends LinearOpMode {
         scoop = new ScoringArmsImpl();
         scoop.initScoringSystems(hardwareMap);
 
-        Marker marker = new Marker(scoop,telemetry);
+        Marker marker = new Marker(scoop,telemetry, this);
+
 
 //        tensor = new TensorIDImpl(telemetry, this);
 
@@ -57,6 +58,7 @@ public class Auto_Test extends LinearOpMode {
         runtime.reset();
 
 //        lg.deploy();
+//        Thread.sleep(2000);
 //        while (runtime.milliseconds() < 3000 && opModeIsActive()) {
 //            idle();
 //        }
@@ -65,8 +67,8 @@ public class Auto_Test extends LinearOpMode {
 //        drive.slide(3);
 //        drive.forward(12);
 
-        drive.turn(90);
-
+        drive.turn(-135);
+//        lg.unhook();
 //        drive.turn(100);
 
 

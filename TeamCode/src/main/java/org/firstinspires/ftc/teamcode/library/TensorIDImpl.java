@@ -78,7 +78,7 @@ public class TensorIDImpl implements TensorID {
         runtime.reset();
 
         if (lom.opModeIsActive()) {
-            while (tfod != null && lom.opModeIsActive() && runtime.milliseconds() < 2000) {
+            while (tfod != null && lom.opModeIsActive() && runtime.milliseconds() < 4000) {
                 // getUpdatedRecognitions() will return null if no new information is available since
                 // the last time that call was made.
                 List<Recognition> updatedRecognitions = tfod.getUpdatedRecognitions();
@@ -109,12 +109,12 @@ public class TensorIDImpl implements TensorID {
                         // Check if the gold is less then both silvers, if it is, it is left
                         // Next check if the gold is greater then both silvers, if it is it is right
                         // Otherwise it is in the middle.
-                        if (goldMineralX < silverMineral1X && goldMineralX < silverMineral2X) {
+                        if (goldMineralX > silverMineral1X && goldMineralX > silverMineral2X) {
                             telemetry.addData("Gold Mineral Position", "Left");
                             gp = GoldPosition.LEFT;
                             telemetry.update();
                             break; // drop out of loop
-                        } else if (goldMineralX > silverMineral1X && goldMineralX > silverMineral2X) {
+                        } else if (goldMineralX < silverMineral1X && goldMineralX < silverMineral2X) {
                             telemetry.addData("Gold Mineral Position", "Right");
                             gp = GoldPosition.RIGHT;
                             telemetry.update();

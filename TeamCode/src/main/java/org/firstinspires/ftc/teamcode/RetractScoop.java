@@ -40,7 +40,7 @@ public class RetractScoop extends LinearOpMode {
         scoop = new ScoringArmsImpl();
         scoop.initScoringSystems(hardwareMap);
 
-        Marker marker = new Marker(scoop,telemetry);
+        Marker marker = new Marker(scoop,telemetry, this);
 
         waitForStart();
 

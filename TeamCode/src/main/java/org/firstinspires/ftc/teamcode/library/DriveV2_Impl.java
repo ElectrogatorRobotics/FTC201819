@@ -110,7 +110,7 @@ public class DriveV2_Impl implements DriveV2 {
         BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
 //        parameters.calibrationDataFile = "BNO055IMUCalibration.json"; // see the calibration sample opmode
         parameters.gyroPowerMode = BNO055IMU.GyroPowerMode.NORMAL;
-        parameters.gyroBandwidth = BNO055IMU.GyroBandwidth.HZ32;
+        parameters.gyroBandwidth = BNO055IMU.GyroBandwidth.HZ64;
         parameters.angleUnit = BNO055IMU.AngleUnit.DEGREES;
 //        parameters.mode = BNO055IMU.SensorMode.GYRONLY;
         bno055IMU.initialize(parameters);

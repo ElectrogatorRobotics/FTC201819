@@ -9,7 +9,7 @@ import org.firstinspires.ftc.teamcode.library.TensorID;
 import org.firstinspires.ftc.teamcode.library.TensorIDImpl;
 
 @TeleOp
-@Disabled
+//@Disabled
 public class TensorTest extends LinearOpMode {
     TensorID tensor;
     GoldPosition goldPosition;

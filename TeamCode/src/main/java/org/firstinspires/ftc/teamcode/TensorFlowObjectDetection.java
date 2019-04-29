@@ -131,7 +131,7 @@ public class TensorFlowObjectDetection extends LinearOpMode {
 
         scoops = new ScoringArmsImpl();
 
-        marker = new Marker(scoops,telemetry);
+        marker = new Marker(scoops,telemetry, this);
 
         // initialise Vuforia
         /*

@@ -31,7 +31,7 @@ public abstract class AutoMode extends LinearOpMode {
         scoop = new ScoringArmsImpl();
         scoop.initScoringSystems(hardwareMap);
 
-        mark = new Marker(scoop,telemetry);
+        mark = new Marker(scoop,telemetry, this);
 
         tensor = new TensorIDImpl(telemetry, this);
 
@@ -48,7 +48,7 @@ public abstract class AutoMode extends LinearOpMode {
         //Wait for the system to start auto
         waitForStart();
 
-        scoop.setFrontTargetPosition(140);
+        scoop.setFrontTargetPosition(150);
         if(unhook)lg.stand_up();
         scoop.waitForMoveEnd();
 
